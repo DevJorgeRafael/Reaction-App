@@ -1,6 +1,7 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import postsRoutes from './routes/posts.routes.js'
+import userRoutes from './routes/users.routes.js'
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(fileUpload({
 
 //routes
 app.use(postsRoutes)
+app.use(userRoutes)
 
 export default app;

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getPosts, createPost, updatePost, deletePost, getPost } from '../controllers/post.controller.js'
-
+import { authMiddleware } from '../middlewares/authMiddleware.js'
 
 const router = Router()
 

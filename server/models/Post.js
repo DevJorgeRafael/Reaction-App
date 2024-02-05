@@ -15,6 +15,8 @@ const postSchema = new mongoose.Schema({
         url: String,
         public_id: String
     },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario que creó el post
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Referencias a los usuarios que han dado "like" al post
 })
 
 export default mongoose.model('Post', postSchema)
