@@ -1,10 +1,10 @@
 import { HomePage, NotFoundPage, LoginPage, RegisterPage } from './pages/index.js'
 import {Routes, Route} from 'react-router-dom'
-import {PostContainer} from './context/postContext.jsx'
+import { PostProvider } from './context/postContext.jsx'
 
 function App() {
   return (
-    <PostContainer>
+    <PostProvider>
       <Routes>
         <Route path='/' element={<HomePage />}></Route>
         <Route path='*' element={<NotFoundPage />}></Route>
@@ -12,7 +12,7 @@ function App() {
         <Route path='/register' element={<RegisterPage />}></Route>
 
       </Routes>
-    </PostContainer>
+    </PostProvider>
   )
 }
 
