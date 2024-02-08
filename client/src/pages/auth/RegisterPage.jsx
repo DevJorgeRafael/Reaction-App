@@ -1,17 +1,44 @@
 import { useUser } from "../../context/userContext"
 import { Box, Button, Container, TextField, Typography, Grid, Alert } from "@mui/material";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 function RegisterPage() {
-  const { user, register: signup } = useUser()
+  const { user, register: signup, loading } = useUser()
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const password = watch("password", "");
 
   const onSubmit = (data) => {
     signup(data);
-    
   };
 
+  useEffect(() => {
+    if (user) navigate('/posts')
+  }, [])
+
+  useEffect(() => {
+    if (user) navigate('/posts')
+  }, [user])
+
+  if (loading) return (
+    <Container component="main" maxWidth="xs" className='auth-container'>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+          Registrarse
+        </Typography>
+        <CircularProgress />
+      </Box>
+    </Container>
+  )
+  
   return (
     <Container component="main" maxWidth="xs" className='auth-container'>
       <Box

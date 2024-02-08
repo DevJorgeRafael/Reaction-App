@@ -26,6 +26,8 @@ function PostsPage() {
 
     return (
         <div style={{ padding: '20px' }}>
+
+            
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"

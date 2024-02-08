@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { loginRequest, registerRequest } from "../api/user"; 
+import { loginRequest, registerRequest, verifyTokenRequest } from "../api/user";
 import Cookies from 'js-cookie'
 
 const UserContext = createContext();
@@ -9,7 +9,7 @@ export const useUser = () => {
     return userContext;
 }
 
-export const UserProvider = ({children}) => {
+export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
@@ -22,23 +22,58 @@ export const UserProvider = ({children}) => {
     }
 
     const login = async (user) => {
-        const res = await loginRequest(user);
-        setUser(res.data);
+        try {
+            setLoading(true);
+            const res = await loginRequest(user);
+            setUser(res.data.user);
+            setIsAuthenticated(true)
+            setLoading(false)
+            console.log(res.data.user)
+        } catch (error) {
+            console.log(error)
+            setErrors(error.response.data)
+            setLoading(false)
+        }
     }
 
-    const checkAuth = async (user) => {
-        const token = Cookies.get('token')
-        if (token) {
-            setIsAuthenticated(true)
+    const checkAuth = async () => {
+        const cookies = Cookies.get()
+        if (!cookies.token) {
+            setIsAuthenticated(false)
+            setLoading(false)
+            return setUser(null)
         }
-        setLoading(false)
-    
+        try {
+            const res = await verifyTokenRequest(cookies.token)
+            if (!res.data) {
+                setIsAuthenticated(false)
+                setLoading(false)
+                return
+            }
+
+            setIsAuthenticated(true)
+            setUser(res.data)
+            setLoading(false)
+        } catch (error) {
+            setIsAuthenticated(false)
+            setUser(null)
+            setLoading(false)
+        }
     }
+
+    useEffect(() => {
+        checkAuth()
+    }, [])
 
     return <UserContext.Provider value={{
-        user,
         register,
-        login
+        login,
+        user,
+
+        errors,
+        loading,
+        isAuthenticated
+        
     }}>
         {children}
     </UserContext.Provider>

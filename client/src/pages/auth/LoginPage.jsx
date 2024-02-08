@@ -1,14 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/authForms.css'
 import { useForm } from 'react-hook-form';
-import { Button, TextField, Container, Typography, Box } from '@mui/material';
+import { Button, TextField, Container, Typography, Box, CircularProgress } from '@mui/material';
+import { useUser } from '../../context/userContext';
+
 
 function LoginPage() {
+  const navigate = useNavigate()
+  const { user, login, loading } = useUser()
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    login(data);
   };
+
+  useEffect(() => {
+    if (user) navigate('/posts')
+  }, [user])
+
+  useEffect(() => {
+    if (user) navigate('/posts')
+  }, [])
+
+  if (loading) return (
+    <Container component="main" maxWidth="xs" className='auth-container'>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+          Iniciar Sesión
+        </Typography>
+        <CircularProgress />
+      </Box>
+    </Container>
+  )
 
   return (
     <Container component="main" maxWidth="xs" className='auth-container'>
@@ -20,8 +52,8 @@ function LoginPage() {
           alignItems: 'center',
         }}
       >
-        <img src="/ReactiOn-logo.png" alt="Logo" width={125}/>
-        <Typography component="h1" variant="h5" sx={{fontWeight: 'bold'}}>
+        <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
           Iniciar Sesión
         </Typography>
 
