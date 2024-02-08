@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
     name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     image: {
         url: String,
         public_id: String
