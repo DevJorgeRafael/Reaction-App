@@ -17,7 +17,7 @@ export const createPost = async (req, res) => {
         const { title, description, userId } = req.body
         let image;
 
-        if (req.files.image) {
+        if (req.files && req.files.image) {
             const result = await uploadImage(req.files.image.tempFilePath)
             await fs.remove(req.files.image.tempFilePath)
             image = {
@@ -26,13 +26,23 @@ export const createPost = async (req, res) => {
             }
         }
 
-        const newPost = new Post({ title, description, image, user: userId })
+        // Buscar al usuario en la base de datos
+        const userFromDB = await User.findById(userId);
+        if (!userFromDB) return res.status(400).json({ message: 'User not found' });
+
+        const user = {
+            _id: userFromDB._id,
+            name: userFromDB.name,
+            email: userFromDB.email,
+            username: userFromDB.username
+        };
+
+        const newPost = new Post({ title, description, image, user })
         await newPost.save()
 
         // Agregar el post al usuario que lo creó
-        const user = await User.findById(userId);
-        user.posts.push(newPost);
-        await user.save();
+        userFromDB.posts.push(newPost);
+        await userFromDB.save();
 
         return res.json(newPost)
     } catch (error) {
@@ -40,6 +50,7 @@ export const createPost = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
 
 
 export const updatePost = async (req, res) => {

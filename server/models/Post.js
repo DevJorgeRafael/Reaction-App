@@ -15,7 +15,12 @@ const postSchema = new mongoose.Schema({
         url: String,
         public_id: String
     },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario que creó el post
+    user: {
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        name: String,
+        email: String,
+        username: String
+    }, 
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencias a los usuarios que han dado "like" al post
     date: { type: Date, default: Date.now }
 })

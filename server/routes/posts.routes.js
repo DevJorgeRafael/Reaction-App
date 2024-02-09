@@ -14,4 +14,6 @@ router.delete('/posts/:id', deletePost)
 
 router.get('/posts/:id', getPost)
 
+
+
 export default router

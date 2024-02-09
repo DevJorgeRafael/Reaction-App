@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { usePosts } from '../context/postContext';
+import { useUser } from '../context/userContext';
 import { useForm } from "react-hook-form";
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 
 export default function CreatePostModal() {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const { createPost } = usePosts();
+    const { user } = useUser();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -17,9 +21,17 @@ export default function CreatePostModal() {
     };
 
     const onSubmit = (data) => {
-        console.log(data);
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('userId', user._id);
+        if (data.image) {
+            formData.append('image', data.image[0]);
+        }
+        createPost(formData);
         handleClose();
     };
+
 
     return (
         <>
@@ -41,7 +53,7 @@ export default function CreatePostModal() {
                             label="Title"
                             type="text"
                             fullWidth
-                            variant="standard"
+                            variant="filled"
                             {...register('title', { required: "El título es requerido" })}
                         />
                         {errors.title && <p>{errors.title.message}</p>}
@@ -51,17 +63,20 @@ export default function CreatePostModal() {
                             label="Description"
                             type="text"
                             fullWidth
-                            variant="standard"
+                            variant="filled"
                             {...register('description', { required: "La descripción es requerida" })}
                         />
                         {errors.description && <p>{errors.description.message}</p>}
                         <TextField
                             margin="dense"
-                            name="media"
+                            name="image"
                             type="file"
                             fullWidth
-                            variant="standard"
-                            {...register('media')}
+                            variant="filled"
+                            {...register('image')}
+                            sx={{
+                                borderRadius: 5
+                            }}
                         />
                         
                     </DialogContent>

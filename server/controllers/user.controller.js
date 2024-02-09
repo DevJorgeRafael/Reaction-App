@@ -10,7 +10,8 @@ export const register = async (req, res) => {
         const user = new User({ username, name, email, password });
         await user.save();
 
-        const token = jwt.sign({ userId: user._id }, SECRET_KEY);
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h'});
+        res.cookie('token', token, { maxAge: 3600000 })
 
         res.status(201).json({ token, user });
     } catch (error) {
@@ -31,8 +32,8 @@ export const login = async (req, res) => {
             return res.status(401).json({ message: 'Incorrect password' });
         }
 
-        const token = jwt.sign({ userId: user._id }, SECRET_KEY);
-        res.cookie('token', token)
+        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h'});
+        res.cookie('token', token, { maxAge: 3600000 })
 
         res.json({ 
             token,

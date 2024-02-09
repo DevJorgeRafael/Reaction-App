@@ -2,9 +2,10 @@ import { useUser } from "../../context/userContext"
 import { Box, Button, Container, TextField, Typography, Grid, Alert, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
+  const navigate = useNavigate()
   const { user, register: signup, loading } = useUser()
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const password = watch("password", "");
