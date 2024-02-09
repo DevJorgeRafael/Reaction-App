@@ -1,14 +1,13 @@
 import { usePosts } from '../context/postContext'
 import { useUser } from '../context/userContext';
-import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, useFormControl, Avatar } from '@mui/material';
+import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
-import '../styles/post.css'
 import { formatDistanceToNow } from 'date-fns'
-import { useState } from 'react';
+import '../styles/post.css'
 
 function PostsPage() {
     const { posts, likePost, unlikePost } = usePosts()
@@ -39,11 +38,13 @@ function PostsPage() {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '10px' }}>
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"
-                columnClassName="my-masonry-grid_column">
+                columnClassName="my-masonry-grid_column"
+                gutter={10} // Ajusta este valor para cambiar la separación
+            >
                 {posts.length>0 && posts.map((post, index) => (
                     <div key={post._id}>
                         <Card sx={{ maxWidth: 565}}>

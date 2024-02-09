@@ -5,7 +5,7 @@ import fs from 'fs-extra'
 
 export const getPosts = async (req, res) => {
     try {
-        const posts = await Post.find().populate('user', 'username');
+        const posts = await Post.find().sort({ date: -1 }).populate('user', 'username');
         res.send(posts)
     } catch (error) {
         return res.status(500).json({ message: error.message })
