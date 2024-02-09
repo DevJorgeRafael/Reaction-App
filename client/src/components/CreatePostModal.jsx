@@ -21,16 +21,18 @@ export default function CreatePostModal() {
     };
 
     const onSubmit = (data) => {
-        const postData = {
-            title: data.title,
-            description: data.description,
-            userId: user._id,
-            image: data.image ? data.image[0] : null,
-        };
-        console.log(postData);
-        createPost(postData);
+        const formData = new FormData();
+        formData.append('title', data.title);
+        formData.append('description', data.description);
+        formData.append('userId', user._id);
+        if (data.image) {
+            formData.append('image', data.image[0]);
+        }
+        console.log(formData);
+        createPost(formData);
         handleClose();
     };
+
 
     return (
         <>

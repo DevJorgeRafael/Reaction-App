@@ -10,5 +10,18 @@ export const deletePostRequest = async (id) => await axios.delete(`/posts/${id}`
 
 export const getSinglePostRequest = async (id) => await axios.get(`/posts/${id}`)
 
-export const likePostRequest = async (id) => await axios.put(`/posts/${id}/like`)
+export async function likePostRequest(id, userId) {
+    try {
+        return await axios.put(`/posts/${id}/like`, { userId: userId });
+    } catch (error) {
+        console.error(error);
+    }
+}
 
+export async function unlikePostRequest(id, userId) {
+    try {
+        return await axios.put(`/posts/${id}/unlike`, { userId: userId });
+    } catch (error) {
+        console.error(error);
+    }
+}

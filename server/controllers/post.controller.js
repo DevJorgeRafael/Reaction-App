@@ -16,7 +16,6 @@ export const createPost = async (req, res) => {
     try {
         const { title, description, userId } = req.body
         let image;
-        console.log(req.body)
 
         if (req.files && req.files.image) {
             const result = await uploadImage(req.files.image.tempFilePath)
@@ -99,8 +98,14 @@ export const likePost = async (req, res) => {
         const post = await Post.findById(req.params.id);
         if (!post) return res.sendStatus(404)
 
+        // Comprobar si el usuario ya ha dado "like" al post
+        console.log(post)
+        if (post.likes.includes(req.body.userId)) {
+            return res.status(400).json({ message: 'User has already liked this post' })
+        }
+
         // Agregar el ID del usuario a los likes del post
-        post.likes.push(req.userId);
+        post.likes.push(req.body.userId);
         await post.save();
 
         return res.json(post)
@@ -108,14 +113,19 @@ export const likePost = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
 
 export const unlikePost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
+        const userId = req.body.userId; // Extraer userId del cuerpo de la solicitud
         if (!post) return res.sendStatus(404)
 
-        // Eliminar el ID del usuario de los likes del post
-        post.likes.pull(req.userId);
+        const likeIndex = post.likes.indexOf(userId);
+        if (likeIndex !== -1) {
+            // Si el usuario ha dado "like" al post, eliminar su ID de los likes
+            post.likes.splice(likeIndex, 1);
+        }
         await post.save();
 
         return res.json(post)
@@ -123,3 +133,4 @@ export const unlikePost = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+

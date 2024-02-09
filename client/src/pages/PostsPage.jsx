@@ -11,7 +11,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { useState } from 'react';
 
 function PostsPage() {
-    const { posts } = usePosts()
+    const { posts, likePost, unlikePost } = usePosts()
     const { user } = useUser()
 
     if (posts.length === 0) return (
@@ -44,7 +44,7 @@ function PostsPage() {
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column">
-                {posts.map((post, index) => (
+                {posts.length>0 && posts.map((post, index) => (
                     <div key={post._id}>
                         <Card sx={{ maxWidth: 565}}>
                             <CardHeader
@@ -83,9 +83,16 @@ function PostsPage() {
                                 />
                             }
                             <CardActions disableSpacing>
-                                <IconButton aria-label="add to favorites">
-                                    <FavoriteIcon />
+                                <IconButton
+                                    aria-label="add to favorites"
+                                    onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
+                                >
+                                    <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
+                                    <Typography variant="body2" color="text.secondary">
+                                        {post.likes.length}
+                                    </Typography>
                                 </IconButton>
+
                                 <IconButton aria-label="share">
                                     <ShareIcon />
                                 </IconButton>
