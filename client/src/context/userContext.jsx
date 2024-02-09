@@ -30,7 +30,6 @@ export const UserProvider = ({ children }) => {
             setUser(res.data.user);
             setIsAuthenticated(true)
             setLoading(false)
-            console.log(res.data.user)
         } catch (error) {
             console.log(error)
             setErrors(error.response.data)
@@ -61,7 +60,7 @@ export const UserProvider = ({ children }) => {
             }
 
             setIsAuthenticated(true)
-            setUser(res.data)
+            setUser(res.data.user)
             setLoading(false)
         } catch (error) {
             setIsAuthenticated(false)

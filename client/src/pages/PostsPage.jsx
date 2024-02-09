@@ -29,8 +29,6 @@ function PostsPage() {
         600: 1
     };
 
-    console.log(posts)
-
     return (
         <div style={{ padding: '20px' }}>
             <Masonry
@@ -39,7 +37,7 @@ function PostsPage() {
                 columnClassName="my-masonry-grid_column">
                 {posts.map((post, index) => (
                     <div key={post._id}>
-                        <Card sx={{ maxWidth: 565, marginBottom: 1 }}>
+                        <Card sx={{ maxWidth: 565}}>
                             <CardHeader
                                 avatar={
                                     <Avatar sx={{ bgcolor: 'red' }} aria-label="recipe">
@@ -55,10 +53,10 @@ function PostsPage() {
                                 }
                                 title={post.user.name}
                                 subheader={formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-                                sx={{ pb: 0}}
+                                sx={{ pb: 0, mb: -1 }}
                             />
 
-                            <CardContent>
+                            <CardContent sx={{ pt: 1.2 }}>
                                 <Typography variant="h6" color="text.primary">
                                     {post.title}
                                 </Typography>
@@ -70,7 +68,7 @@ function PostsPage() {
                             {post.image &&
                                 <CardMedia
                                     component="img"
-                                    sx={{ maxHeight: 250, height: 250, objectFit: 'cover' }}
+                                    sx={{ maxHeight: 250, height: 250, objectFit: 'cover', mt: -1 }} // Reduce el margen superior
                                     image={post.image.url}
                                     alt={post.title}
                                 />
@@ -84,6 +82,7 @@ function PostsPage() {
                                 </IconButton>
                             </CardActions>
                         </Card>
+
                     </div>
                 ))}
             </Masonry>

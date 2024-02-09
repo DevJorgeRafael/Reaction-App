@@ -16,6 +16,7 @@ export const createPost = async (req, res) => {
     try {
         const { title, description, userId } = req.body
         let image;
+        console.log(req.body)
 
         if (req.files && req.files.image) {
             const result = await uploadImage(req.files.image.tempFilePath)

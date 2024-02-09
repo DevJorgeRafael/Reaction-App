@@ -9,5 +9,5 @@ export const loginRequest = async (user) => {
 }
 
 export const verifyTokenRequest = async () => {
-    return await axios.post('/verifyToken')
+    return await axios.get('/verifyToken')
 }
