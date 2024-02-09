@@ -1,7 +1,8 @@
 import { useUser } from "../../context/userContext"
-import { Box, Button, Container, TextField, Typography, Grid, Alert } from "@mui/material";
+import { Box, Button, Container, TextField, Typography, Grid, Alert, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 function RegisterPage() {
   const { user, register: signup, loading } = useUser()
@@ -24,34 +25,40 @@ function RegisterPage() {
     <Container component="main" maxWidth="xs" className='auth-container'>
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
+        <img src="/ReactiOn-logo.png" alt="Logo" width={100} />
         <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
-          Registrarse
+          Sign Up
         </Typography>
         <CircularProgress />
       </Box>
     </Container>
   )
-  
+
   return (
-    <Container component="main" maxWidth="xs" className='auth-container'>
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+    <Box
+      sx={{
+        marginTop: 8,
+        mx: {
+          xs: 2,
+          sm: 0
+        }
+      }}
+    >
+      <Container component="main" maxWidth="xs" className='auth-container' sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
         <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
-        <Typography component="h1" variant="h5" sx={{fontWeight: 'bold'}}>
-          Registrarse
+        <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
+          Sign Up
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -59,7 +66,7 @@ function RegisterPage() {
             <Grid item xs={12} sm={6}>
               <TextField
                 {...register('name')}
-                label="Nombre"
+                label="Name"
                 variant="outlined"
                 margin="normal"
                 required
@@ -70,7 +77,7 @@ function RegisterPage() {
             <Grid item xs={12} sm={6}>
               <TextField
                 {...register('username')}
-                label="Nombre de usuario"
+                label="Username"
                 variant="outlined"
                 margin="normal"
                 required
@@ -81,7 +88,7 @@ function RegisterPage() {
           </Grid>
           <TextField
             {...register('email')}
-            label="Correo electrónico"
+            label="Email"
             variant="outlined"
             margin="normal"
             required
@@ -90,7 +97,7 @@ function RegisterPage() {
           />
           <TextField
             {...register('password')}
-            label="Contraseña"
+            label="Password"
             type="password"
             variant="outlined"
             margin="normal"
@@ -103,7 +110,7 @@ function RegisterPage() {
               validate: value =>
                 value === password || "Las contraseñas no coinciden"
             })}
-            label="Repetir contraseña"
+            label="Confirm Password"
             type="password"
             variant="outlined"
             margin="normal"
@@ -111,7 +118,7 @@ function RegisterPage() {
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
           />
-          {errors.confirmPassword && <Alert sx={{mb: 1}} variant="filled" severity="error">{errors.confirmPassword.message}</Alert>}
+          {errors.confirmPassword && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.confirmPassword.message}</Alert>}
 
           <Button
             type="submit"
@@ -120,11 +127,16 @@ function RegisterPage() {
             fullWidth
             sx={{ mb: 2 }}
           >
-            Registrarse
+            Sign Up
           </Button>
         </form>
-      </Box>
-    </Container>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', mb: 2 }}>
+          <Link to='/login' variant="body2" sx={{ color: '#FFFFFF' }}>
+            Already have an account? Sign In
+          </Link>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 

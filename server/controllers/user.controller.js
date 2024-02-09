@@ -50,15 +50,16 @@ export const login = async (req, res) => {
 };
 
 export const verifyToken = async (req, res) => {
+    if(!req.cookies) return res.status(400).json({message: 'Invalid cookies'})
     const { token } = req.cookies
 
-    if (!token) return res.status(401).json({ message: 'No autorizado' })
+    if (!token) return res.status(401).json({ message: 'Unauthorized' })
 
     jwt.verify(token, SECRET_KEY, async (err, user) => {
-        if (err) return res.status(401).json({ message: 'No autorizado' })
+        if (err) return res.status(401).json({ message: 'Unauthorized' })
 
         const userFound = await User.findOne({ email: user.email})
-        if (!userFound) return res.status(401).json({ message: "No Autorizado", user: null })
+        if (!userFound) return res.status(401).json({ message: "Unathorized", user: null })
 
         console.log(userFound)
         return res.json({    

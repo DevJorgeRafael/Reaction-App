@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
+        
         trim: true
     },
     image: {
@@ -16,7 +16,8 @@ const postSchema = new mongoose.Schema({
         public_id: String
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario que creó el post
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Referencias a los usuarios que han dado "like" al post
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencias a los usuarios que han dado "like" al post
+    date: { type: Date, default: Date.now }
 })
 
 export default mongoose.model('Post', postSchema)

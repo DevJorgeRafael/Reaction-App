@@ -1,10 +1,12 @@
 import { usePosts } from '../context/postContext'
-import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography } from '@mui/material';
+import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, useFormControl } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
 import '../styles/post.css'
+import { useForm } from "react-hook-form";
+import { useState } from 'react';
 
 function PostsPage() {
     const { posts } = usePosts()
@@ -26,8 +28,6 @@ function PostsPage() {
 
     return (
         <div style={{ padding: '20px' }}>
-
-            
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"

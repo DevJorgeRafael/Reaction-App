@@ -1,7 +1,9 @@
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import cookieParser from 'cookie-parser';
 import postsRoutes from './routes/posts.routes.js'
 import userRoutes from './routes/users.routes.js'
+
 
 const app = express();
 
@@ -11,6 +13,7 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: './upload'
 }))
+app.use(cookieParser())
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:5173');

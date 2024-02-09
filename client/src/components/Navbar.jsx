@@ -16,7 +16,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 
-
+import { useUser } from '../context/userContext';
+import CreatePostModal from './CreatePostModal';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -62,6 +63,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function NavBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+    const { user, logout } = useUser()
+    
+    if(!user) return null
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -102,7 +106,7 @@ export default function NavBar() {
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-            <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={logout}>
                 <Typography color="error">Logout</Typography>
             </MenuItem>
         </Menu>
@@ -162,24 +166,15 @@ export default function NavBar() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ backgroundColor: '#294B29'}}>
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
                     <Typography
                         variant="h6"
                         noWrap
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        MUI
+                        ReactiOn
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
@@ -190,6 +185,7 @@ export default function NavBar() {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </Search>
+                    <CreatePostModal />
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
