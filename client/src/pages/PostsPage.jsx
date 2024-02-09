@@ -29,6 +29,15 @@ function PostsPage() {
         600: 1
     };
 
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+
     return (
         <div style={{ padding: '20px' }}>
             <Masonry
@@ -40,8 +49,8 @@ function PostsPage() {
                         <Card sx={{ maxWidth: 565}}>
                             <CardHeader
                                 avatar={
-                                    <Avatar sx={{ bgcolor: 'red' }} aria-label="recipe">
-                                        {post.user && post.user.name ? post.user.name[0] : post.user.username[0]}
+                                    <Avatar sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
+                                        {post.user && post.user.username ? post.user.username[0].toUpperCase() : 'U'}
                                     </Avatar>
                                 }
                                 action={
@@ -51,7 +60,7 @@ function PostsPage() {
                                         </IconButton>
                                     )
                                 }
-                                title={post.user.name}
+                                title={post.user.username}
                                 subheader={formatDistanceToNow(new Date(post.date), { addSuffix: true })}
                                 sx={{ pb: 0, mb: -1 }}
                             />
