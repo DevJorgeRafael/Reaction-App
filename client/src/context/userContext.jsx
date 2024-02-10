@@ -15,31 +15,31 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false); // Estado de carga para autenticación
 
     const register = async (user) => {
         try {
+            setLoading(true); // Iniciar carga
             const res = await registerRequest(user);
-
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
             setErrors(error.response.data)
-            setLoading(false)
+        } finally {
+            setLoading(false); // Detener carga
         }
     }
 
     const login = async (user) => {
         try {
-            setLoading(true);
+            setLoading(true); // Iniciar carga
             const res = await loginRequest(user);
             setUser(res.data.user);
             setIsAuthenticated(true)
-            setLoading(false)
         } catch (error) {
-            console.log(error)
             setErrors(error.response.data)
-            setLoading(false)
+        } finally {
+            setLoading(false); // Detener carga
         }
     }
 
@@ -54,24 +54,19 @@ export const UserProvider = ({ children }) => {
         const cookies = Cookies.get()
         if (!cookies.token) {
             setIsAuthenticated(false)
-            setLoading(false)
             return setUser(null)
         }
         try {
             const res = await verifyTokenRequest(cookies.token)
             if (!res.data) {
                 setIsAuthenticated(false)
-                setLoading(false)
                 return
             }
-
             setIsAuthenticated(true)
             setUser(res.data.user)
-            setLoading(false)
         } catch (error) {
             setIsAuthenticated(false)
             setUser(null)
-            setLoading(false)
         }
     }
 
@@ -79,18 +74,18 @@ export const UserProvider = ({ children }) => {
         checkAuth()
     }, [])
 
-    return <UserContext.Provider value={{
-        register,
-        login,
-        logout,
-        user,
-
-        errors,
-        loading,
-        isAuthenticated
-        
-    }}>
-        {children}
-    </UserContext.Provider>
-
+    return (
+        <UserContext.Provider value={{
+            register,
+            login,
+            logout,
+            user,
+            errors,
+            loading,
+            isAuthenticated,
+            setIsAuthenticated // Si es necesario para otros componentes
+        }}>
+            {children}
+        </UserContext.Provider>
+    );
 }
