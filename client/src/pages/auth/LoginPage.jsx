@@ -8,7 +8,7 @@ import { useUser } from '../../context/userContext';
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { user, login, loading } = useUser()
+  const { user, login, loading, isAuthenticated } = useUser()
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
@@ -16,12 +16,8 @@ function LoginPage() {
   };
 
   useEffect(() => {
-    if (user) navigate('/posts')
-  }, [user])
-
-  useEffect(() => {
-    if (user) navigate('/posts')
-  }, [])
+    if (user && isAuthenticated) navigate('/posts')
+  }, [user, isAuthenticated])
 
   if (loading) return (
     <Container component="main" maxWidth="xs" className='auth-container'>

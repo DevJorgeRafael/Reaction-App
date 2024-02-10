@@ -13,7 +13,11 @@ export const register = async (req, res) => {
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h'});
         res.cookie('token', token, { maxAge: 3600000 })
 
-        res.status(201).json({ token, user });
+        const userObject = user.toObject()
+
+        delete userObject.password
+
+        res.status(201).json({ token, user: userObject });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -42,6 +46,7 @@ export const login = async (req, res) => {
                 name: user.name,
                 username: user.username,
                 email: user.email,
+                image: user.image,
                 posts: user.posts
             }
         });
@@ -62,12 +67,15 @@ export const verifyToken = async (req, res) => {
         const userFound = await User.findById(user.userId)
         if (!userFound) return res.status(401).json({ message: "Unathorized", user: null })
 
+        console.log(userFound)
+
         return res.json({    
             user: {
                 _id: userFound._id,
                 name: userFound.name,
                 username: userFound.username,
                 email: userFound.email,
+                image: userFound.image,
                 posts: userFound.posts
             }      
         })

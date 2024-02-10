@@ -6,21 +6,23 @@ import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   const navigate = useNavigate()
-  const { user, register: signup, loading } = useUser()
+  const { user, register: signup, loading, isAuthenticated } = useUser()
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const password = watch("password", "");
 
-  const onSubmit = (data) => {
-    signup(data);
+  const onSubmit = async (data) => {
+    await signup(data);
   };
 
   useEffect(() => {
-    if (user) navigate('/posts')
+    if (isAuthenticated) navigate('/posts');
   }, [])
 
   useEffect(() => {
-    if (user) navigate('/posts')
-  }, [user])
+    if (isAuthenticated) {
+      navigate('/posts');
+    }
+  }, [isAuthenticated]);
 
   if (loading) return (
     <Container component="main" maxWidth="xs" className='auth-container'>

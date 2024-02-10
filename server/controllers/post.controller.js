@@ -99,7 +99,6 @@ export const likePost = async (req, res) => {
         if (!post) return res.sendStatus(404)
 
         // Comprobar si el usuario ya ha dado "like" al post
-        console.log(post)
         if (post.likes.includes(req.body.userId)) {
             return res.status(400).json({ message: 'User has already liked this post' })
         }

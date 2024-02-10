@@ -18,9 +18,15 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const register = async (user) => {
-        const res = await registerRequest(user);
-        console.log(res.data)
-        setUser(res.data);
+        try {
+            const res = await registerRequest(user);
+
+            setUser(res.data.user);
+            setIsAuthenticated(true)
+        } catch (error) {
+            setErrors(error.response.data)
+            setLoading(false)
+        }
     }
 
     const login = async (user) => {
