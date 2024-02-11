@@ -128,7 +128,7 @@ function RegisterPage() {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ mb: 2 }}
+            sx={{ my: 1 }}
           >
             Sign Up
           </Button>

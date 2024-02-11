@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/authForms.css'
 import { useForm } from 'react-hook-form';
-import { Button, TextField, Container, Typography, Box, CircularProgress, Grid } from '@mui/material';
+import { Button, TextField, Container, Typography, Box, CircularProgress, Grid, Alert } from '@mui/material';
 import { useUser } from '../../context/userContext';
 
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { user, login, loading, isAuthenticated } = useUser()
-  const { register, handleSubmit } = useForm();
+  const { user, login, loading, isAuthenticated, errors: signInErrors } = useUser()
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
     login(data);
@@ -18,6 +18,11 @@ function LoginPage() {
   useEffect(() => {
     if (user && isAuthenticated) navigate('/posts')
   }, [user, isAuthenticated])
+
+  const ErrorMessage = ({ error }) => {
+    return error && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{error}</Alert>;
+  };
+
 
   if (loading) return (
     <Container component="main" maxWidth="xs" className='auth-container'>
@@ -70,6 +75,8 @@ function LoginPage() {
               fullWidth
               sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
             />
+            <ErrorMessage error={errors.email?.message || signInErrors.email} />
+
             <TextField
               {...register('password')}
               label="Password"
@@ -78,15 +85,20 @@ function LoginPage() {
               margin="normal"
               required
               fullWidth
-              sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
+              sx={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: 1,
+
+              }}
             />
+            <ErrorMessage error={errors.password?.message || signInErrors.password} />
 
             <Button
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ mb: 2 }}
+              sx={{ my: 1 }}
             >
               Sign In
             </Button>

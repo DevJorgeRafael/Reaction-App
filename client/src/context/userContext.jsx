@@ -15,31 +15,41 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
-    const [loading, setLoading] = useState(false); // Estado de carga para autenticación
+    const [loading, setLoading] = useState(false); 
+
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            const timer = setTimeout(() => {
+                setErrors([])
+            }, 10000);
+            return () => clearTimeout(timer)
+        }
+    }, [errors]);
 
     const register = async (user) => {
         try {
-            setLoading(true); // Iniciar carga
+            setLoading(true); 
             const res = await registerRequest(user);
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
             setErrors(error.response.data)
         } finally {
-            setLoading(false); // Detener carga
+            setLoading(false); 
         }
     }
 
     const login = async (user) => {
         try {
-            setLoading(true); // Iniciar carga
+            setLoading(true); 
             const res = await loginRequest(user);
+            console.log(res)
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
             setErrors(error.response.data)
         } finally {
-            setLoading(false); // Detener carga
+            setLoading(false); 
         }
     }
 
@@ -69,6 +79,8 @@ export const UserProvider = ({ children }) => {
             setUser(null)
         }
     }
+
+
 
     useEffect(() => {
         checkAuth()
