@@ -1,28 +1,59 @@
 import { useUser } from "../context/userContext"
-import { Avatar, Button, Card, CardContent, Grid, Typography } from "@mui/material"
+import { Avatar, Box, Button, Card, CardContent, Grid, Typography } from "@mui/material"
 
 function ProfileComponent() {
     const { user } = useUser()
     if (user) console.log(user)
 
     return (
-        <Card>
-            <CardContent>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <Avatar alt={user.name} src={user.image.url} />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="h5">{user.name}</Typography>
-                        <Typography variant="subtitle1">{user.username}</Typography>
-                        <Typography variant="body2">{user.email}</Typography>
-                        <Button variant="contained" color="primary">
-                            Subir imagen
-                        </Button>
-                    </Grid>
-                </Grid>
+        <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#E1F0DA' }}>
+            <CardContent sx={{ p: 2 }}>
+                <Box className="image d-flex flex-column justify-content-center align-items-center">
+                    <Box>
+                        <Typography variant="h5" color="initial"
+                            sx={{ p: 1, fontWeight: 'bold' }}
+                        >@{user.username}</Typography>
+                        <Avatar alt={user.username} src={user.image.url}
+                            sx={{
+                                justifyContent: 'center',
+                                width: 200,
+                                height: 200,
+
+                            }}
+                        />
+                    </Box>
+
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography variant="h6" color="initial" className="mt-2 fw-bold">{user.name}</Typography>
+                        <Typography variant="h6" color="initial" className="mt-2">{user.bio ? user.bio : 'You have not set a bio yet.'}</Typography>
+
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                            <Button variant="contained" sx={{ background: '#86A789' }}>Edit Profile</Button>
+                        </Box>
+
+                        <Box sx={{ display: 'flex', mt: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', mx: 2 }}>
+                                <Typography variant="subtitle1" color="initial">Posts</Typography>
+                                <Typography variant="h6" color="initial" sx={{ fontWeight: 'bold' }}>{user.posts.length}</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', mx: 2 }}>
+                                <Typography variant="subtitle1" color="initial">Followers</Typography>
+                                <Typography variant="h6" color="initial" sx={{ fontWeight: 'bold' }}>{user.followers.length}</Typography>
+                            </Box>
+
+                            <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', mx: 2 }}>
+                                <Typography variant="subtitle1" color="initial">Following</Typography>
+                                <Typography variant="h6" color="initial" sx={{ fontWeight: 'bold' }}>{user.following.length}</Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+
+                </Box>
             </CardContent>
         </Card>
+
+
     )
 }
 

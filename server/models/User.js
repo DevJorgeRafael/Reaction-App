@@ -10,7 +10,10 @@ const UserSchema = new mongoose.Schema({
     },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] // Referencia a los posts del usuario
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }], // Referencia a los posts del usuario
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los seguidores del usuario
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los usuarios que sigue el usuario
+    bio: String
 });
 
 UserSchema.pre('save', async function (next) {

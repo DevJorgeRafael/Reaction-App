@@ -51,7 +51,10 @@ export const login = async (req, res) => {
                 username: user.username,
                 email: user.email,
                 image: user.image,
-                posts: user.posts
+                posts: user.posts,
+                bio: user.bio,
+                followers: user.followers,
+                following: user.following
             }
         });
     } catch (error) {
@@ -80,7 +83,10 @@ export const verifyToken = async (req, res) => {
                 username: userFound.username,
                 email: userFound.email,
                 image: userFound.image,
-                posts: userFound.posts
+                posts: userFound.posts,
+                bio: userFound.bio,
+                followers: userFound.followers,
+                following: userFound.following
             }      
         })
     })
