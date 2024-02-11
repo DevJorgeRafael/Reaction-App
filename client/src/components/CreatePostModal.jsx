@@ -152,9 +152,6 @@ export default function CreatePostModal() {
 
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color='error' variant='contained'>
-                            <CloseIcon />
-                        </Button>
                         <Button type="submit" variant='contained'>
                             <SendIcon />
                         </Button>
