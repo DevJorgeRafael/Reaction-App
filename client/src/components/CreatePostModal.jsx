@@ -3,9 +3,14 @@ import { usePosts } from '../context/postContext';
 import { useUser } from '../context/userContext';
 import { useForm } from "react-hook-form";
 import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add'
-import CloseIcon from '@mui/icons-material/Close'
 import Webcam from "react-webcam";
+
+import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import CloseIcon from '@mui/icons-material/Close'
+import SendIcon from '@mui/icons-material/Send'
+
 
 export default function CreatePostModal() {
     const [open, setOpen] = useState(false);
@@ -105,19 +110,24 @@ export default function CreatePostModal() {
                         {errors.description && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.description.message}</Alert>}
 
                         {imageSrc ? (
-                            <>
-                                <img src={imageSrc} alt="preview" style={{maxWidth: '100%'}}/>
-                                <Button onClick={() => setImageSrc(null)} variant='contained' color='error'>Remove image</Button>
-                            </>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                                <img src={imageSrc} alt="preview" style={{ maxWidth: '100%' }} />
+                                <Button onClick={() => setImageSrc(null)} variant='contained' color='error' sx={{mt: 1}}>
+                                    <DeleteIcon />
+                                </Button>
+                            </div>
                         ) : (
-                            <>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                                 <Webcam
                                     audio={false}
                                     ref={webcamRef}
                                     screenshotFormat="image/jpeg"
-                                    style={{ width: '100%', borderRadius: 3}}
+                                    style={{ width: '100%', borderRadius: 3 }}
                                 />
-                                <Button onClick={capture} variant='contained' color='success'>Capture photo</Button>
+                                <Button onClick={capture} variant='contained' color='success' sx={{mt: 1}}>
+                                    <PhotoCameraIcon />
+                                </Button>
+
                                 <TextField
                                     margin="dense"
                                     name="image"
@@ -137,12 +147,17 @@ export default function CreatePostModal() {
                                         borderRadius: 5
                                     }}
                                 />
-                            </>
+                            </div>
                         )}
+
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color='error' variant='contained'>Cancel</Button>
-                        <Button type="submit" variant='contained'>Post</Button>
+                        <Button onClick={handleClose} color='error' variant='contained'>
+                            <CloseIcon />
+                        </Button>
+                        <Button type="submit" variant='contained'>
+                            <SendIcon />
+                        </Button>
                     </DialogActions>
                 </form>
             </Dialog>
