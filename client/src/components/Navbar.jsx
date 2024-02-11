@@ -20,6 +20,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useUser } from '../context/userContext';
 import CreatePostModal from './CreatePostModal';
 import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -67,6 +68,7 @@ export default function NavBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const { user, logout } = useUser();
+    const navigate = useNavigate()
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -112,7 +114,10 @@ export default function NavBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={() => {
+                handleMenuClose()
+                navigate(`/profile/${user.username}`)
+            }}>Profile</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
             <MenuItem onClick={handleLogout}>
                 <Typography color="error">Logout</Typography>

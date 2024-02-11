@@ -43,11 +43,10 @@ function PostsPage() {
                 breakpointCols={breakpointColumnsObj}
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column"
-                gutter={10} // Ajusta este valor para cambiar la separación
             >
                 {posts.length>0 && posts.map((post, index) => (
                     <div key={post._id}>
-                        <Card sx={{ maxWidth: 565}}>
+                        <Card>
                             <CardHeader
                                 avatar={
                                     <Avatar sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
@@ -78,7 +77,7 @@ function PostsPage() {
                             {post.image &&
                                 <CardMedia
                                     component="img"
-                                    sx={{ maxHeight: 250, height: 250, objectFit: 'cover', mt: -1 }} // Reduce el margen superior
+                                    sx={{ maxHeight: 250, height: 250, objectFit: 'scale-down', mt: -1 }} // Reduce el margen superior
                                     image={post.image.url}
                                     alt={post.title}
                                 />

@@ -6,11 +6,13 @@ import RegisterPage from "./auth/RegisterPage";
 
 import PostsPage from "./PostsPage";
 
+import ProfilePage from "./profile/ProfilePage"
 
 export {
     HomePage,
     NotFoundPage,
     LoginPage,
     RegisterPage,
-    PostsPage
+    PostsPage,
+    ProfilePage
 }

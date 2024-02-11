@@ -1,4 +1,4 @@
-import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage } from './pages/index.js'
+import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import { PostProvider } from './context/postContext.jsx'
 import { UserProvider } from './context/userContext.jsx'
@@ -20,6 +20,7 @@ function App() {
 
           <Route element={<ProtectedRoute/>}>
             <Route path='/posts' element={<PostsPage />}></Route>
+            <Route path='/profile/:username' element={<ProfilePage />}></Route>
           </Route>
 
         </Routes>

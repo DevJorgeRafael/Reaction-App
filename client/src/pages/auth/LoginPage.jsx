@@ -45,15 +45,19 @@ function LoginPage() {
 
   return (
     <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center', // Centra los elementos verticalmente
+      height: `calc(100vh - 150px)`, //74px mide mi navbar pero uso más para que esté un poco más arriba
       mx: {
         xs: 2,
         sm: 0
       }
-    }}>
+    }}
+    >
       <Container component="main" maxWidth="xs" className='auth-container'>
         <Box
           sx={{
-            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

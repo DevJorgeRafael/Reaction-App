@@ -44,7 +44,6 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true); 
             const res = await loginRequest(user);
-            console.log(res)
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
