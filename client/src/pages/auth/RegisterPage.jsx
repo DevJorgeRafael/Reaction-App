@@ -1,12 +1,16 @@
 import { useUser } from "../../context/userContext"
-import { Box, Button, Container, TextField, Typography, Grid, Alert, CircularProgress } from "@mui/material";
+import { Box, Button, 
+  Container, TextField, 
+  Typography, Grid, 
+  Alert, CircularProgress 
+} from "@mui/material";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   const navigate = useNavigate()
-  const { user, register: signup, loading, isAuthenticated } = useUser()
+  const { register: signup, loading, isAuthenticated, errors: signUpErrors } = useUser()
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const password = watch("password", "");
 
@@ -23,6 +27,10 @@ function RegisterPage() {
       navigate('/posts');
     }
   }, [isAuthenticated]);
+
+  const ErrorMessage = ({ error }) => {
+    return error && <Alert sx={{ width: '100%' }} variant="filled" severity="error">{error}</Alert>;
+  };
 
   if (loading) return (
     <Container component="main" maxWidth="xs" className='auth-container'>
@@ -65,32 +73,39 @@ function RegisterPage() {
         </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <TextField
                 {...register('name')}
+                error = {Boolean(errors.name)}
                 label="Name"
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
-                sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
+                sx={{ backgroundColor: '#FFFFFF', borderRadius: 1, mt: 1 }}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 {...register('username')}
+                error = {Boolean(errors.username || signUpErrors.username)}
                 label="Username"
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
-                sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
+                sx={{ backgroundColor: '#FFFFFF', borderRadius: 1, mt:1 }}
               />
             </Grid>
+              <ErrorMessage error={errors.name?.message || signUpErrors.name} />
+              <ErrorMessage error={errors.username?.message || signUpErrors.username} />
           </Grid>
+
           <TextField
             {...register('email')}
+            error = {Boolean(errors.email || signUpErrors.email)}
             label="Email"
             variant="outlined"
             margin="normal"
@@ -98,8 +113,11 @@ function RegisterPage() {
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
           />
+          <ErrorMessage error={errors.email?.message || signUpErrors.email} />
+
           <TextField
             {...register('password')}
+            error = {Boolean(errors.password)}
             label="Password"
             type="password"
             variant="outlined"
@@ -108,11 +126,14 @@ function RegisterPage() {
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
           />
+          <ErrorMessage error={errors.password?.message || signUpErrors.password} />
+
           <TextField
             {...register('confirmPassword', {
               validate: value =>
                 value === password || "Las contraseñas no coinciden"
             })}
+            error = {Boolean(errors.confirmPassword)}
             label="Confirm Password"
             type="password"
             variant="outlined"
@@ -121,7 +142,7 @@ function RegisterPage() {
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
           />
-          {errors.confirmPassword && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.confirmPassword.message}</Alert>}
+          <ErrorMessage error={errors.confirmPassword?.message} />
 
           <Button
             type="submit"

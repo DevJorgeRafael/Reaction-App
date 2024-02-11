@@ -67,6 +67,7 @@ function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
               {...register('email')}
+              error = {Boolean(errors.email || signInErrors.email)}
               label="Email"
               type='email'
               variant="outlined"
@@ -79,6 +80,7 @@ function LoginPage() {
 
             <TextField
               {...register('password')}
+              error = {Boolean(errors.password || signInErrors.password)}
               label="Password"
               type="password"
               variant="outlined"

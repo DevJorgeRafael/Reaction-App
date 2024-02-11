@@ -7,6 +7,12 @@ export const register = async (req, res) => {
     try {
         const { username, name, email, password } = req.body;
 
+        const userFoundByUsername = await User.findOne({ username: username })
+        if (userFoundByUsername) return res.status(400).json({ username: 'Username already exists' });
+
+        const userFoundByEmail = await User.findOne({ email: email})
+        if (userFoundByEmail) return res.status(400).json({ email: 'Email already exists' });
+
         const user = new User({ username, name, email, password });
         await user.save();
 
@@ -28,17 +34,12 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        if (!user) {
-            console.log('User not found')
-            return res.status(401).json({ email: 'User not found' });
-        }
+        if (!user) return res.status(401).json({ email: 'User not found' });       
 
         const isMatch = await bcrypt.compare(password, user.password)
 
-        if (!isMatch) {
-            return res.status(401).json({ password: 'Incorrect password' });
-        }
-
+        if (!isMatch) return res.status(401).json({ password: 'Incorrect password' });
+        
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h'});
         res.cookie('token', token, { maxAge: 3600000 })
 
