@@ -11,3 +11,7 @@ export const loginRequest = async (user) => {
 export const verifyTokenRequest = async () => {
     return await axios.get('/verifyToken')
 }
+
+export const getUserByUsernameRequest = async (username) => {
+    return await axios.get(`/username/${username}`)
+}

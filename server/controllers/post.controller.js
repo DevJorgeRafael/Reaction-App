@@ -46,7 +46,6 @@ export const createPost = async (req, res) => {
 
         return res.json(newPost)
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ message: error.message })
     }
 }

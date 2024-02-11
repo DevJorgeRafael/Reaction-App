@@ -1,5 +1,5 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest } from "../api/user";
+import { loginRequest, registerRequest, verifyTokenRequest, getUserByUsernameRequest } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
     const navigate = useNavigate()
     const [user, setUser] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false); 
@@ -80,7 +81,15 @@ export const UserProvider = ({ children }) => {
         }
     }
 
-
+    const getUserByUsername = async (username) => {
+        try {
+            const res = await getUserByUsernameRequest(username)
+            setUserProfile(res.data.user)
+        } catch (error) {
+            console.log(error)
+            setErrors(error.response.data)
+        }
+    }
 
     useEffect(() => {
         checkAuth()
@@ -91,11 +100,13 @@ export const UserProvider = ({ children }) => {
             register,
             login,
             logout,
+            getUserByUsername,
+
             user,
             errors,
             loading,
             isAuthenticated,
-            setIsAuthenticated // Si es necesario para otros componentes
+            userProfile
         }}>
             {children}
         </UserContext.Provider>

@@ -43,19 +43,13 @@ export const login = async (req, res) => {
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h'});
         res.cookie('token', token, { maxAge: 3600000 })
 
+        const userObject = user.toObject()
+
+        delete userObject.password
+
         res.json({ 
             token,
-            user: {
-                _id: user._id,
-                name: user.name,
-                username: user.username,
-                email: user.email,
-                image: user.image,
-                posts: user.posts,
-                bio: user.bio,
-                followers: user.followers,
-                following: user.following
-            }
+            user: userObject
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -63,31 +57,36 @@ export const login = async (req, res) => {
 };
 
 export const verifyToken = async (req, res) => {
-    if(!req.cookies) return res.status(400).json({message: 'Invalid cookies'})
-    const { token } = req.cookies
+    try {
+        if (!req.cookies) return res.status(400).json({ message: 'Invalid cookies' })
+        const { token } = req.cookies
 
-    if (!token) return res.status(401).json({ message: 'Unauthorized' })
+        if (!token) return res.status(401).json({ message: 'Unauthorized' })
 
-    jwt.verify(token, SECRET_KEY, async (err, user) => {
-        if (err) return res.status(401).json({ message: 'Unauthorized token' })
+        jwt.verify(token, SECRET_KEY, async (err, user) => {
+            if (err) return res.status(401).json({ message: 'Unauthorized token' })
 
-        const userFound = await User.findById(user.userId)
-        if (!userFound) return res.status(401).json({ message: "Unathorized", user: null })
+            const userFound = await User.findById(user.userId)
+            if (!userFound) return res.status(401).json({ message: "Unathorized", user: null })
 
-        console.log(userFound)
+            const userObject = userFound.toObject()
 
-        return res.json({    
-            user: {
-                _id: userFound._id,
-                name: userFound.name,
-                username: userFound.username,
-                email: userFound.email,
-                image: userFound.image,
-                posts: userFound.posts,
-                bio: userFound.bio,
-                followers: userFound.followers,
-                following: userFound.following
-            }      
+            return res.json({ user: userObject })
         })
-    })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getUserByUsername = async (req, res) => {
+    try {
+        const { username } = req.params
+        const userFound = await User.findOne({ username })
+        if (!userFound) return res.status(404).json({ message: 'User not found' })
+
+        const userObject = userFound.toObject()
+        res.json({ user: userObject })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
 }

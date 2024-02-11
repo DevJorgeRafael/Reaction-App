@@ -1,9 +1,9 @@
 import { useUser } from "../context/userContext"
-import { Avatar, Box, Button, Card, CardContent, Grid, Typography } from "@mui/material"
+import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typography } from "@mui/material"
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 
 function ProfileComponent() {
     const { user } = useUser()
-    if (user) console.log(user)
 
     return (
         <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#E1F0DA' }}>
@@ -13,14 +13,23 @@ function ProfileComponent() {
                         <Typography variant="h5" color="initial"
                             sx={{ p: 1, fontWeight: 'bold' }}
                         >@{user.username}</Typography>
-                        <Avatar alt={user.username} src={user.image.url}
-                            sx={{
-                                justifyContent: 'center',
-                                width: 200,
-                                height: 200,
-
-                            }}
-                        />
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                                <IconButton>
+                                    <PhotoCameraIcon sx={{ fontSize: 30 }} />
+                                </IconButton>
+                            }
+                        >
+                            <Avatar alt={user.username} src={user.image?.url}
+                                sx={{
+                                    justifyContent: 'center',
+                                    width: 150,
+                                    height: 150,
+                                }}
+                            />
+                        </Badge>
                     </Box>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -28,7 +37,20 @@ function ProfileComponent() {
                         <Typography variant="h6" color="initial" className="mt-2">{user.bio ? user.bio : 'You have not set a bio yet.'}</Typography>
 
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                            <Button variant="contained" sx={{ background: '#86A789' }}>Edit Profile</Button>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    background: '#4F6F52',
+                                    '&:hover': {
+                                        background: '#739072',
+                                    },
+                                    '&:active': {
+                                        background: '#739072',
+                                    },
+                                }}
+                            >
+                                Edit Profile
+                            </Button>
                         </Box>
 
                         <Box sx={{ display: 'flex', mt: 2 }}>
