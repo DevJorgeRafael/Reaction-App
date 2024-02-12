@@ -18,7 +18,7 @@ import InputIcon from '@mui/icons-material/Input';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { useUser } from '../context/userContext';
-import CreatePostModal from './CreatePostModal';
+import CreatePostModal from './posts/CreatePostModal';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 

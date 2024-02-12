@@ -13,9 +13,6 @@ function ProfilePosts() {
         getUserByUsername(username) 
     }, [])
 
-    console.log(userProfile) 
-    console.log(user) 
-
     let userPosts = []
     if (userProfile) userPosts = posts.filter(post => userProfile.posts.includes(post._id))
 

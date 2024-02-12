@@ -2,12 +2,12 @@ import { useState, useRef, useCallback } from 'react';
 import { usePosts } from '../../context/postContext';
 import { useUser } from '../../context/userContext';
 import { useForm } from "react-hook-form";
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert, Box } from '@mui/material';
 import Webcam from "react-webcam";
 
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import CameraIcon from '@mui/icons-material/Camera'
 import CloseIcon from '@mui/icons-material/Close'
 import SendIcon from '@mui/icons-material/Send'
 
@@ -112,9 +112,9 @@ export default function CreatePostModal() {
                         {imageSrc ? (
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                                 <img src={imageSrc} alt="preview" style={{ maxWidth: '100%' }} />
-                                <Button onClick={() => setImageSrc(null)} variant='contained' color='error' sx={{mt: 1}}>
-                                    <DeleteIcon />
-                                </Button>
+                                <IconButton onClick={() => setImageSrc(null)} variant='contained' color='error' sx={{mt: 1}}>
+                                    <DeleteIcon sx={{fontSize: 50}}/>
+                                </IconButton>
                             </div>
                         ) : (
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
@@ -124,9 +124,16 @@ export default function CreatePostModal() {
                                     screenshotFormat="image/jpeg"
                                     style={{ width: '100%', borderRadius: 3 }}
                                 />
-                                <Button onClick={capture} variant='contained' color='success' sx={{mt: 1}}>
-                                    <PhotoCameraIcon />
-                                </Button>
+                                <IconButton
+                                    onClick={capture}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor: 'gray',
+                                        },
+                                    }}
+                                >
+                                    <CameraIcon sx={{ fontSize: 50, color: 'black' }} />
+                                </IconButton>
 
                                 <TextField
                                     margin="dense"
@@ -149,12 +156,14 @@ export default function CreatePostModal() {
                                 />
                             </div>
                         )}
-
                     </DialogContent>
                     <DialogActions>
-                        <Button type="submit" variant='contained'>
-                            <SendIcon />
-                        </Button>
+                        <Box display="flex" justifyContent="flex-end" width="100%">
+                            <Button onClick={onSubmit} variant="contained" color="primary" 
+                            sx={{ mt: -3, mr: 2 }}>
+                                <SendIcon/>
+                            </Button>
+                        </Box>
                     </DialogActions>
                 </form>
             </Dialog>

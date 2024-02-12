@@ -1,10 +1,10 @@
-import ProfileComponent from "../../components/ProfileComponent"
-import ProfilePosts from "../../components/ProfilePosts"
+import ProfileInformation from "../../components/profile/ProfileInformation"
+import ProfilePosts from "../../components/profile/ProfilePosts"
 
 function ProfilePage() {
   return (
     <>
-        <ProfileComponent/>
+        <ProfileInformation/>
         <ProfilePosts/>
     </>
   )

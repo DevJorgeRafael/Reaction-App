@@ -3,9 +3,10 @@ import { useUser } from "../../context/userContext"
 import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typography } from "@mui/material"
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import { useParams } from "react-router-dom"
-import CircularIndeterminate from '../CircularIndeterminate'
+import UpdateUserImageModal from "./UploadUserImageModal"
+import CircularIndeterminate from '../CircularIndeterminate' 
 
-function ProfileComponent() {
+function ProfileInformation() {
     const { user, userProfile, getUserByUsername, loading } = useUser()
     const { username } = useParams()
 
@@ -26,9 +27,11 @@ function ProfileComponent() {
                                 overlap="circular"
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                 badgeContent={
-                                    <IconButton>
-                                        <PhotoCameraIcon sx={{ fontSize: 30 }} />
-                                    </IconButton>
+                                    // <IconButton>
+                                    //     <PhotoCameraIcon sx={{ fontSize: 30 }} />
+                                    // </IconButton>
+
+                                    <UpdateUserImageModal/>
                                 }
                             >
                                 <Avatar alt={userProfile.username} src={userProfile.image?.url}
@@ -108,4 +111,4 @@ function ProfileComponent() {
     )
 }
 
-export default ProfileComponent
+export default ProfileInformation
