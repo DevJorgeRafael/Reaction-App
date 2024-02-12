@@ -14,16 +14,16 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
     try {
-        const { title, description, userId } = req.body
+        const { title, description, userId } = req.body;
         let image;
 
         if (req.files && req.files.image) {
-            const result = await uploadImage(req.files.image.tempFilePath)
-            await fs.remove(req.files.image.tempFilePath)
+            const result = await uploadImage(req.files.image.tempFilePath);
+            await fs.remove(req.files.image.tempFilePath);
             image = {
                 url: result.secure_url,
                 public_id: result.public_id
-            }
+            };
         }
 
         // Buscar al usuario en la base de datos
@@ -37,18 +37,35 @@ export const createPost = async (req, res) => {
             username: userFromDB.username
         };
 
-        const newPost = new Post({ title, description, image, user })
-        await newPost.save()
+        // Crear un objeto para el nuevo post con solo los campos necesarios
+        const postObject = {
+            title,
+            user
+        };
+
+        // Si la descripción está presente, añadirla al objeto del post
+        if (description) {
+            postObject.description = description;
+        }
+
+        // Si hay una imagen adjunta, añadirla al objeto del post
+        if (image) {
+            postObject.image = image;
+        }
+
+        const newPost = new Post(postObject);
+        await newPost.save();
 
         // Agregar el post al usuario que lo creó
         userFromDB.posts.push(newPost);
         await userFromDB.save();
 
-        return res.json(newPost)
+        return res.json(newPost);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 
 

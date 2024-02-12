@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePosts } from '../../context/postContext';
 import { useUser } from '../../context/userContext';
 import { useForm } from "react-hook-form";
@@ -14,7 +14,7 @@ import SendIcon from '@mui/icons-material/Send'
 
 export default function CreatePostModal() {
     const [open, setOpen] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, clearErrors, formState: { errors } } = useForm();
     const { createPost } = usePosts();
     const { user } = useUser();
     const webcamRef = useRef(null);
@@ -40,7 +40,10 @@ export default function CreatePostModal() {
     const onSubmit = (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
-        formData.append('description', data.description);
+
+        if(data.description) {
+            formData.append('description', data.description);
+        }
         formData.append('userId', user._id);
         if (imageSrc) {
             const block = imageSrc.split(";");
@@ -49,7 +52,6 @@ export default function CreatePostModal() {
             const blob = b64toBlob(realData, contentType);
             formData.append('image', blob);
         }
-        console.log(formData);
         createPost(formData);
         handleClose();
     };
@@ -74,6 +76,15 @@ export default function CreatePostModal() {
         return blob;
     }
 
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            const timer = setTimeout(() => {
+                clearErrors()
+            }, 5000);
+            return () => clearTimeout(timer)
+        }
+    }, [errors, clearErrors]);
+
     return (
         <>
             <AddIcon onClick={handleClickOpen} fontSize='large' />
@@ -88,6 +99,7 @@ export default function CreatePostModal() {
                     <DialogContent style={{ paddingTop: 0 }}>
                         <TextField
                             autoFocus
+                            error = {Boolean(errors.title)}
                             margin="dense"
                             name="title"
                             label="Title"
@@ -101,11 +113,11 @@ export default function CreatePostModal() {
                         <TextField
                             margin="dense"
                             name="description"
-                            label="Description"
+                            label="Description (Optional)"
                             type="text"
                             fullWidth
                             variant="filled"
-                            {...register('description', { required: "The description is required" })}
+                            {...register('description')}
                         />
                         {errors.description && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.description.message}</Alert>}
 
@@ -159,7 +171,7 @@ export default function CreatePostModal() {
                     </DialogContent>
                     <DialogActions>
                         <Box display="flex" justifyContent="flex-end" width="100%">
-                            <Button onClick={onSubmit} variant="contained" color="primary" 
+                            <Button type='submit' variant="contained" color="primary" 
                             sx={{ mt: -3, mr: 2 }}>
                                 <SendIcon/>
                             </Button>
