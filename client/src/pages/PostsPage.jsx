@@ -1,27 +1,13 @@
 import { usePosts } from '../context/postContext'
-import { useUser } from '../context/userContext';
-import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ShareIcon from '@mui/icons-material/Share';
+
+
 import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
-import { formatDistanceToNow } from 'date-fns'
 import '../styles/post.css'
-import { useNavigate } from 'react-router-dom';
+import ShowPost from '../components/posts/ShowPost';
 
 function PostsPage() {
-    const { posts, likePost, unlikePost } = usePosts()
-    const { user } = useUser()
-    const navigate = useNavigate()
-
-    if (posts.length === 0) return (
-        <div className='d-flex justify-content-center align-items-center vh-100 flex-column'>
-
-            <VscEmptyWindow size={200} />
-            <h1>There are no posts yet</h1>
-        </div>
-    )
+    const { posts } = usePosts()
 
     const breakpointColumnsObj = {
         default: 2,
@@ -41,69 +27,22 @@ function PostsPage() {
 
     return (
         <div style={{ padding: '10px' }}>
-            <Masonry
-                breakpointCols={breakpointColumnsObj}
-                className="my-masonry-grid"
-                columnClassName="my-masonry-grid_column"
-            >
-                {posts.length>0 && posts.map((post, index) => (
-                    <div key={post._id}>
-                        <Card>
-                            <CardHeader
-                                avatar={
-                                    <Avatar onClick={() => navigate(`/profile/${post.user.username}`)} sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
-                                        {post.user && post.user.username ? post.user.username[0].toUpperCase() : 'U'}
-                                    </Avatar>
-                                }
-                                action={
-                                    user._id === post.user._id && (
-                                        <IconButton aria-label="settings">
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                    )
-                                }
-                                title={post.user.username}
-                                subheader={formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-                                sx={{ pb: 0, mb: -1 }}
-                            />
-
-                            <CardContent sx={{ pt: 1.2 }}>
-                                <Typography variant="h6" color="text.primary">
-                                    {post.title}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {post.description}
-                                </Typography>
-                            </CardContent>
-
-                            {post.image &&
-                                <CardMedia
-                                    component="img"
-                                    sx={{ maxHeight: 250, height: 250, objectFit: 'scale-down', mt: -1 }} // Reduce el margen superior
-                                    image={post.image.url}
-                                    alt={post.title}
-                                />
-                            }
-                            <CardActions disableSpacing>
-                                <IconButton
-                                    aria-label="add to favorites"
-                                    onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
-                                >
-                                    <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
-                                    <Typography variant="body2" color="text.secondary">
-                                        {post.likes.length}
-                                    </Typography>
-                                </IconButton>
-
-                                <IconButton aria-label="share">
-                                    <ShareIcon />
-                                </IconButton>
-                            </CardActions>
-                        </Card>
-
-                    </div>
-                ))}
-            </Masonry>
+            {posts.length === 0 ? (
+                <div className='d-flex justify-content-center align-items-center vh-100 flex-column'>
+                    <VscEmptyWindow size={200} />
+                    <h1>There are no posts yet</h1>
+                </div>
+            ) : (
+                <Masonry
+                    breakpointCols={breakpointColumnsObj}
+                    className="my-masonry-grid"
+                    columnClassName="my-masonry-grid_column"
+                >
+                    {posts.map((post) => (
+                        <ShowPost key={post._id} post={post} />
+                    ))}
+                </Masonry>
+            )}
         </div>
     )
 }
