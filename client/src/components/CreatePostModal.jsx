@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { usePosts } from '../context/postContext';
 import { useUser } from '../context/userContext';
 import { useForm } from "react-hook-form";
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert } from '@mui/material';
 import Webcam from "react-webcam";
 
 import AddIcon from '@mui/icons-material/Add'
@@ -94,7 +94,7 @@ export default function CreatePostModal() {
                             type="text"
                             fullWidth
                             variant="filled"
-                            {...register('title', { required: "El título es requerido" })}
+                            {...register('title', { required: "The title is required" })}
                         />
                         {errors.title && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.title.message}</Alert>}
 
@@ -105,7 +105,7 @@ export default function CreatePostModal() {
                             type="text"
                             fullWidth
                             variant="filled"
-                            {...register('description', { required: "La descripción es requerida" })}
+                            {...register('description', { required: "The description is required" })}
                         />
                         {errors.description && <Alert sx={{ mb: 1 }} variant="filled" severity="error">{errors.description.message}</Alert>}
 

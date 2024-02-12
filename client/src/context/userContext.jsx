@@ -84,12 +84,14 @@ export const UserProvider = ({ children }) => {
     const getUserByUsername = async (username) => {
         try {
             const res = await getUserByUsernameRequest(username)
-            setUserProfile(res.data.user)
+            if (username === res.data.user.username) {
+                setUserProfile(res.data.user)
+            }
         } catch (error) {
-            console.log(error)
             setErrors(error.response.data)
         }
     }
+
 
     useEffect(() => {
         checkAuth()

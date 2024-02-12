@@ -8,10 +8,12 @@ import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
 import { formatDistanceToNow } from 'date-fns'
 import '../styles/post.css'
+import { useNavigate } from 'react-router-dom';
 
 function PostsPage() {
     const { posts, likePost, unlikePost } = usePosts()
     const { user } = useUser()
+    const navigate = useNavigate()
 
     if (posts.length === 0) return (
         <div className='d-flex justify-content-center align-items-center vh-100 flex-column'>
@@ -49,7 +51,7 @@ function PostsPage() {
                         <Card>
                             <CardHeader
                                 avatar={
-                                    <Avatar sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
+                                    <Avatar onClick={() => navigate(`/profile/${post.user.username}`)} sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
                                         {post.user && post.user.username ? post.user.username[0].toUpperCase() : 'U'}
                                     </Avatar>
                                 }

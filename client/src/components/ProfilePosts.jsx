@@ -10,17 +10,20 @@ function ProfilePosts() {
     const { username } = useParams()
 
     useEffect(() => {
-        getUserByUsername(username)
+        getUserByUsername(username) 
     }, [])
 
-    console.log(userProfile)
-    // console.log(posts)
+    console.log(userProfile) 
+    console.log(user) 
+
+    let userPosts = []
+    if (userProfile) userPosts = posts.filter(post => userProfile.posts.includes(post._id))
 
     return (
         <>
             <Box>
                 <Grid container spacing={0.7} sx={{ mt: 0.5 }}>
-                    {posts.map(post => (
+                    {userPosts.map(post => (
                         <Grid item xs={4} key={post._id}>
                             <Card sx={{ width: '100%', paddingTop: '100%', position: 'relative' }}>
                                 {post.image ?

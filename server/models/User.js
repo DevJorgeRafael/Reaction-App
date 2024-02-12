@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    username: { type: String, required: true, unique: true },
+    name: { type: String, required: true, trim: true },
+    username: { type: String, required: true, unique: true, trim: true },
     image: {
         url: String,
         public_id: String
     },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }], // Referencia a los posts del usuario
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los seguidores del usuario
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los usuarios que sigue el usuario
-    bio: String
+    email: { type: String, required: true, unique: true, trim: true },
+    password: { type: String, required: true, trim: true },
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    bio: { type: String, trim: true }
 });
 
 UserSchema.pre('save', async function (next) {
