@@ -32,6 +32,17 @@ export const PostProvider = ({children}) => {
         getPosts()
     }
 
+    const deletePost = async (postId, userId) => {
+        try {
+            const res = await deletePostRequest(postId, userId)
+            console.log(res)
+            getPosts()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     useEffect(() => {
         getPosts()
     }, [])
@@ -42,7 +53,8 @@ export const PostProvider = ({children}) => {
         getPosts,
         createPost,
         likePost,
-        unlikePost
+        unlikePost,
+        deletePost
     }}>
         {children}
     </PostContext.Provider>

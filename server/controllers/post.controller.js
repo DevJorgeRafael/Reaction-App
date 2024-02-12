@@ -67,8 +67,6 @@ export const createPost = async (req, res) => {
 };
 
 
-
-
 export const updatePost = async (req, res) => {
     try {
         const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
@@ -88,11 +86,11 @@ export const deletePost = async (req, res) => {
         }
 
         // Eliminar la referencia al post del usuario que lo creó
-        const user = await User.findById(req.userId);
+        const user = await User.findById(req.body.userId);
         user.posts.pull(postRemoved);
         await user.save();
 
-        return res.sendStatus(204)
+        return res.status(200).json({ postRemoved });
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }

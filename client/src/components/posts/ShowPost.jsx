@@ -1,5 +1,10 @@
-import React from 'react';
-import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardHeader, 
+    CardContent, CardMedia, 
+    CardActions, IconButton, 
+    Typography, Avatar, 
+    Box, Menu, MenuItem
+ } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
@@ -9,9 +14,23 @@ import { useNavigate } from 'react-router-dom';
 import { usePosts } from '../../context/postContext';
 
 function ShowPost({ post }) {
-    const { likePost, unlikePost } = usePosts()
+    const { likePost, unlikePost, deletePost } = usePosts()
     const { user } = useUser()
     const navigate = useNavigate()
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    const handleOpenOptions = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseOptions = () => {
+        setAnchorEl(null);
+    };
+
+    const handleDeletePost = async (post) => {
+        handleCloseOptions()
+        await deletePost(post._id, post.user._id)
+    }
 
     const getRandomColor = () => {
         const letters = '0123456789ABCDEF';
@@ -31,9 +50,22 @@ function ShowPost({ post }) {
                     </Avatar>
                 }
                 action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon />
-                    </IconButton>
+                    user._id === post.user._id && (
+                        <>
+                            <IconButton aria-label="settings" onClick={handleOpenOptions}>
+                                <MoreVertIcon />
+                            </IconButton>
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleCloseOptions}
+                            >
+                                <MenuItem onClick={() => { handleDeletePost(post) }}>Delete Post</MenuItem>
+                            </Menu>
+                        </>
+                    )
                 }
                 title={
                     <Box onClick={() => navigate(`/profile/${post.user.username}`)}>
@@ -62,8 +94,11 @@ function ShowPost({ post }) {
                 />
             }
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton
+                    aria-label="add to favorites"
+                    onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
+                >
+                    <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
                     <Typography variant="body2" color="text.secondary">
                         {post.likes.length}
                     </Typography>
