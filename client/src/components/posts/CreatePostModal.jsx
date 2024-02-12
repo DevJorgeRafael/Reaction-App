@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import { usePosts } from '../context/postContext';
-import { useUser } from '../context/userContext';
+import { usePosts } from '../../context/postContext';
+import { useUser } from '../../context/userContext';
 import { useForm } from "react-hook-form";
 import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert } from '@mui/material';
 import Webcam from "react-webcam";

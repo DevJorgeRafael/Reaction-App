@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react"
-import { useUser } from "../context/userContext"
+import { useUser } from "../../context/userContext"
 import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typography } from "@mui/material"
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import { useParams } from "react-router-dom"
-import CircularIndeterminate from '../components/CircularIndeterminate'
+import CircularIndeterminate from '../CircularIndeterminate'
 
 function ProfileComponent() {
     const { user, userProfile, getUserByUsername, loading } = useUser()

@@ -1,5 +1,5 @@
-import { useUser } from "../context/userContext"
-import { usePosts } from "../context/postContext"
+import { useUser } from "../../context/userContext"
+import { usePosts } from "../../context/postContext"
 import { Box, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
