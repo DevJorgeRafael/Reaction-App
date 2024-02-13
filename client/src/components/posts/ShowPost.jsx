@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
-import {
-    Card, CardHeader,
-    CardContent, CardMedia,
-    CardActions, IconButton,
-    Typography, Avatar,
-    Box, Menu, MenuItem,
-    Button
-} from '@mui/material';
+// En ShowPost.jsx
 
+import React, { useState } from 'react';
+import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar, Box, Menu, MenuItem, Button } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
@@ -20,10 +14,11 @@ import { useNavigate } from 'react-router-dom';
 import { usePosts } from '../../context/postContext';
 
 function ShowPost({ post }) {
-    const { likePost, unlikePost, deletePost } = usePosts()
-    const { user } = useUser()
-    const navigate = useNavigate()
-    const [anchorEl, setAnchorEl] = useState(null)
+    const { likePost, unlikePost, deletePost, getPosts, posts } = usePosts();
+    const { user } = useUser();
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [localPost, setLocalPost] = useState(post); 
 
     const handleOpenOptions = (event) => {
         setAnchorEl(event.currentTarget);
@@ -34,7 +29,7 @@ function ShowPost({ post }) {
     };
 
     const handleDeletePost = async (post) => {
-        handleCloseOptions()
+        handleCloseOptions();
         toast(
             (t) => (
                 <div className='d-flex align-items-center flex-column'>
@@ -54,9 +49,8 @@ function ShowPost({ post }) {
                         </Button>
                         <Button
                             onClick={async (e) => {
-                                const res = await deletePost(post._id, post.user._id)
+                                const res = await deletePost(post._id, post.user._id);
                                 toast.dismiss(t.id);
-                                console.log(res)
                             }}
                             sx={{
                                 color: 'white',
@@ -80,7 +74,19 @@ function ShowPost({ post }) {
                 }
             }
         );
-    }
+    };
+
+    const handleLikePost = async () => {
+        try {
+            if (localPost.likes.includes(user._id)) {
+                setLocalPost(await unlikePost(localPost._id, user._id))
+            } else {
+                setLocalPost(await likePost(localPost._id, user._id))
+            }
+        } catch (error) {
+            console.error('Error on like to post:', error);
+        }
+    };
 
     const getRandomColor = () => {
         const letters = '0123456789ABCDEF';
@@ -95,12 +101,12 @@ function ShowPost({ post }) {
         <Card>
             <CardHeader
                 avatar={
-                    <Avatar onClick={() => navigate(`/profile/${post.user.username}`)} sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
-                        {post.user && post.user.username ? post.user.username[0].toUpperCase() : 'U'}
+                    <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)} sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
+                        {localPost.user && localPost.user.username ? localPost.user.username[0].toUpperCase() : 'U'}
                     </Avatar>
                 }
                 action={
-                    user._id === post.user._id && (
+                    user._id === localPost.user._id && (
                         <>
                             <IconButton aria-label="settings" onClick={handleOpenOptions}>
                                 <MoreVertIcon />
@@ -112,19 +118,19 @@ function ShowPost({ post }) {
                                 open={Boolean(anchorEl)}
                                 onClose={handleCloseOptions}
                             >
-                                <MenuItem onClick={() => { handleDeletePost(post) }}>Delete Post</MenuItem>
+                                <MenuItem onClick={() => { handleDeletePost(localPost) }}>Delete Post</MenuItem>
                             </Menu>
                         </>
                     )
                 }
                 title={
-                    <Box onClick={() => navigate(`/profile/${post.user.username}`)}>
-                        <b>@{post.user.username}</b>
+                    <Box onClick={() => navigate(`/profile/${localPost.user.username}`)}>
+                        <b>@{localPost.user.username}</b>
                     </Box>
                 }
                 subheader={
-                    <Box onClick={() => navigate(`/profile/${post.user.username}`)}>
-                        {post.user.name}
+                    <Box onClick={() => navigate(`/profile/${localPost.user.username}`)}>
+                        {localPost.user.name}
                     </Box>
                 }
                 sx={{ pb: 0, mb: -1 }}
@@ -132,30 +138,30 @@ function ShowPost({ post }) {
 
             <CardContent sx={{ pt: 1.2 }}>
                 <Typography variant="h6" color="text.primary">
-                    {post.title}
+                    {localPost.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {post.description}
+                    {localPost.description}
                 </Typography>
             </CardContent>
 
-            {post.image &&
+            {localPost.image &&
                 <CardMedia
                     component="img"
                     sx={{ maxHeight: 250, height: 250, objectFit: 'scale-down', mt: -1 }} // Reduce el margen superior
-                    image={post.image.url}
-                    alt={post.title}
+                    image={localPost.image.url}
+                    alt={localPost.title}
                 />
             }
-            <CardActions sx={{ mt: -1, justifyContent:'space-between' }}>
+            <CardActions sx={{ mt: -1, justifyContent: 'space-between' }}>
                 <Box >
                     <IconButton
                         aria-label="add to favorites"
-                        onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
+                        onClick={handleLikePost}
                     >
-                        <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
+                        <FavoriteIcon color={localPost.likes.includes(user._id) ? "error" : "default"} />
                         <Typography variant="body2" color="text.secondary">
-                            {post.likes.length}
+                            {localPost.likes.length}
                         </Typography>
                     </IconButton>
 
@@ -165,7 +171,7 @@ function ShowPost({ post }) {
                 </Box>
 
                 <Typography variant="body2" sx={{ color: '#757575', mr: 2 }}>
-                    {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(localPost.date), { addSuffix: true })}
                 </Typography>
             </CardActions>
         </Card>
@@ -173,3 +179,4 @@ function ShowPost({ post }) {
 }
 
 export default ShowPost;
+

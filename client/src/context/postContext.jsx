@@ -26,11 +26,13 @@ export const PostProvider = ({children}) => {
     const likePost = async (postId, userId) => {
         const res = await likePostRequest(postId, userId)
         getPosts()
+        return res.data
     }
 
     const unlikePost = async (postId, userId) => {
         const res = await unlikePostRequest(postId, userId)
         getPosts()
+        return res.data
     }
 
     const deletePost = async (postId, userId) => {
