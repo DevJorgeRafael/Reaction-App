@@ -18,7 +18,7 @@ function ShowPost({ post }) {
     const { user } = useUser();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [localPost, setLocalPost] = useState(post); 
+    const [localPost, setLocalPost] = useState(post);
 
     const handleOpenOptions = (event) => {
         setAnchorEl(event.currentTarget);
@@ -42,14 +42,13 @@ function ShowPost({ post }) {
                             onClick={() => toast.dismiss(t.id)}
                             sx={{
                                 mr: 2,
-
                             }}
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={async (e) => {
-                                const res = await deletePost(post._id, post.user._id);
+                                await deletePost(post._id, post.user._id);
                                 toast.dismiss(t.id);
                             }}
                             sx={{
@@ -58,7 +57,7 @@ function ShowPost({ post }) {
                                 borderRadius: 1,
                                 boxShadow: 2,
                                 '&:hover': {
-                                    backgroundColor: '#FF0000',
+                                    backgroundColor: '#E3E1D9',
                                 }
                             }}
                         >
@@ -70,7 +69,7 @@ function ShowPost({ post }) {
             {
                 duration: "700",
                 style: {
-                    background: "#96B6C5"
+                    background: "#7FB77E"
                 }
             }
         );

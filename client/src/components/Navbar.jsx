@@ -9,6 +9,7 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 
+import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
@@ -194,10 +195,26 @@ export default function NavBar() {
                             variant="h6"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' } }}
+                            sx={{ display: { xs: 'none', sm: 'block' },
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => navigate('/posts')}
                         >
                             ReactiOn
                         </Typography>
+                        <IconButton aria-label="" onClick={ ()=> navigate('/posts')} sx={{
+                            color: 'white',
+                            // background
+                            padding: 0,
+                            mr: 1,
+                            ml: -2,
+                            display: {
+                                sx: 'block',
+                                sm: 'none'
+                            }
+                        }}>
+                            <HomeIcon fontSize='large'/>
+                        </IconButton>
                         <Search>
                             <SearchIconWrapper>
                                 <SearchIcon />

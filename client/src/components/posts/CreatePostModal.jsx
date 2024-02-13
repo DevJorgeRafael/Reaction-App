@@ -113,7 +113,10 @@ export default function CreatePostModal() {
                     backgroundColor: 'white', 
                     borderRadius: 1,
                     padding: 0,
-                    mr: 1
+                    mr: 1,
+                    ':hover': {
+                        backgroundColor: 'white',  
+                    }
                 }}
             >
                 <AddIcon />
