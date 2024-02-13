@@ -10,10 +10,10 @@ import { toast } from "react-hot-toast";
 import { formatDistanceToNow } from 'date-fns';
 
 import { useUser } from '../../context/userContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { usePosts } from '../../context/postContext';
 
-function ShowPost({ post }) {
+function ShowPost({ post, onClose }) {
     const { likePost, unlikePost, deletePost, getPosts, posts } = usePosts();
     const { user } = useUser();
     const navigate = useNavigate();
@@ -50,6 +50,7 @@ function ShowPost({ post }) {
                             onClick={async (e) => {
                                 await deletePost(post._id, post.user._id);
                                 toast.dismiss(t.id);
+                                onClose && onClose();
                             }}
                             sx={{
                                 color: 'white',

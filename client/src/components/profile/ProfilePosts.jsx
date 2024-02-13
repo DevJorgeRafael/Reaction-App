@@ -67,7 +67,9 @@ function ProfilePosts() {
                 >
                     <CloseIcon />
                 </IconButton> */}
-                {selectedPost && <ShowPost post={selectedPost} />}
+                {selectedPost && <ShowPost post={selectedPost} 
+                    onClose={handleCloseModal}
+                />}
             </Dialog>
         </>
     )
