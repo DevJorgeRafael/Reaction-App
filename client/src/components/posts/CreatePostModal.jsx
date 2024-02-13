@@ -2,7 +2,9 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePosts } from '../../context/postContext';
 import { useUser } from '../../context/userContext';
 import { useForm } from "react-hook-form";
-import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert, Box } from '@mui/material';
+import { Button, Dialog, DialogTitle, 
+    DialogContent, TextField, DialogActions, 
+    IconButton, Alert, Box } from '@mui/material';
 import { toast } from 'react-hot-toast'
 import Webcam from "react-webcam";
 import AddIcon from '@mui/icons-material/Add'
@@ -105,7 +107,18 @@ export default function CreatePostModal() {
 
     return (
         <>
-            <AddIcon onClick={handleClickOpen} fontSize='large' />
+            <IconButton
+                onClick={handleClickOpen}
+                sx={{ 
+                    backgroundColor: 'white', 
+                    borderRadius: 1,
+                    padding: 0,
+                    mr: 1
+                }}
+            >
+                <AddIcon />
+            </IconButton>
+
             <Dialog open={open} onClose={handleClose} >
                 <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>New Post</span>

@@ -119,10 +119,14 @@ function ShowPost({ post }) {
                 }
                 title={
                     <Box onClick={() => navigate(`/profile/${post.user.username}`)}>
-                        <b>{post.user.username}</b>
+                        <b>@{post.user.username}</b>
                     </Box>
                 }
-                subheader={formatDistanceToNow(new Date(post.date), { addSuffix: true })}
+                subheader={
+                    <Box onClick={() => navigate(`/profile/${post.user.username}`)}>
+                        {post.user.name}
+                    </Box>
+                }
                 sx={{ pb: 0, mb: -1 }}
             />
 
@@ -143,20 +147,26 @@ function ShowPost({ post }) {
                     alt={post.title}
                 />
             }
-            <CardActions disableSpacing>
-                <IconButton
-                    aria-label="add to favorites"
-                    onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
-                >
-                    <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
-                    <Typography variant="body2" color="text.secondary">
-                        {post.likes.length}
-                    </Typography>
-                </IconButton>
+            <CardActions sx={{ mt: -1, justifyContent:'space-between' }}>
+                <Box >
+                    <IconButton
+                        aria-label="add to favorites"
+                        onClick={() => post.likes.includes(user._id) ? unlikePost(post._id, user._id) : likePost(post._id, user._id)}
+                    >
+                        <FavoriteIcon color={post.likes.includes(user._id) ? "error" : "default"} />
+                        <Typography variant="body2" color="text.secondary">
+                            {post.likes.length}
+                        </Typography>
+                    </IconButton>
 
-                <IconButton aria-label="share">
-                    <ShareIcon />
-                </IconButton>
+                    <IconButton aria-label="share">
+                        <ShareIcon />
+                    </IconButton>
+                </Box>
+
+                <Typography variant="body2" sx={{ color: '#757575', mr: 2 }}>
+                    {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
+                </Typography>
             </CardActions>
         </Card>
     );
