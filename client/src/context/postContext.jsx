@@ -19,7 +19,8 @@ export const PostProvider = ({children}) => {
 
     const createPost = async (post) => {
         const res = await createPostRequest(post)
-        getPosts()
+        await getPosts()
+        return res.status
     }
 
     const likePost = async (postId, userId) => {
@@ -34,8 +35,7 @@ export const PostProvider = ({children}) => {
 
     const deletePost = async (postId, userId) => {
         try {
-            const res = await deletePostRequest(postId, userId)
-            console.log(res)
+            await deletePostRequest(postId, userId)
             getPosts()
         } catch (error) {
             console.log(error)

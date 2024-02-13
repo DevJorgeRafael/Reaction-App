@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast'
 import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import { PostProvider } from './context/postContext.jsx'
@@ -12,6 +13,8 @@ function App() {
     <UserProvider>
       <PostProvider>
         <Navbar />
+        <Toaster />
+
         <Routes>
           <Route path='/' element={<HomePage />}></Route>
           <Route path='*' element={<NotFoundPage />}></Route>

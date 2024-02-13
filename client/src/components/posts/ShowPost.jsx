@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, 
-    CardContent, CardMedia, 
-    CardActions, IconButton, 
-    Typography, Avatar, 
-    Box, Menu, MenuItem
- } from '@mui/material';
+import {
+    Card, CardHeader,
+    CardContent, CardMedia,
+    CardActions, IconButton,
+    Typography, Avatar,
+    Box, Menu, MenuItem,
+    Button
+} from '@mui/material';
+
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from "react-hot-toast";
 import { formatDistanceToNow } from 'date-fns';
+
 import { useUser } from '../../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import { usePosts } from '../../context/postContext';
@@ -29,7 +35,51 @@ function ShowPost({ post }) {
 
     const handleDeletePost = async (post) => {
         handleCloseOptions()
-        await deletePost(post._id, post.user._id)
+        toast(
+            (t) => (
+                <div className='d-flex align-items-center flex-column'>
+                    <b className="text-white mb-2">
+                        Are you sure to delete this?
+                    </b>
+                    <div>
+                        <Button
+                            variant='contained'
+                            onClick={() => toast.dismiss(t.id)}
+                            sx={{
+                                mr: 2,
+
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={async (e) => {
+                                const res = await deletePost(post._id, post.user._id)
+                                toast.dismiss(t.id);
+                                console.log(res)
+                            }}
+                            sx={{
+                                color: 'white',
+                                backgroundColor: 'red',
+                                borderRadius: 1,
+                                boxShadow: 2,
+                                '&:hover': {
+                                    backgroundColor: '#FF0000',
+                                }
+                            }}
+                        >
+                            <DeleteIcon />
+                        </Button>
+                    </div>
+                </div>
+            ),
+            {
+                duration: "700",
+                style: {
+                    background: "#96B6C5"
+                }
+            }
+        );
     }
 
     const getRandomColor = () => {

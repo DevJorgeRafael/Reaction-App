@@ -3,8 +3,8 @@ import { usePosts } from '../../context/postContext';
 import { useUser } from '../../context/userContext';
 import { useForm } from "react-hook-form";
 import { Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton, Alert, Box } from '@mui/material';
+import { toast } from 'react-hot-toast'
 import Webcam from "react-webcam";
-
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CameraIcon from '@mui/icons-material/Camera'
@@ -19,6 +19,7 @@ export default function CreatePostModal() {
     const { user } = useUser();
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState(null);
+    const [status, setStatus] = useState(null)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -37,7 +38,7 @@ export default function CreatePostModal() {
         [webcamRef]
     );
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append('title', data.title);
 
@@ -52,7 +53,7 @@ export default function CreatePostModal() {
             const blob = b64toBlob(realData, contentType);
             formData.append('image', blob);
         }
-        createPost(formData);
+        setStatus(await createPost(formData))
         handleClose();
     };
 
@@ -84,6 +85,23 @@ export default function CreatePostModal() {
             return () => clearTimeout(timer)
         }
     }, [errors, clearErrors]);
+
+    useEffect(() => {
+        if (status === 200){
+            toast.success('Post created successfully!',
+                {
+                    position: "bottom-right",
+                    duration: 4000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    style: {
+                        background: "#FFFBF5"
+                    }
+                }
+            );
+        }
+        setStatus(null)
+    }, [status])
 
     return (
         <>
