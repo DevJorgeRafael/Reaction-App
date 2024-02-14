@@ -6,6 +6,8 @@ import { Button, Dialog, DialogTitle,
     DialogContent, TextField, DialogActions, 
     IconButton, Alert, Box } from '@mui/material';
 import { toast } from 'react-hot-toast'
+import { b64toBlob } from '../../helpers/imageHelpers.js'
+
 import Webcam from "react-webcam";
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -58,26 +60,6 @@ export default function CreatePostModal() {
         setStatus(await createPost(formData))
         handleClose();
     };
-
-    const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
-        const byteCharacters = atob(b64Data);
-        const byteArrays = [];
-
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
-        }
-
-        const blob = new Blob(byteArrays, { type: contentType });
-        return blob;
-    }
 
     useEffect(() => {
         if (Object.keys(errors).length > 0) {

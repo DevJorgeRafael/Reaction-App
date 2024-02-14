@@ -137,10 +137,8 @@ export const updateUserImage = async (req, res) => {
         if (!userFromDB) return res.status(400).json({ message: 'User not found' });
 
         // Actualiza la imagen del usuario
-        console.log(image)
         userFromDB.image = image;
         await userFromDB.save();
-        // console.log(userFromDB)
 
         return res.json({ user: userFromDB });
     } catch (error) {

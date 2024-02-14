@@ -3,13 +3,13 @@ import { useUser } from '../../context/userContext';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
 import Webcam from "react-webcam";
 import { Alert } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { b64toBlob } from '../../helpers/imageHelpers.js';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import CameraIcon from '@mui/icons-material/Camera';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useForm } from 'react-hook-form';
-
 
 
 export default function UpdateUserImageModal() {
@@ -58,27 +58,7 @@ export default function UpdateUserImageModal() {
         handleClose();
     };
 
-    const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
-        const byteCharacters = atob(b64Data);
-        const byteArrays = [];
-
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
-        }
-
-        const blob = new Blob(byteArrays, { type: contentType });
-        return blob;
-    };
-
-
+    
     return (
         <>
             <IconButton onClick={handleClickOpen}>
