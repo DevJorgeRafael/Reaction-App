@@ -1,5 +1,8 @@
 body {
-    background-color: #BFD8AF !important;   
+    background-color: #BFD8AF !important;  
+    height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 #root{

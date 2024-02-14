@@ -7,6 +7,7 @@ import { UserProvider } from './context/userContext.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
 import Navbar from './components/Navbar.jsx'
+import { Box } from '@mui/material'
 
 function App() {
   return (
@@ -15,20 +16,22 @@ function App() {
         <Navbar />
         <Toaster />
 
-        <Routes>
-          <Route path='/' element={<HomePage />}></Route>
-          <Route path='*' element={<NotFoundPage />}></Route>
-          <Route path='/login' element={<LoginPage />}></Route>
-          <Route path='/register' element={<RegisterPage />}></Route>
+        <Box sx={{ paddingTop: '74px' }}>
+          <Routes>
+            <Route path='/' element={<HomePage />}></Route>
+            <Route path='*' element={<NotFoundPage />}></Route>
+            <Route path='/login' element={<LoginPage />}></Route>
+            <Route path='/register' element={<RegisterPage />}></Route>
 
-          <Route element={<ProtectedRoute/>}>
-            <Route path='/posts' element={<PostsPage />}></Route>
-            <Route path='/profile/:username' element={<ProfilePage />}></Route>
-          </Route>
-
-        </Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path='/posts' element={<PostsPage />}></Route>
+              <Route path='/profile/:username' element={<ProfilePage />}></Route>
+            </Route>
+          </Routes>
+        </Box>
       </PostProvider>
     </UserProvider>
+
   )
 }
 

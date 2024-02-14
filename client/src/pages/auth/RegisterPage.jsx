@@ -52,20 +52,24 @@ function RegisterPage() {
   )
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        mx: {
-          xs: 2,
-          sm: 0
-        }
-      }}
+    <Box sx={{
+      mt: -5,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: `calc(100vh - 74px)`, //74px mide mi navbar pero uso más para que esté un poco más arriba
+      mx: {
+        xs: 2,
+        sm: 0
+      }
+    }}
     >
       <Container component="main" maxWidth="xs" className='auth-container' sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        mt: 7
       }}>
         <img src="/ReactiOn-logo.png" alt="Logo" width={125} />
         <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold' }}>
@@ -84,7 +88,7 @@ function RegisterPage() {
                 required
                 fullWidth
                 sx={{ backgroundColor: '#FFFFFF', borderRadius: 1, mt: 1 }}
-              />
+                />
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -97,7 +101,7 @@ function RegisterPage() {
                 required
                 fullWidth
                 sx={{ backgroundColor: '#FFFFFF', borderRadius: 1, mt:1 }}
-              />
+                />
             </Grid>
               <ErrorMessage error={errors.name?.message || signUpErrors.name} />
               <ErrorMessage error={errors.username?.message || signUpErrors.username} />
@@ -112,7 +116,7 @@ function RegisterPage() {
             required
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
-          />
+            />
           <ErrorMessage error={errors.email?.message || signUpErrors.email} />
 
           <TextField
@@ -125,13 +129,13 @@ function RegisterPage() {
             required
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
-          />
+            />
           <ErrorMessage error={errors.password?.message || signUpErrors.password} />
 
           <TextField
             {...register('confirmPassword', {
               validate: value =>
-                value === password || "Las contraseñas no coinciden"
+              value === password || "Las contraseñas no coinciden"
             })}
             error = {Boolean(errors.confirmPassword)}
             label="Confirm Password"
@@ -141,7 +145,7 @@ function RegisterPage() {
             required
             fullWidth
             sx={{ backgroundColor: '#FFFFFF', borderRadius: 1 }}
-          />
+            />
           <ErrorMessage error={errors.confirmPassword?.message} />
 
           <Button
@@ -150,7 +154,7 @@ function RegisterPage() {
             color="primary"
             fullWidth
             sx={{ my: 1 }}
-          >
+            >
             Sign Up
           </Button>
         </form>

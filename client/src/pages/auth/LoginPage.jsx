@@ -45,10 +45,12 @@ function LoginPage() {
 
   return (
     <Box sx={{
+      mt: -5,
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center', // Centra los elementos verticalmente
-      height: `calc(100vh - 150px)`, //74px mide mi navbar pero uso más para que esté un poco más arriba
+      justifyContent: 'center',
+      height: `calc(100vh - 74px)`,
+      overflow: 'auto',
       mx: {
         xs: 2,
         sm: 0
@@ -71,7 +73,7 @@ function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
               {...register('email')}
-              error = {Boolean(errors.email || signInErrors.email)}
+              error={Boolean(errors.email || signInErrors.email)}
               label="Email"
               type='email'
               variant="outlined"
@@ -84,7 +86,7 @@ function LoginPage() {
 
             <TextField
               {...register('password')}
-              error = {Boolean(errors.password || signInErrors.password)}
+              error={Boolean(errors.password || signInErrors.password)}
               label="Password"
               type="password"
               variant="outlined"

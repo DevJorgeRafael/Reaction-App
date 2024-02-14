@@ -67,6 +67,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function NavBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [showNavbar, setShowNavbar] = React.useState(true);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const { user, logout } = useUser();
     const navigate = useNavigate()
@@ -177,9 +178,35 @@ export default function NavBar() {
         </Menu>
     );
 
+    let lastScrollTop = 0;
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop) {
+                setShowNavbar(false);  
+            } else {
+                setShowNavbar(true); 
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ backgroundColor: '#294B29' }}> {/* Color modificado */}
+        <Box sx={{
+            flexGrow: 1,
+            position: 'fixed',
+            width: '100%',
+            top: 0,
+            zIndex: 1000,
+            transform: showNavbar ? 'translateY(0)' : 'translateY(-100%)',
+            transition: 'transform 0.25s ease-in-out' 
+        }}>
+            <AppBar position="static" sx={{ backgroundColor: '#294B29' }}>
                 {user ?
                     (<Toolbar>
                         <IconButton
@@ -288,10 +315,16 @@ export default function NavBar() {
                                     ReactiOn
                                 </Typography>
                                 <Box sx={{ flexGrow: 1 }} />
-                                <Button startIcon={<InputIcon />} style={{ color: 'white', padding: '10px' }}>
+                                <Button 
+                                    startIcon={<InputIcon />} style={{ color: 'white', padding: '10px' }}
+                                    onClick={() => navigate('/login')}
+                                >
                                     Sign In
                                 </Button>
-                                <Button startIcon={<PersonAddIcon />} style={{ color: 'white', padding: '10px' }}>
+                                <Button 
+                                startIcon={<PersonAddIcon />} style={{ color: 'white', padding: '10px' }}
+                                    onClick={() => navigate('/register')}
+                                >
                                     Sign Up
                                 </Button>
 
