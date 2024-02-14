@@ -5,17 +5,22 @@ import fs from 'fs-extra'
 
 export const getPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ date: -1 }).populate('user', 'username');
+        const posts = await Post.find().sort({ date: -1 }).populate('user', 'username image -email');
         res.send(posts)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
 
+
+
 export const createPost = async (req, res) => {
     try {
         const { title, description, userId } = req.body;
         let image;
+
+        const userFound = await User.findById(userId);
+        if (!userFound) return res.status(400).json({ message: 'User not found' });
 
         if (req.files && req.files.image) {
             const result = await uploadImage(req.files.image.tempFilePath);
@@ -26,14 +31,11 @@ export const createPost = async (req, res) => {
             };
         }
 
-        const userFromDB = await User.findById(userId);
-        if (!userFromDB) return res.status(400).json({ message: 'User not found' });
-
         const user = {
-            _id: userFromDB._id,
-            name: userFromDB.name,
-            email: userFromDB.email,
-            username: userFromDB.username
+            _id: userFound._id,
+            name: userFound.name,
+            username: userFound.username,
+            image: userFound.image
         };
 
         const postObject = {
@@ -52,14 +54,15 @@ export const createPost = async (req, res) => {
         const newPost = new Post(postObject);
         await newPost.save();
 
-        userFromDB.posts.push(newPost);
-        await userFromDB.save();
+        userFound.posts.push(newPost);
+        await userFound.save();
 
         return res.json(newPost);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
+
 
 
 export const updatePost = async (req, res) => {

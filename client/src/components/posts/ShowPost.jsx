@@ -14,7 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { usePosts } from '../../context/postContext';
 
 function ShowPost({ post, onClose }) {
-    const { likePost, unlikePost, deletePost, getPosts, posts } = usePosts();
+    const { likePost, unlikePost, deletePost } = usePosts();
     const { user } = useUser();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -76,6 +76,8 @@ function ShowPost({ post, onClose }) {
         );
     };
 
+    // console.log(localPost)
+
     const handleLikePost = async () => {
         try {
             if (localPost.likes.includes(user._id)) {
@@ -103,7 +105,7 @@ function ShowPost({ post, onClose }) {
                 avatar={
                     <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)} 
                         sx={{ bgcolor: getRandomColor() }} aria-label="recipe"
-                        alt={user.username} src={user.image?.url}
+                        alt={localPost.user.username} src={localPost.user.image?.url}
                         
                     >
                         {localPost.user && localPost.user.username ? localPost.user.username[0].toUpperCase() : 'U'}

@@ -18,6 +18,7 @@ function ProfilePosts() {
 
     const handlePostClick = (post) => {
         setSelectedPost(post);
+        console.log(post)
     };
 
     const handleCloseModal = () => {

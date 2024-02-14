@@ -92,7 +92,6 @@ export default function UpdateUserImageModal() {
                 }} />
             </IconButton>
 
-
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>Update Profile Image</span>

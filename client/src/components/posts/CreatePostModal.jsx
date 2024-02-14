@@ -93,7 +93,7 @@ export default function CreatePostModal() {
             toast.success('Post created successfully!',
                 {
                     position: "bottom-right",
-                    duration: 4000,
+                    duration: '700',
                     closeOnClick: true,
                     pauseOnHover: true,
                     style: {
