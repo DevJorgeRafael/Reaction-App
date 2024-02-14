@@ -101,7 +101,11 @@ function ShowPost({ post, onClose }) {
         <Card>
             <CardHeader
                 avatar={
-                    <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)} sx={{ bgcolor: getRandomColor() }} aria-label="recipe">
+                    <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)} 
+                        sx={{ bgcolor: getRandomColor() }} aria-label="recipe"
+                        alt={user.username} src={user.image?.url}
+                        
+                    >
                         {localPost.user && localPost.user.username ? localPost.user.username[0].toUpperCase() : 'U'}
                     </Avatar>
                 }

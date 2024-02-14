@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 export default function UpdateUserImageModal() {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [open, setOpen] = useState(false);
-    const { user } = useUser();
+    const { user, updateUserImage } = useUser();
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState(null);
 
@@ -43,16 +43,56 @@ export default function UpdateUserImageModal() {
     };
 
     const onSubmit = () => {
-        // Enviar la imagen seleccionada o capturada para actualizar la imagen del usuario
-        console.log(imageSrc);
+        const formData = new FormData();
+        formData.append('userId', user._id);
+
+        if (imageSrc) {
+            const block = imageSrc.split(";");
+            const contentType = block[0].split(":")[1];
+            const realData = block[1].split(",")[1];
+            const blob = b64toBlob(realData, contentType);
+            formData.append('image', blob);
+        }
+
+        updateUserImage(formData);
         handleClose();
     };
+
+    const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+    };
+
 
     return (
         <>
             <IconButton onClick={handleClickOpen}>
-                <PhotoCameraIcon sx={{ fontSize: 30 }} />
+                <PhotoCameraIcon sx={{
+                    fontSize: 40,
+                    color: 'white',
+                    borderRadius: '50%',
+                    '&:hover': {
+                        color: 'gray'
+                    }
+                }} />
             </IconButton>
+
+
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>Update Profile Image</span>

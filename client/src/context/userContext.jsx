@@ -114,15 +114,16 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true)
             const res = await updateUserImageRequest(user)
+            console.log(res)
             setUser(res.data.user)
             return res.status
         } catch (error) {
+            console.log(error);
             setErrors(error.response.data)
         } finally {
             setLoading(false)
         }
     }
-
 
     useEffect(() => {
         checkAuth()

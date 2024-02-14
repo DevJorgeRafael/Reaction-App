@@ -15,6 +15,7 @@ function ProfileInformation() {
         getUserByUsername(username)
     }, [])
 
+    console.log(userProfile)
     return (
         userProfile ? (
             <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#E1F0DA' }} >

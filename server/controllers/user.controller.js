@@ -2,6 +2,8 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { SECRET_KEY } from '../config/config.js';
+import { uploadImage, deleteImage } from '../libs/cloudinary.js'
+import fs from 'fs-extra'
 
 export const register = async (req, res) => {
     try {
@@ -135,8 +137,10 @@ export const updateUserImage = async (req, res) => {
         if (!userFromDB) return res.status(400).json({ message: 'User not found' });
 
         // Actualiza la imagen del usuario
+        console.log(image)
         userFromDB.image = image;
         await userFromDB.save();
+        // console.log(userFromDB)
 
         return res.json({ user: userFromDB });
     } catch (error) {
