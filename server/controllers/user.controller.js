@@ -70,7 +70,7 @@ export const verifyToken = async (req, res) => {
             if (!userFound) return res.status(401).json({ message: "Unathorized", user: null })
 
             const userObject = userFound.toObject()
-
+            delete userObject.password
             return res.json({ user: userObject })
         })
     } catch (error) {
@@ -85,8 +85,61 @@ export const getUserByUsername = async (req, res) => {
         if (!userFound) return res.status(404).json({ message: 'User not found' })
 
         const userObject = userFound.toObject()
+        delete userObject.password
         res.json({ user: userObject })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
 }
+
+export const updateUser = async (req, res) => {
+    try {
+        const { name, username, email, bio, _id } = req.body
+
+        let updateObject = {};
+        if (name) updateObject.name = name;
+        if (username) updateObject.username = username;
+        if (email) updateObject.email = email;
+        if (bio) updateObject.bio = bio;
+
+        if (bio === '') updateObject.bio = undefined;
+
+        const user = await User.findById(_id)
+        if (!user) return res.status(404).json({ message: 'User not found' })
+
+        Object.assign(user, updateObject);
+        await user.save();
+
+        res.json({ user })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+
+export const updateUserImage = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        let image;
+
+        if (req.files && req.files.image) {
+            const result = await uploadImage(req.files.image.tempFilePath);
+            await fs.remove(req.files.image.tempFilePath);
+            image = {
+                url: result.secure_url,
+                public_id: result.public_id
+            };
+        }
+
+        const userFromDB = await User.findById(userId);
+        if (!userFromDB) return res.status(400).json({ message: 'User not found' });
+
+        // Actualiza la imagen del usuario
+        userFromDB.image = image;
+        await userFromDB.save();
+
+        return res.json({ user: userFromDB });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};

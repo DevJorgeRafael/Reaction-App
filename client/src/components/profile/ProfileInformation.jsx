@@ -4,7 +4,8 @@ import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typogr
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
 import { useParams } from "react-router-dom"
 import UpdateUserImageModal from "./UploadUserImageModal"
-import CircularIndeterminate from '../CircularIndeterminate' 
+import CircularIndeterminate from '../CircularIndeterminate'
+import EditProfile from "./EditProfile"
 
 function ProfileInformation() {
     const { user, userProfile, getUserByUsername, loading } = useUser()
@@ -27,10 +28,6 @@ function ProfileInformation() {
                                 overlap="circular"
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                 badgeContent={
-                                    // <IconButton>
-                                    //     <PhotoCameraIcon sx={{ fontSize: 30 }} />
-                                    // </IconButton>
-
                                     <UpdateUserImageModal/>
                                 }
                             >
@@ -54,20 +51,7 @@ function ProfileInformation() {
 
                             {userProfile._id === user._id ?
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            background: '#4F6F52',
-                                            '&:hover': {
-                                                background: '#739072',
-                                            },
-                                            '&:active': {
-                                                background: '#739072',
-                                            },
-                                        }}
-                                    >
-                                        Edit Profile
-                                    </Button>
+                                    <EditProfile user={ user } />
                                 </Box> :
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                     <Button

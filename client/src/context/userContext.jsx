@@ -1,5 +1,9 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest, getUserByUsernameRequest } from "../api/user";
+import {
+    loginRequest, registerRequest,
+    verifyTokenRequest, getUserByUsernameRequest,
+    updateUserRequest, updateUserImageRequest
+} from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +20,7 @@ export const UserProvider = ({ children }) => {
     const [userProfile, setUserProfile] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (Object.keys(errors).length > 0) {
@@ -29,7 +33,7 @@ export const UserProvider = ({ children }) => {
 
     const register = async (user) => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const res = await registerRequest(user);
             console.log(res)
             setUser(res.data.user);
@@ -37,20 +41,20 @@ export const UserProvider = ({ children }) => {
         } catch (error) {
             setErrors(error.response.data)
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
     const login = async (user) => {
         try {
-            setLoading(true); 
+            setLoading(true);
             const res = await loginRequest(user);
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
             setErrors(error.response.data)
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     }
 
@@ -92,6 +96,33 @@ export const UserProvider = ({ children }) => {
         }
     }
 
+    const updateUser = async (user) => {
+        try {
+            setLoading(true)
+            const res = await updateUserRequest(user)
+            setUser(res.data.user)
+            return res.status
+        } catch (error) {
+            console.log(error)
+            setErrors(error.response.data)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const updateUserImage = async (user) => {
+        try {
+            setLoading(true)
+            const res = await updateUserImageRequest(user)
+            setUser(res.data.user)
+            return res.status
+        } catch (error) {
+            setErrors(error.response.data)
+        } finally {
+            setLoading(false)
+        }
+    }
+
 
     useEffect(() => {
         checkAuth()
@@ -103,6 +134,8 @@ export const UserProvider = ({ children }) => {
             login,
             logout,
             getUserByUsername,
+            updateUser,
+            updateUserImage,
 
             user,
             errors,

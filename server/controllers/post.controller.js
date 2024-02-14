@@ -26,7 +26,6 @@ export const createPost = async (req, res) => {
             };
         }
 
-        // Buscar al usuario en la base de datos
         const userFromDB = await User.findById(userId);
         if (!userFromDB) return res.status(400).json({ message: 'User not found' });
 
@@ -37,18 +36,15 @@ export const createPost = async (req, res) => {
             username: userFromDB.username
         };
 
-        // Crear un objeto para el nuevo post con solo los campos necesarios
         const postObject = {
             title,
             user
         };
 
-        // Si la descripción está presente, añadirla al objeto del post
         if (description) {
             postObject.description = description;
         }
 
-        // Si hay una imagen adjunta, añadirla al objeto del post
         if (image) {
             postObject.image = image;
         }
@@ -56,7 +52,6 @@ export const createPost = async (req, res) => {
         const newPost = new Post(postObject);
         await newPost.save();
 
-        // Agregar el post al usuario que lo creó
         userFromDB.posts.push(newPost);
         await userFromDB.save();
 
