@@ -9,8 +9,8 @@ export const usePosts = () => {
     return postContext
 }
 
-export const PostProvider = ({children}) => {
-    const {user} = useUser()
+export const PostProvider = ({ children }) => {
+    const { user } = useUser()
 
     const [posts, setPosts] = useState([])
 
@@ -21,9 +21,12 @@ export const PostProvider = ({children}) => {
 
     const createPost = async (post) => {
         const res = await createPostRequest(post)
-        await getPosts()
+        if (res.status === 200) {
+            await getPosts()
+        }
         return res.status
     }
+
 
     const likePost = async (postId, userId) => {
         const res = await likePostRequest(postId, userId)

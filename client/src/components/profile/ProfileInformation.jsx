@@ -9,20 +9,11 @@ import EditProfile from "./EditProfile"
 
 function ProfileInformation() {
     const { user, userProfile, getUserByUsername, loading } = useUser()
-    const [currentUsername, setCurrentUsername] = useState(null)
     const { username } = useParams()
-    
-    useEffect(() => {
-        if(!currentUsername){
-            setCurrentUsername(username)
-        }
-    }, [currentUsername])
 
     useEffect(() => {
-        if (currentUsername) {
-            getUserByUsername(currentUsername)
-        }
-    }, [currentUsername])
+        getUserByUsername(username)
+    }, [])
 
     return (
         userProfile ? (
@@ -61,8 +52,7 @@ function ProfileInformation() {
 
                             {userProfile._id === user._id ?
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                                    <EditProfile user={ user } currentUsername={ currentUsername } 
-                                    setCurrentUsername={ setCurrentUsername }/>
+                                    <EditProfile user={ user } />
                                 </Box> :
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                     <Button

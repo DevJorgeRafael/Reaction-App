@@ -3,8 +3,9 @@ import { useUser } from '../../context/userContext';
 import { useForm } from 'react-hook-form';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Alert, CircularProgress, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
-export default function EditProfile({ user, currentUsername, setCurrentUsername }) {
+export default function EditProfile({ user }) {
     const { register, handleSubmit, formState: { errors }, setError, setValue } = useForm();
     const { updateUser, loading,
         errors: updateErrors,
@@ -14,6 +15,7 @@ export default function EditProfile({ user, currentUsername, setCurrentUsername 
     const [successMessage, setSuccessMessage] = useState('')
     const [usernameInput, setUsernameInput] = useState('');
     const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (user) {
@@ -35,15 +37,11 @@ export default function EditProfile({ user, currentUsername, setCurrentUsername 
     const onSubmit = async (data) => {
         if (isCheckingUsername) return
 
-        // Only proceed with form submission if there are no errors
-            data._id = user._id
-            let statusRequest = await updateUser(data)
-            console.log(statusRequest)
-            if (statusRequest === 200) {
-                setCurrentUsername(data.username)
-                // setOpen(false);
-            }
-        
+        data._id = user._id
+        let statusRequest = await updateUser(data)
+        if (statusRequest === 200) {
+            navigate(`/profile/${data.username}`);
+        }
     };
 
     const controlUsernameInput = async (data) => {
@@ -112,9 +110,11 @@ export default function EditProfile({ user, currentUsername, setCurrentUsername 
                             helperText={errors.username?.message || updateErrors.username}
                             onBlur={async (e) => {
                                 await controlUsernameInput(e.target.value);
+                                setValue('username', e.target.value);  // Actualiza el valor en el estado del formulario
                             }}
                             onChange={async (e) => {
                                 await controlUsernameInput(e.target.value);
+                                setValue('username', e.target.value);  // Actualiza el valor en el estado del formulario
                             }}
                         />
                         {successMessage && <Alert severity="success">{successMessage}</Alert>}

@@ -108,6 +108,7 @@ export const checkUsername = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { name, username, email, bio, _id } = req.body
+        console.log(username)
 
         let updateObject = {};
         if (name) updateObject.name = name;

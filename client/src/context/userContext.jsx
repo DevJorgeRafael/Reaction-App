@@ -93,6 +93,7 @@ export const UserProvider = ({ children }) => {
                 setUserProfile(res.data.user)
             }
         } catch (error) {
+            console.log(error)
             setErrors(error.response.data)
         }
     }
