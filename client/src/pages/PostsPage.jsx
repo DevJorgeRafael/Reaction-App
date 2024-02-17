@@ -16,8 +16,6 @@ function PostsPage() {
         600: 1
     };
 
-    console.log(posts)
-
     return (
         <div style={{ padding: '10px' }}>
             {posts.length === 0 ? (
