@@ -118,7 +118,6 @@ export const UserProvider = ({ children }) => {
             return res.status
         } catch (error) {
             console.log(error)
-            // setErrors(error.response.data)
         } finally {
             setLoading(false)
         }
@@ -129,6 +128,8 @@ export const UserProvider = ({ children }) => {
             setLoading(true)
             const res = await updateUserImageRequest(user)
             setUser(res.data.user)
+            setUserProfile(res.data.user)
+            
             return res.status
         } catch (error) {
             console.log(error);

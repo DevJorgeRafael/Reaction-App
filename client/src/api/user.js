@@ -12,7 +12,7 @@ export const getUserByUsernameRequest = async (username) =>
 export const checkUsernameRequest = async (username) => 
     await axios.get(`/checkUsername/${username}`)
 
-export const updateUserRequest = async (user) => await axios.put('/updateUser', user)
+export const updateUserRequest = async (user) => await axios.put(`/updateUser/${user.username}`, user)
 
 export const updateUserImageRequest = async (user) =>
     await axios.put('/updateUserImage', user, { transformRequest: [] });

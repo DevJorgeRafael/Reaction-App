@@ -1,5 +1,6 @@
 import { useState, createContext, useContext, useEffect } from "react"
 import { getPostRequest, createPostRequest, deletePostRequest, likePostRequest, unlikePostRequest } from '../api/posts'
+import { useUser } from "./userContext"
 
 const PostContext = createContext()
 
@@ -9,6 +10,7 @@ export const usePosts = () => {
 }
 
 export const PostProvider = ({children}) => {
+    const {user} = useUser()
 
     const [posts, setPosts] = useState([])
 
@@ -48,6 +50,10 @@ export const PostProvider = ({children}) => {
     useEffect(() => {
         getPosts()
     }, [])
+
+    useEffect(() => {
+        getPosts()
+    }, [user])
 
     return <PostContext.Provider value={{
         posts,
