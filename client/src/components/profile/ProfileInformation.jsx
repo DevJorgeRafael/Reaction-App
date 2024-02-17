@@ -15,6 +15,11 @@ function ProfileInformation() {
         getUserByUsername(username)
     }, [])
 
+    useEffect(() => {
+        // Cada vez que cambia userProfile, este efecto se ejecutará,
+        // lo que provocará que el componente se vuelva a renderizar con la información actualizada.
+    }, [userProfile]);
+
     return (
         userProfile ? (
             <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#E1F0DA' }} >

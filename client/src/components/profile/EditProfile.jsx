@@ -60,7 +60,6 @@ export default function EditProfile({ user }) {
         setIsCheckingUsername(false);
     }
 
-
     return (
         <>
             <Button

@@ -16,9 +16,12 @@ function ProfilePosts() {
         getUserByUsername(username)
     }, [])
 
+    useEffect(() => {
+        getUserByUsername(username)
+    }, [posts])
+
     const handlePostClick = (post) => {
         setSelectedPost(post);
-        console.log(post)
     };
 
     const handleCloseModal = () => {
@@ -55,19 +58,10 @@ function ProfilePosts() {
                 </Grid>
             </Box>
 
-            {/* Modal para mostrar el post detallado */}
             <Dialog 
                 open={selectedPost !== null} onClose={handleCloseModal}
                 fullWidth
             >
-                {/* <IconButton
-                    edge="end"
-                    color="inherit"
-                    onClick={handleCloseModal}
-                    sx={{ display: 'flex', justifyContent: 'flex-end', mr: 1 }}
-                >
-                    <CloseIcon />
-                </IconButton> */}
                 {selectedPost && <ShowPost post={selectedPost} 
                     onClose={handleCloseModal}
                 />}

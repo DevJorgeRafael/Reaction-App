@@ -10,7 +10,7 @@ export const usePosts = () => {
 }
 
 export const PostProvider = ({ children }) => {
-    const { user } = useUser()
+    const { user, checkAuth } = useUser()
 
     const [posts, setPosts] = useState([])
 
@@ -43,7 +43,7 @@ export const PostProvider = ({ children }) => {
     const deletePost = async (postId, userId) => {
         try {
             await deletePostRequest(postId, userId)
-            getPosts()
+            await getPosts()
         } catch (error) {
             console.log(error)
         }
