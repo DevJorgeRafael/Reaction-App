@@ -40,8 +40,8 @@ function ProfileInformation() {
                                 <Avatar alt={userProfile.username} src={userProfile.image?.url}
                                     sx={{
                                         justifyContent: 'center',
-                                        width: 150,
-                                        height: 150,
+                                        width: 175,
+                                        height: 175,
                                     }}
                                 />
                             </Badge>

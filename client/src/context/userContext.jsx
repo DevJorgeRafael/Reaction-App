@@ -3,7 +3,7 @@ import {
     loginRequest, registerRequest,
     verifyTokenRequest, getUserByUsernameRequest,
     updateUserRequest, updateUserImageRequest,
-    checkUsernameRequest
+    deleteUserImageRequest ,checkUsernameRequest
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
@@ -139,6 +139,21 @@ export const UserProvider = ({ children }) => {
         }
     }
 
+    const deleteUserImage = async (userId) => {
+        try {
+            setLoading(true)
+            const res = await deleteUserImageRequest(userId)
+            setUser(res.data.user)
+            setUserProfile(res.data.user)
+        } catch (error) {
+            console.log(error);
+            setErrors(error.response.data)
+        } finally {
+            setLoading(false)
+        }
+    
+    }
+
     useEffect(() => {
         checkAuth()
     }, [])
@@ -148,11 +163,12 @@ export const UserProvider = ({ children }) => {
             register,
             login,
             logout,
+            checkAuth,
             getUserByUsername,
             checkUsername,
             updateUser,
             updateUserImage,
-            checkAuth,
+            deleteUserImage,
 
             user,
             errors,

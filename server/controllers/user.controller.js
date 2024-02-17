@@ -31,7 +31,6 @@ export const register = async (req, res) => {
     }
 };
 
-
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -153,6 +152,24 @@ export const updateUserImage = async (req, res) => {
 
         userFromDB.image = image;
         await userFromDB.save();
+
+        return res.json({ user: userFromDB });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+export const deleteUserImage = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const userFromDB = await User.findById(userId);
+        if (!userFromDB) return res.status(400).json({ message: 'User not found' });
+
+        if (userFromDB.image) {
+            await deleteImage(userFromDB.image.public_id);
+            userFromDB.image = undefined;
+            await userFromDB.save();
+        }
 
         return res.json({ user: userFromDB });
     } catch (error) {

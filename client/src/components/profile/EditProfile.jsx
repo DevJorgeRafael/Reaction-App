@@ -1,15 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '../../context/userContext';
 import { useForm } from 'react-hook-form';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Alert, CircularProgress, IconButton } from '@mui/material';
+import {
+    Box, Button,
+    Dialog, DialogActions,
+    DialogContent, DialogTitle,
+    TextField, Typography,
+    Alert, CircularProgress,
+    IconButton, Badge,
+    Avatar
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
 export default function EditProfile({ user }) {
     const { register, handleSubmit, formState: { errors }, setError, setValue } = useForm();
     const { updateUser, loading,
         errors: updateErrors,
-        updateUserImage, checkUsername
+        deleteUserImage, checkUsername
     } = useUser();
     const [open, setOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('')
@@ -47,6 +56,22 @@ export default function EditProfile({ user }) {
     const controlUsernameInput = async (data) => {
         setIsCheckingUsername(true);
         setUsernameInput(data);
+
+        if (data.length < 3){
+            setError('username', { type: 'manual', message: 'Username must be at least 3 characters long' });
+            setSuccessMessage('');
+            setIsCheckingUsername(false);
+            return;
+        }
+
+        const pattern = /^[A-Za-z0-9_-]+$/;
+        if (!pattern.test(data)) {
+            setError('username', { type: 'manual', message: 'Username can only contain uppercase and lowercase letters, numbers, hyphens, and underscores' });
+            setSuccessMessage('');
+            setIsCheckingUsername(false);
+            return;
+        }
+
         let response = await checkUsername(data)
 
         if (response === 204) {
@@ -58,6 +83,12 @@ export default function EditProfile({ user }) {
             setSuccessMessage('');
         }
         setIsCheckingUsername(false);
+    }
+
+
+    const handleDeleteUserImage = async (userId) => {
+        await deleteUserImage(userId);
+        setOpen(false);
     }
 
     return (
@@ -91,6 +122,29 @@ export default function EditProfile({ user }) {
                 </DialogTitle>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <DialogContent sx={{ mt: -4, mb: -1 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                            <Box sx={{ position: 'relative' }}>
+                                <Avatar alt={user.username} src={user.image?.url}
+                                    sx={{
+                                        justifyContent: 'center',
+                                        width: 150,
+                                        height: 150,
+                                    }}
+                                />
+                                <Badge
+                                    overlap="circular"
+                                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                    badgeContent={
+                                        user.image?.url &&
+                                        <IconButton onClick={ () => handleDeleteUserImage(user._id) }>
+                                            <DeleteIcon sx={{ color: '#FF6868', fontSize: '40px' }} />
+                                        </IconButton>
+                                    }
+                                    sx={{ position: 'absolute', bottom: 0, right: '50%', transform: 'translateX(50%)' }}
+                                />
+                            </Box>
+                        </Box>
+
                         <TextField
                             {...register('name', { required: 'Name is required' })}
                             label="Name"
@@ -101,7 +155,7 @@ export default function EditProfile({ user }) {
                         />
 
                         <TextField
-                            {...register('username', { required: 'Username is required' })}
+                            {...register('username', { required: 'Username is required'})}
                             label="Username"
                             fullWidth
                             margin="normal"
@@ -109,11 +163,11 @@ export default function EditProfile({ user }) {
                             helperText={errors.username?.message || updateErrors.username}
                             onBlur={async (e) => {
                                 await controlUsernameInput(e.target.value);
-                                setValue('username', e.target.value);  // Actualiza el valor en el estado del formulario
+                                setValue('username', e.target.value);
                             }}
                             onChange={async (e) => {
                                 await controlUsernameInput(e.target.value);
-                                setValue('username', e.target.value);  // Actualiza el valor en el estado del formulario
+                                setValue('username', e.target.value);
                             }}
                         />
                         {successMessage && <Alert severity="success">{successMessage}</Alert>}

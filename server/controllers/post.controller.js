@@ -82,7 +82,6 @@ export const deletePost = async (req, res) => {
             await deleteImage(postRemoved.image.public_id)
         }
 
-        // Eliminar la referencia al post del usuario que lo creó
         const user = await User.findById(req.body.userId);
         user.posts.pull(postRemoved);
         await user.save();

@@ -2,7 +2,8 @@ import { Router } from 'express'
 
 import { login, register, 
     verifyToken, getUserByUsername,
-    updateUser, updateUserImage, checkUsername
+    updateUser, updateUserImage, 
+    checkUsername, deleteUserImage
 } from '../controllers/user.controller.js'
 
 const router = Router()
@@ -15,5 +16,6 @@ router.get('/username/:username', getUserByUsername)
 router.get('/checkUsername/:username', checkUsername)
 router.put('/updateUser/:username', updateUser)
 router.put('/updateUserImage', updateUserImage)
+router.delete('/deleteUserImage', deleteUserImage)
 
 export default router
