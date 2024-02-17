@@ -4,21 +4,23 @@ import { useForm } from 'react-hook-form';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, Alert, CircularProgress, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function EditProfile({ user }) {
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
-    const { updateUser, loading, 
-        errors: updateErrors, 
-        updateUserImage,
+export default function EditProfile({ user, currentUsername, setCurrentUsername }) {
+    const { register, handleSubmit, formState: { errors }, setError, setValue } = useForm();
+    const { updateUser, loading,
+        errors: updateErrors,
+        updateUserImage, checkUsername
     } = useUser();
     const [open, setOpen] = useState(false);
-    const [status, setStatus] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('')
+    const [usernameInput, setUsernameInput] = useState('');
+    const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
     useEffect(() => {
         if (user) {
             setValue('name', user.name);
             setValue('username', user.username);
             setValue('email', user.email);
-            if (user.bio) setValue('bio', user.bio);  
+            if (user.bio) setValue('bio', user.bio);
         }
     }, [user, setValue]);
 
@@ -31,21 +33,41 @@ export default function EditProfile({ user }) {
     };
 
     const onSubmit = async (data) => {
-        data._id = user._id
-        console.log(data)  
-        setStatus(await updateUser(data));
-        if (status === 200) {
-            setOpen(false);
-        }
+        if (isCheckingUsername) return
+
+        // Only proceed with form submission if there are no errors
+            data._id = user._id
+            let statusRequest = await updateUser(data)
+            console.log(statusRequest)
+            if (statusRequest === 200) {
+                setCurrentUsername(data.username)
+                // setOpen(false);
+            }
+        
     };
 
-    // console.log(user)
+    const controlUsernameInput = async (data) => {
+        setIsCheckingUsername(true);
+        setUsernameInput(data);
+        let response = await checkUsername(data)
+
+        if (response === 204) {
+            setError('username', { type: 'manual', message: '' })
+            setSuccessMessage('Username available');
+        } else if (response === 200) {
+            if (data !== user.username) setError('username', { type: 'manual', message: 'Username already exists' })
+            else setError('username', { type: 'manual', message: '' })
+            setSuccessMessage('');
+        }
+        setIsCheckingUsername(false);
+    }
+
 
     return (
         <>
             <Button
                 variant="contained"
-                onClick={ handleClickOpen }
+                onClick={handleClickOpen}
                 sx={{
                     background: '#4F6F52',
                     '&:hover': {
@@ -60,18 +82,18 @@ export default function EditProfile({ user }) {
             </Button>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
+                <DialogTitle sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
                     alignContent: 'center'
                 }}>
                     Edit Profile
                     <IconButton onClick={handleClose}>
-                        <CloseIcon/>
+                        <CloseIcon />
                     </IconButton>
                 </DialogTitle>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <DialogContent sx={{ mt: -4, mb: -1}}>
+                    <DialogContent sx={{ mt: -4, mb: -1 }}>
                         <TextField
                             {...register('name', { required: 'Name is required' })}
                             label="Name"
@@ -86,9 +108,16 @@ export default function EditProfile({ user }) {
                             label="Username"
                             fullWidth
                             margin="normal"
-                            error={Boolean(errors.username || updateErrors.username)}
+                            error={Boolean((errors.username || updateErrors.username) && !successMessage && usernameInput !== user.username)}
                             helperText={errors.username?.message || updateErrors.username}
+                            onBlur={async (e) => {
+                                await controlUsernameInput(e.target.value);
+                            }}
+                            onChange={async (e) => {
+                                await controlUsernameInput(e.target.value);
+                            }}
                         />
+                        {successMessage && <Alert severity="success">{successMessage}</Alert>}
 
                         <TextField
                             {...register('email', { required: 'Email is required' })}
@@ -100,7 +129,7 @@ export default function EditProfile({ user }) {
                             InputProps={{
                                 readOnly: true,
                             }}
-                            sx={{ backgroundColor: '#F3EEEA'}}
+                            sx={{ backgroundColor: '#F3EEEA' }}
                         />
 
                         <TextField

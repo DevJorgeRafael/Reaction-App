@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useUser } from "../../context/userContext"
 import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typography } from "@mui/material"
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
@@ -9,11 +9,20 @@ import EditProfile from "./EditProfile"
 
 function ProfileInformation() {
     const { user, userProfile, getUserByUsername, loading } = useUser()
+    const [currentUsername, setCurrentUsername] = useState(null)
     const { username } = useParams()
+    
+    useEffect(() => {
+        if(!currentUsername){
+            setCurrentUsername(username)
+        }
+    }, [currentUsername])
 
     useEffect(() => {
-        getUserByUsername(username)
-    }, [])
+        if (currentUsername) {
+            getUserByUsername(currentUsername)
+        }
+    }, [currentUsername])
 
     return (
         userProfile ? (
@@ -28,7 +37,8 @@ function ProfileInformation() {
                                 overlap="circular"
                                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                                 badgeContent={
-                                    <UpdateUserImageModal/>
+                                   userProfile._id === user._id && 
+                                   <UpdateUserImageModal/>
                                 }
                             >
                                 <Avatar alt={userProfile.username} src={userProfile.image?.url}
@@ -51,7 +61,8 @@ function ProfileInformation() {
 
                             {userProfile._id === user._id ?
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                                    <EditProfile user={ user } />
+                                    <EditProfile user={ user } currentUsername={ currentUsername } 
+                                    setCurrentUsername={ setCurrentUsername }/>
                                 </Box> :
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                                     <Button

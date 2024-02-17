@@ -15,15 +15,11 @@ const postSchema = new mongoose.Schema({
         public_id: String
     },
     user: {
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-        name: String,
-        username: String,
-        image: {
-            url: String,
-            public_id: String
-        }
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', 
+        required: true 
     }, 
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencias a los usuarios que han dado "like" al post
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
     date: { type: Date, default: Date.now }
 })
 

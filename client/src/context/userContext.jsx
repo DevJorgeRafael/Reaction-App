@@ -2,7 +2,8 @@ import { useState, createContext, useContext, useEffect } from "react";
 import {
     loginRequest, registerRequest,
     verifyTokenRequest, getUserByUsernameRequest,
-    updateUserRequest, updateUserImageRequest
+    updateUserRequest, updateUserImageRequest,
+    checkUsernameRequest
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
@@ -96,15 +97,28 @@ export const UserProvider = ({ children }) => {
         }
     }
 
-    const updateUser = async (user) => {
+    const checkUsername = async (username) => {
         try {
-            setLoading(true)
-            const res = await updateUserRequest(user)
-            setUser(res.data.user)
+            const res = await checkUsernameRequest(username)
             return res.status
         } catch (error) {
             console.log(error)
             setErrors(error.response.data)
+        }
+    }
+
+    const updateUser = async (user) => {
+        try {
+            setLoading(true)
+            const res = await updateUserRequest(user)
+            console.log(res)
+
+            setUser(res.data.user)
+            setUserProfile(res.data.user)
+            return res.status
+        } catch (error) {
+            console.log(error)
+            // setErrors(error.response.data)
         } finally {
             setLoading(false)
         }
@@ -114,7 +128,6 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true)
             const res = await updateUserImageRequest(user)
-            console.log(res)
             setUser(res.data.user)
             return res.status
         } catch (error) {
@@ -135,6 +148,7 @@ export const UserProvider = ({ children }) => {
             login,
             logout,
             getUserByUsername,
+            checkUsername,
             updateUser,
             updateUserImage,
 

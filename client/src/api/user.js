@@ -9,6 +9,8 @@ export const verifyTokenRequest = async () => await axios.get('/verifyToken')
 export const getUserByUsernameRequest = async (username) =>
     await axios.get(`/username/${username}`)
 
+export const checkUsernameRequest = async (username) => 
+    await axios.get(`/checkUsername/${username}`)
 
 export const updateUserRequest = async (user) => await axios.put('/updateUser', user)
 

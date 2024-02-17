@@ -94,6 +94,17 @@ export const getUserByUsername = async (req, res) => {
     }
 }
 
+export const checkUsername = async (req, res) => {
+    try {
+        const { username } = req.params
+        const userFound = await User.findOne({ username })
+        if (userFound) return res.status(200).json({ message: 'Username already exists' })
+        res.status(204).json({ message: 'Username available' })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
 export const updateUser = async (req, res) => {
     try {
         const { name, username, email, bio, _id } = req.body
@@ -105,6 +116,9 @@ export const updateUser = async (req, res) => {
         if (bio) updateObject.bio = bio;
 
         if (bio === '') updateObject.bio = undefined;
+
+        let userFound = await User.findOne({ username})
+        if (userFound && userFound._id.toString() !== _id) return res.status(400).json({ username: 'Username already exists' });
 
         const user = await User.findById(_id)
         if (!user) return res.status(404).json({ message: 'User not found' })
@@ -136,7 +150,6 @@ export const updateUserImage = async (req, res) => {
         const userFromDB = await User.findById(userId);
         if (!userFromDB) return res.status(400).json({ message: 'User not found' });
 
-        // Actualiza la imagen del usuario
         userFromDB.image = image;
         await userFromDB.save();
 
