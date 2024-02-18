@@ -1,15 +1,12 @@
 import { usePosts } from '../context/postContext'
-import { useUser } from '../context/userContext'
 import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
 import '../styles/post.css'
 import ShowPost from '../components/posts/ShowPost';
 import { useSocket } from '../hooks/useSocket';
-import { useEffect } from 'react'
 
 function PostsPage() {
     const { posts } = usePosts()
-    const { user, getNotifications, notifications } = useUser()
     useSocket()
 
     const breakpointColumnsObj = {
@@ -18,12 +15,6 @@ function PostsPage() {
         700: 2,
         600: 1
     };
-
-    useEffect(() => {
-        getNotifications(user._id)
-    }, [user])
-    
-    console.log(notifications)
 
     return (
         <div style={{ padding: '10px' }}>

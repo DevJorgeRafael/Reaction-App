@@ -121,17 +121,16 @@ export const likePost = async (req, res) => {
         const userFound = await User.findById(req.body.userId);
         if (!userFound) return res.status(400).json({ message: 'User not found' });
 
-        // Crea una nueva notificación
         const notification = new Notification({
             user: post.user,
-            content: `¡${userFound.username} has liked your post!`
+            fromUser: req.body.userId,
+            type: 'like',
+            target: { postId: post._id },
         });
         await notification.save();
 
-        // Emite un evento de Socket.IO con la notificación solo a la "room" para este usuario
         io.to(post.user).emit('notification', notification);
 
-        // Vuelve a buscar el post de la base de datos y poblar la información del usuario
         const updatedPost = await Post.findById(req.params.id).populate('user');
 
         return res.json(updatedPost)
@@ -143,7 +142,7 @@ export const likePost = async (req, res) => {
 export const unlikePost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
-        const userId = req.body.userId; // Extraer userId del cuerpo de la solicitud
+        const userId = req.body.userId; 
         if (!post) return res.sendStatus(404)
 
         const likeIndex = post.likes.indexOf(userId);
@@ -153,7 +152,6 @@ export const unlikePost = async (req, res) => {
         }
         await post.save();
 
-        // Vuelve a buscar el post de la base de datos y poblar la información del usuario
         const updatedPost = await Post.findById(req.params.id).populate('user');
 
         return res.json(updatedPost)

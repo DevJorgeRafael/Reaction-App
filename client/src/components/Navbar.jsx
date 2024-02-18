@@ -23,47 +23,14 @@ import CreatePostModal from './posts/CreatePostModal';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import Logo from './navbar/Logo'
+import HomeButton from './navbar/HomeButton';
+import SearchBar from './navbar/SearchBar';
+import DesktopNav from './navbar/DesktopNav';
+import MobileNav from './navbar/MobileNav';
+import ProfileMenu from './navbar/ProfileMenu';
+import ProfileMobileMenu from './navbar/ProfileMobileMenu';
 
-
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
-    },
-}));
 
 export default function NavBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -209,91 +176,16 @@ export default function NavBar() {
             <AppBar position="static" sx={{ backgroundColor: '#294B29' }}>
                 {user ?
                     (<Toolbar>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                        >
-                            <img src="/ReactiOn-logo.png" alt="Logo" width="50" height="50" />
-                        </IconButton>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' },
-                                cursor: 'pointer'
-                            }}
-                            onClick={() => navigate('/posts')}
-                        >
-                            ReactiOn
-                        </Typography>
-                        <IconButton aria-label="" onClick={ ()=> navigate('/posts')} sx={{
-                            color: 'white',
-                            // background
-                            padding: 0,
-                            mr: 1,
-                            ml: -2,
-                            display: {
-                                sx: 'block',
-                                sm: 'none'
-                            }
-                        }}>
-                            <HomeIcon fontSize='large'/>
-                        </IconButton>
-                        <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
-                        <Box sx={{ flexGrow: 1 }} />
+                        <Logo navigate={ navigate } />
+                        <HomeButton navigate={ navigate } />
+                        <SearchBar />
 
+                        <Box sx={{ flexGrow: 1 }} />
                         <CreatePostModal />
 
-                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                                <Badge badgeContent={4} color="error">
-                                    <MailIcon />
-                                </Badge>
-                            </IconButton>
-                            <IconButton
-                                size="large"
-                                aria-label="show 17 new notifications"
-                                color="inherit"
-                            >
-                                <Badge badgeContent={17} color="error">
-                                    <NotificationsIcon />
-                                </Badge>
-                            </IconButton>
-                            <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                        </Box>
-                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                            <IconButton
-                                size="large"
-                                aria-label="show more"
-                                aria-controls={mobileMenuId}
-                                aria-haspopup="true"
-                                onClick={handleMobileMenuOpen}
-                                color="inherit"
-                            >
-                                <AccountCircle fontSize='large' />
-                            </IconButton>
-                        </Box>
+                        <DesktopNav handleProfileMenuOpen={handleProfileMenuOpen} menuId={menuId} />
+                        <MobileNav handleMobileMenuOpen={handleMobileMenuOpen} mobileMenuId={mobileMenuId} />
+
                     </Toolbar>) : (
                         <>
                             <Toolbar>
@@ -332,8 +224,18 @@ export default function NavBar() {
                         </>
                     )}
             </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
+            <ProfileMenu
+                anchorEl={anchorEl}
+                handleMenuClose={handleMenuClose}
+                navigate={navigate}
+                user={user}
+                handleLogout={handleLogout}
+            />
+            <ProfileMobileMenu
+                mobileMoreAnchorEl={mobileMoreAnchorEl}
+                handleMobileMenuClose={handleMobileMenuClose}
+                handleProfileMenuOpen={handleProfileMenuOpen}
+            />
         </Box>
     );
 }
