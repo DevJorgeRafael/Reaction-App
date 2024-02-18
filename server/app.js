@@ -3,9 +3,11 @@ import fileUpload from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 import postsRoutes from './routes/posts.routes.js'
 import userRoutes from './routes/users.routes.js'
-
+import notificationsRoutes from './routes/notifications.routes.js'
+import { createServer } from 'http';
 
 const app = express();
+const server = createServer(app);
 
 //middlewares
 app.use(express.json())
@@ -27,5 +29,6 @@ app.use((req, res, next) => {
 //routes
 app.use(postsRoutes)
 app.use(userRoutes)
+app.use(notificationsRoutes)
 
-export default app;
+export { app, server }

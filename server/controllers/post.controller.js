@@ -1,7 +1,10 @@
 import Post from '../models/Post.js'
 import User from '../models/User.js'
+import Notification from '../models/Notification.js'
+import Message from '../models/Message.js'
 import { uploadImage, deleteImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
+import { io } from '../index.js'
 
 export const getPosts = async (req, res) => {
     try {
@@ -108,21 +111,34 @@ export const likePost = async (req, res) => {
         const post = await Post.findById(req.params.id);
         if (!post) return res.sendStatus(404)
 
-        // Comprobar si el usuario ya ha dado "like" al post
         if (post.likes.includes(req.body.userId)) {
             return res.status(400).json({ message: 'User has already liked this post' })
         }
 
-        // Agregar el ID del usuario a los likes del post
         post.likes.push(req.body.userId);
         await post.save();
 
-        return res.json(post)
+        const userFound = await User.findById(req.body.userId);
+        if (!userFound) return res.status(400).json({ message: 'User not found' });
+
+        // Crea una nueva notificación
+        const notification = new Notification({
+            user: post.user,
+            content: `¡${userFound.username} has liked your post!`
+        });
+        await notification.save();
+
+        // Emite un evento de Socket.IO con la notificación solo a la "room" para este usuario
+        io.to(post.user).emit('notification', notification);
+
+        // Vuelve a buscar el post de la base de datos y poblar la información del usuario
+        const updatedPost = await Post.findById(req.params.id).populate('user');
+
+        return res.json(updatedPost)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
-
 
 export const unlikePost = async (req, res) => {
     try {
@@ -137,7 +153,10 @@ export const unlikePost = async (req, res) => {
         }
         await post.save();
 
-        return res.json(post)
+        // Vuelve a buscar el post de la base de datos y poblar la información del usuario
+        const updatedPost = await Post.findById(req.params.id).populate('user');
+
+        return res.json(updatedPost)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }

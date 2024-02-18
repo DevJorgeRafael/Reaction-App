@@ -76,7 +76,6 @@ function ShowPost({ post, onClose }) {
         );
     };
 
-    // console.log(localPost)
 
     const handleLikePost = async () => {
         try {
@@ -103,10 +102,10 @@ function ShowPost({ post, onClose }) {
         <Card>
             <CardHeader
                 avatar={
-                    <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)} 
+                    <Avatar onClick={() => navigate(`/profile/${localPost.user.username}`)}
                         sx={{ bgcolor: getRandomColor() }} aria-label="recipe"
                         alt={localPost.user.username} src={localPost.user.image?.url}
-                        
+
                     >
                         {localPost.user && localPost.user.username ? localPost.user.username[0].toUpperCase() : 'U'}
                     </Avatar>

@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import Message from '../models/Message.js';
+import Notification from '../models/Notification.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { SECRET_KEY } from '../config/config.js';
