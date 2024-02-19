@@ -5,9 +5,6 @@ import {
     updateUserRequest, updateUserImageRequest,
     deleteUserImageRequest ,checkUsernameRequest
 } from "../api/user";
-import {
-    getNotificationsRequest
-} from '../api/notifications'
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
 
@@ -21,7 +18,6 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
     const navigate = useNavigate()
     const [user, setUser] = useState(null);
-    const [notifications, setNotifications] = useState([])
     const [userProfile, setUserProfile] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
@@ -157,17 +153,6 @@ export const UserProvider = ({ children }) => {
         }
     }
 
-    const getNotifications = async (userId) => {
-        try {
-            const res = await getNotificationsRequest(userId)
-            setNotifications(res.data)
-        } catch (error) {
-            console.log(error)
-            setErrors(error.response.data)
-        }
-    }
-
-
     useEffect(() => {
         checkAuth()
     }, [])
@@ -183,14 +168,12 @@ export const UserProvider = ({ children }) => {
             updateUser,
             updateUserImage,
             deleteUserImage,
-            getNotifications,
 
             user,
             errors,
             loading,
             isAuthenticated,
             userProfile,
-            notifications
         }}>
             {children}
         </UserContext.Provider>

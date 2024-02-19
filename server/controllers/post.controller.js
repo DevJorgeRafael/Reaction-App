@@ -5,6 +5,7 @@ import Message from '../models/Message.js'
 import { uploadImage, deleteImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
 import { io, userSockets } from '../index.js'
+import { sendNotifications } from './notification.controller.js'
 
 export const getPosts = async (req, res) => {
     try {
@@ -131,11 +132,11 @@ export const likePost = async (req, res) => {
 
         const userSocket = userSockets[post.user];
         if (userSocket) {
+            await sendNotifications(post.user, userSocket);
             userSocket.emit('notification', notification);
         }
 
         const updatedPost = await Post.findById(req.params.id).populate('user');
-
         return res.json(updatedPost)
     } catch (error) {
         return res.status(500).json({ message: error.message })

@@ -2,8 +2,7 @@ import { connectDB } from './db.js'
 import {PORT} from './config/config.js'
 import { app, server} from './app.js'
 import { Server } from 'socket.io'
-import Notification from './models/Notification.js'
-import Post from './models/Post.js'
+import { sendNotifications } from './controllers/notification.controller.js'
 
 connectDB() 
 
@@ -23,23 +22,9 @@ io.on('connection', async (socket) => {
         // Añade el socket del usuario al objeto
         userSockets[userId] = socket;
 
-        let notifications = await Notification.find({ user: userId })
-            .populate('user', '_id username name image')
-            .populate('fromUser', '_id username name image')
-            .sort({ date: -1 });
-
-        for (let notification of notifications) {
-            if (notification.target && notification.target.postId) {
-                const post = await Post.findById(notification.target.postId);
-                notification.target.post = post;
-            }
-        }
-
-        socket.emit('notifications', notifications)
+        sendNotifications(userId, socket);
     }
 })
-
-
 
 server.listen(PORT)
 console.log('Server on port', PORT)

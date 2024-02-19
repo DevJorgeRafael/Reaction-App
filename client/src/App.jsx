@@ -3,6 +3,7 @@ import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage
 import { Routes, Route } from 'react-router-dom'
 import { PostProvider } from './context/postContext.jsx'
 import { UserProvider } from './context/userContext.jsx'
+import { NotificationProvider } from './context/notificationContext.jsx'
 
 import ProtectedRoute from './ProtectedRoute.jsx'
 
@@ -13,25 +14,26 @@ function App() {
   return (
     <UserProvider>
       <PostProvider>
-        <Navbar />
-        <Toaster />
+        <NotificationProvider>
+          <Navbar />
+          <Toaster />
 
-        <Box sx={{ paddingTop: '74px' }}>
-          <Routes>
-            <Route path='/' element={<HomePage />}></Route>
-            <Route path='*' element={<NotFoundPage />}></Route>
-            <Route path='/login' element={<LoginPage />}></Route>
-            <Route path='/register' element={<RegisterPage />}></Route>
+          <Box sx={{ paddingTop: '74px' }}>
+            <Routes>
+              <Route path='/' element={<HomePage />}></Route>
+              <Route path='*' element={<NotFoundPage />}></Route>
+              <Route path='/login' element={<LoginPage />}></Route>
+              <Route path='/register' element={<RegisterPage />}></Route>
 
-            <Route element={<ProtectedRoute />}>
-              <Route path='/posts' element={<PostsPage />}></Route>
-              <Route path='/profile/:username' element={<ProfilePage />}></Route>
-            </Route>
-          </Routes>
-        </Box>
+              <Route element={<ProtectedRoute />}>
+                <Route path='/posts' element={<PostsPage />}></Route>
+                <Route path='/profile/:username' element={<ProfilePage />}></Route>
+              </Route>
+            </Routes>
+          </Box>
+        </NotificationProvider>
       </PostProvider>
     </UserProvider>
-
   )
 }
 

@@ -22,11 +22,6 @@ export const useSocket = () => {
 
             socket.on('notification', (notification) => {
                 console.log('Received new notification:', notification);
-                setNotifications(prevNotifications => {
-                    const updatedNotifications = [...prevNotifications, notification];
-                    console.log('Updated notifications:', updatedNotifications);
-                    return updatedNotifications;
-                });
             });
         }
 

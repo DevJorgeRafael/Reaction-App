@@ -1,34 +1,47 @@
-import { useEffect, useReducer, useState } from 'react';
-import { IconButton, Badge, Menu, MenuItem, Avatar, Typography, Popover, Box, alpha } from '@mui/material';
+import { useState } from 'react';
+import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box } from '@mui/material';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useSocket } from '../../hooks/useSocket';
-import { formatDistanceToNow } from 'date-fns';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useNavigate } from 'react-router-dom';
+import { ShowNotification } from '../notifications/showNotification';
+import { useNotification } from '../../context/notificationContext';
 
 function NotificationBadge({ needText }) {
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
-    const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const notifications = useSocket();
-
+    const { readNotifications, removeNotifications } = useNotification();
 
     const unreadNotifications = notifications.filter(notification => !notification.read).length;
-    console.log(unreadNotifications)
 
     const handleClick = (event) => {
-        event.stopPropagation();
         setAnchorEl(event.currentTarget);
     };
-
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    useEffect(() => {
-        console.log('Rendering NotificationBadge with notifications:', notifications);
-        forceUpdate()
-    }, [notifications, unreadNotifications]);
+    const handleMenuClick = (event) => {
+        setMenuAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setMenuAnchorEl(null);
+    };
+
+    const handleReadAllNotifications = () => {
+        console.log('Mark all as read');
+        setMenuAnchorEl(null);
+        readNotifications(notifications[0].user._id);
+    }
+
+    const handleRemoveAllNotifications = () => {
+        console.log('Delete all notifications');
+        handleMenuClose()
+        handleClose()
+        removeNotifications(notifications[0].user._id);
+    }
+    // console.log(notifications)
 
     return (
         <>
@@ -44,84 +57,63 @@ function NotificationBadge({ needText }) {
                 {needText && <Typography variant="body1" sx={{ ml: 2 }}>Notifications</Typography>}
             </IconButton>
 
-            {notifications.length > 0 &&
-                <Popover
-                    open={Boolean(anchorEl)}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                    }}
-                >
+            <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Box sx={{ width: '100%' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant="h5" color="initial"
                             sx={{ p: 2 }}
+                            onClick={handleClose}
                         >Notifications</Typography>
-                        <IconButton aria-label="" >
+
+                        <IconButton onClick={handleMenuClick} >
                             <MoreVertIcon />
                         </IconButton>
-                    </Box>
-                    {notifications.map((notification, index) => {
-                        let message;
-                        switch (notification.type) {
-                            case 'like':
-                                message = 'has liked your post';
-                                break;
-                            case 'follow':
-                                message = `${notification.fromUser.username} has started following you`;
-                                break;
-                            default:
-                                message = '';
-                        }
-                        return (
-                            <Box key={index}
-                                sx={{
-                                    p: 2,
-                                    display: 'flex',
-                                    width: 400,
-                                    backgroundColor: notification.read ? 'initial' : '#f5f5f5',
-                                    '&:hover': {
-                                        backgroundColor: theme => alpha(theme.palette.primary.main, 0.1)
-                                    }
-                                }}
+
+                        <Menu
+                            anchorEl={menuAnchorEl}
+                            open={Boolean(menuAnchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={handleReadAllNotifications}>
+                                Mark all as read
+                            </MenuItem>
+                            <MenuItem onClick={handleRemoveAllNotifications}
+                                sx={{ color: theme => theme.palette.error.main }}
                             >
+                                Delete all notifications
+                            </MenuItem>
 
-                                <Box sx={{ mr: 1 }}>
-                                    <Avatar src={notification.fromUser.image?.url}
-                                        alt={notification.fromUser.username}
-                                        sx={{ height: 75, width: 75, cursor: 'pointer' }}
-                                        onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
-                                    />
-                                </Box>
-                                <Box sx={{ m: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                    <Typography variant="body2" color="initial" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                                        <Box component="span" sx={{ fontWeight: 'bold', mr: 1, cursor: 'pointer' }}
-                                            onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
-                                        >
-                                            {notification.fromUser.username}
-                                        </Box>
-                                        <Typography variant="body2" color="initial" component="span">{message}</Typography>
-                                        <Box component="span" sx={{ fontWeight: 'bold', mx: 1 }}>
-                                            {notification.target.post?.title}
-                                        </Box>
-                                    </Typography>
+                        </Menu>
+                    </Box>
+                    {notifications.length > 0 ? (
+                        notifications.map((notification, index) => (
+                            <ShowNotification key={index} notification={notification} />
+                        ))
+                    ) : (
+                        <Box sx={{ height: 400, padding: 3,
+                            display: 'flex', justifyContent: 'center', alignItems: 'center',
+                            flexDirection: 'column',
+                            backgroundColor: theme => theme.palette.grey[300]
+                        }}>
+                            <NotificationsOffIcon color="disabled" style={{ fontSize: 100 }} />
+                            <Typography variant="h6">You don't have any notifications yet.</Typography>
+                        </Box>
+                    )}
 
-                                    <Typography variant="body2" sx={{ color: '#757575', display: 'flex', justifyContent: 'flex-end' }}>
-                                        {formatDistanceToNow(new Date(notification.date), { addSuffix: true })}
-                                    </Typography>
-                                </Box>
-
-
-                            </Box>
-                        );
-                    })}
-                </Popover>
-            }
+                </Box>
+            </Popover>
         </>
     );
 }
