@@ -4,7 +4,7 @@ import Notification from '../models/Notification.js'
 import Message from '../models/Message.js'
 import { uploadImage, deleteImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
-import { io } from '../index.js'
+import { io, userSockets } from '../index.js'
 
 export const getPosts = async (req, res) => {
     try {
@@ -129,7 +129,10 @@ export const likePost = async (req, res) => {
         });
         await notification.save();
 
-        io.to(post.user).emit('notification', notification);
+        const userSocket = userSockets[post.user];
+        if (userSocket) {
+            userSocket.emit('notification', notification);
+        }
 
         const updatedPost = await Post.findById(req.params.id).populate('user');
 
@@ -138,6 +141,7 @@ export const likePost = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
 
 export const unlikePost = async (req, res) => {
     try {

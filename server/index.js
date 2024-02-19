@@ -2,6 +2,8 @@ import { connectDB } from './db.js'
 import {PORT} from './config/config.js'
 import { app, server} from './app.js'
 import { Server } from 'socket.io'
+import Notification from './models/Notification.js'
+import Post from './models/Post.js'
 
 connectDB() 
 
@@ -12,15 +14,32 @@ export const io = new Server(server, {
     }
 })
 
-io.on('connection', (socket) => {
-    console.log('A client has connected')
+export const userSockets = {}
 
-    // Asume que el ID de usuario se envía como un parámetro de consulta cuando el cliente se conecta
+io.on('connection', async (socket) => {
+    console.log('A client has connected')
     const userId = socket.handshake.query.userId;
     if (userId) {
-        socket.join(userId);  // Agrega este socket a la "room" para este ID de usuario
+        // Añade el socket del usuario al objeto
+        userSockets[userId] = socket;
+
+        let notifications = await Notification.find({ user: userId })
+            .populate('user', '_id username name image')
+            .populate('fromUser', '_id username name image')
+            .sort({ date: -1 });
+
+        for (let notification of notifications) {
+            if (notification.target && notification.target.postId) {
+                const post = await Post.findById(notification.target.postId);
+                notification.target.post = post;
+            }
+        }
+
+        socket.emit('notifications', notifications)
     }
 })
+
+
 
 server.listen(PORT)
 console.log('Server on port', PORT)
