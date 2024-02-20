@@ -10,30 +10,30 @@ function NotificationBadge({ needText }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [localNotifications, setLocalNotifications] = useState([])
-    const { notifications, readNotifications, 
-        removeNotifications 
+    const { notifications, readNotifications,
+        removeNotifications
     } = useNotification();
 
-    
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-    
+
     const handleMenuClick = (event) => {
         setMenuAnchorEl(event.currentTarget);
     };
     const handleMenuClose = () => {
         setMenuAnchorEl(null);
     };
-    
+
     const handleReadAllNotifications = () => {
         setMenuAnchorEl(null);
         readNotifications(notifications[0].user._id);
     }
-    
+
     const handleRemoveAllNotifications = () => {
         handleMenuClose();
         handleClose();
@@ -43,10 +43,10 @@ function NotificationBadge({ needText }) {
     };
 
     useEffect(() => {
-        setLocalNotifications(notifications);  
+        setLocalNotifications(notifications);
     }, [notifications]);
     const unreadNotifications = localNotifications.filter(notification => !notification.read).length;
-    
+
     return (
         <>
             <IconButton
@@ -81,32 +81,39 @@ function NotificationBadge({ needText }) {
                             onClick={handleClose}
                         >Notifications</Typography>
 
-                        <IconButton onClick={handleMenuClick} >
-                            <MoreVertIcon />
-                        </IconButton>
 
-                        <Menu
-                            anchorEl={menuAnchorEl}
-                            open={Boolean(menuAnchorEl)}
-                            onClose={handleMenuClose}
-                        >
-                            <MenuItem onClick={handleReadAllNotifications}>
-                                Mark all as read
-                            </MenuItem>
-                            <MenuItem onClick={handleRemoveAllNotifications}
-                                sx={{ color: theme => theme.palette.error.main }}
-                            >
-                                Delete all notifications
-                            </MenuItem>
+                        {notifications.length > 0 &&
+                            <>
+                                <IconButton onClick={handleMenuClick} >
+                                    <MoreVertIcon />
+                                </IconButton>
 
-                        </Menu>
+                                <Menu
+                                    anchorEl={menuAnchorEl}
+                                    open={Boolean(menuAnchorEl)}
+                                    onClose={handleMenuClose}
+                                >
+                                    {unreadNotifications.length > 0 &&
+                                        <MenuItem onClick={handleReadAllNotifications}>
+                                            Mark all as read
+                                        </MenuItem>}
+
+                                    <MenuItem onClick={handleRemoveAllNotifications}
+                                        sx={{ color: theme => theme.palette.error.main }}
+                                    >
+                                        Delete all notifications
+                                    </MenuItem>
+
+                                </Menu>
+                            </>}
                     </Box>
                     {localNotifications.length > 0 ? (
                         localNotifications.map((notification, index) => (
-                            <ShowNotification key={index} notification={notification} bg={true}/>
+                            <ShowNotification key={index} notification={notification} bg={true} />
                         ))
                     ) : (
-                        <Box sx={{ height: 400, padding: 3,
+                        <Box sx={{
+                            height: 400, padding: 3,
                             display: 'flex', justifyContent: 'center', alignItems: 'center',
                             flexDirection: 'column',
                             backgroundColor: theme => theme.palette.grey[300]

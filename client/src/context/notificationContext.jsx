@@ -55,7 +55,6 @@ export const NotificationProvider = ({ children }) => {
     const readNotifications = async (userId) => {
         try {
             const res = await readNotificationsRequest(userId)
-            console.log(res);
             setNotifications(res.data)
         } catch (error) {
             console.error(error)
