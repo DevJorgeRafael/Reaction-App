@@ -5,10 +5,7 @@ import {
     removeNotificationsRequest, removeNotificationRequest
 } from '../api/notifications'
 import { useUser } from '../context/userContext';
-import NotificationToast from "../components/notifications/NotificationToast";
-import toast from "react-hot-toast";
-import { ShowNotification } from "../components/notifications/showNotification";
-import { Box, Button } from "@mui/material";
+import { showNotificationToast } from '../components/notifications/NotificationToast'
 
 const NotificationContext = createContext();
 
@@ -38,14 +35,13 @@ export const NotificationProvider = ({ children }) => {
 
             socket.on('notification', (notification) => {
                 setNotifications(prevNotifications => {
-                    // Verificar si la notificación ya está en la lista
                     if (!prevNotifications.some(n => n._id === notification._id)) {
                         return [notification, ...prevNotifications];
                     } else {
                         return prevNotifications;
                     }
                 });
-                setToastNotification(notification);
+                showNotificationToast(notification);
             });
 
         }
@@ -76,8 +72,6 @@ export const NotificationProvider = ({ children }) => {
     const removeNotifications = async (userId) => {
         try {
             const res = await removeNotificationsRequest(userId)
-            console.log('removeNotifications: ', res.data.deletedCount)
-
             setNotifications([])
         } catch (error) {
             console.error(error)
@@ -102,7 +96,6 @@ export const NotificationProvider = ({ children }) => {
             removeNotification
         }}>
             {children}
-            {toastNotification && <NotificationToast notification={toastNotification} />}
         </NotificationContext.Provider>
     )
 }
