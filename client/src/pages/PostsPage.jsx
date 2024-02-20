@@ -3,11 +3,9 @@ import Masonry from 'react-masonry-css'
 import { VscEmptyWindow } from 'react-icons/vsc'
 import '../styles/post.css'
 import ShowPost from '../components/posts/ShowPost';
-import { useSocket } from '../hooks/useSocket';
 
 function PostsPage() {
     const { posts } = usePosts()
-    useSocket()
 
     const breakpointColumnsObj = {
         default: 2,

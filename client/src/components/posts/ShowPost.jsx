@@ -1,5 +1,3 @@
-// En ShowPost.jsx
-
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar, Box, Menu, MenuItem, Button } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';

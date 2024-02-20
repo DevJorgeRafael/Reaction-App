@@ -130,10 +130,20 @@ export const likePost = async (req, res) => {
         });
         await notification.save();
 
+        // Buscar la notificación en la base de datos y poblar los campos necesarios
+        const populatedNotification = await Notification.findById(notification._id)
+            .populate('user', '_id username name image')
+            .populate('fromUser', '_id username name image');
+
+        if (populatedNotification.target && populatedNotification.target.postId) {
+            const post = await Post.findById(populatedNotification.target.postId);
+            populatedNotification.target.post = post;
+        }
+
         const userSocket = userSockets[post.user];
         if (userSocket) {
-            await sendNotifications(post.user, userSocket);
-            userSocket.emit('notification', notification);
+            userSocket.emit('notification', populatedNotification);
+            console.log('emitting notifications after a single notification')
         }
 
         const updatedPost = await Post.findById(req.params.id).populate('user');

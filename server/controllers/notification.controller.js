@@ -1,3 +1,4 @@
+import { userSockets } from "../index.js";
 import Notification from "../models/Notification.js";
 import Post from "../models/Post.js";
 
@@ -56,8 +57,15 @@ export const removeNotification = async (req, res) => {
 export const removeAllNotifications = async (req, res) => {
     try {
         const notifications = await Notification.deleteMany({ user: req.params.userId });
+
+        const userSocket = userSockets[req.params.userId];
+        if (userSocket) {
+            userSocket.emit('notificationsCleared');
+        }
+
         return res.json(notifications);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }
+

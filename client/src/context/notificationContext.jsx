@@ -1,8 +1,14 @@
 import { useState, createContext, useContext, useEffect } from "react";
+import { io } from 'socket.io-client';
 import {
     readNotificationsRequest, readNotificationRequest,
     removeNotificationsRequest, removeNotificationRequest
 } from '../api/notifications'
+import { useUser } from '../context/userContext';
+import NotificationToast from "../components/notifications/NotificationToast";
+import toast from "react-hot-toast";
+import { ShowNotification } from "../components/notifications/showNotification";
+import { Box, Button } from "@mui/material";
 
 const NotificationContext = createContext();
 
@@ -12,7 +18,37 @@ export const useNotification = () => {
 }
 
 export const NotificationProvider = ({ children }) => {
-    const [notificationUpdated, setNotificationUpdated] = useState(null)
+    const { user } = useUser();
+    const [notifications, setNotifications] = useState([]);
+    const [toastNotification, setToastNotification] = useState(null);
+
+    useEffect(() => {
+        let socket;
+
+        if (user) {
+            socket = io('http://localhost:4000', {
+                query: {
+                    userId: user._id
+                }
+            });
+
+            socket.on('notifications', (notifications) => {
+                setNotifications(notifications);
+                console.log('Received new notifications:', notifications);
+            });
+
+            socket.on('notification', (notification) => {
+                setNotifications(prevNotifications => [...prevNotifications, notification]);
+                setToastNotification(notification);
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.disconnect();
+            }
+        };
+    }, [user]);
 
     const readNotifications = (userId) => {
         try {
@@ -30,11 +66,12 @@ export const NotificationProvider = ({ children }) => {
         }
     }
 
-    const removeNotifications = (userId) => {
+    const removeNotifications = async (userId) => {
         try {
-            console.log(userId)
-            const res = removeNotificationsRequest(userId)
-            console.log(res)
+            const res = await removeNotificationsRequest(userId)
+            console.log('removeNotifications: ', res.data.deletedCount)
+
+            setNotifications([])
         } catch (error) {
             console.error(error)
         }
@@ -49,16 +86,16 @@ export const NotificationProvider = ({ children }) => {
     }
 
     return (
-        <NotificationContext.Provider value={{ 
-            notificationUpdated, 
+        <NotificationContext.Provider value={{
+            notifications,
 
-            setNotificationUpdated,
             readNotifications,
             readNotification,
             removeNotifications,
             removeNotification
         }}>
             {children}
+            {toastNotification && <NotificationToast notification={toastNotification} />}
         </NotificationContext.Provider>
     )
 }

@@ -3,7 +3,7 @@ import { alpha } from '@mui/system';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
-export const ShowNotification = ({ notification }) => {
+export const ShowNotification = ({ notification, bg }) => {
     const navigate = useNavigate()
     let message;
     switch (notification.type) {
@@ -20,19 +20,20 @@ export const ShowNotification = ({ notification }) => {
     return (
         <Box
             sx={{
-                p: 2,
+                p: 1,
                 display: 'flex',
-                width: 400,
-                backgroundColor: notification.read ? 'initial' : '#f5f5f5',
+                width: '100%',
+                backgroundColor: bg ? (notification.read ? 'initial' : '#f5f5f5') : undefined,
                 '&:hover': {
                     backgroundColor: theme => alpha(theme.palette.primary.main, 0.1)
                 }
             }}
+
         >
-            <Box sx={{ mr: 1 }}>
+            <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
                 <Avatar src={notification.fromUser.image?.url}
                     alt={notification.fromUser.username}
-                    sx={{ height: 75, width: 75, cursor: 'pointer' }}
+                    sx={{ height: 50, width: 50, cursor: 'pointer' }}
                     onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
                 />
             </Box>

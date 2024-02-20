@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box } from '@mui/material';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { useSocket } from '../../hooks/useSocket';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ShowNotification } from '../notifications/showNotification';
 import { useNotification } from '../../context/notificationContext';
@@ -10,39 +9,44 @@ import { useNotification } from '../../context/notificationContext';
 function NotificationBadge({ needText }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-    const notifications = useSocket();
-    const { readNotifications, removeNotifications } = useNotification();
+    const [localNotifications, setLocalNotifications] = useState([])
+    const { notifications, readNotifications, 
+        removeNotifications 
+    } = useNotification();
 
-    const unreadNotifications = notifications.filter(notification => !notification.read).length;
-
+    
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    
     const handleMenuClick = (event) => {
         setMenuAnchorEl(event.currentTarget);
     };
     const handleMenuClose = () => {
         setMenuAnchorEl(null);
     };
-
+    
     const handleReadAllNotifications = () => {
-        console.log('Mark all as read');
         setMenuAnchorEl(null);
         readNotifications(notifications[0].user._id);
     }
-
+    
     const handleRemoveAllNotifications = () => {
-        console.log('Delete all notifications');
-        handleMenuClose()
-        handleClose()
-        removeNotifications(notifications[0].user._id);
-    }
-    // console.log(notifications)
+        handleMenuClose();
+        handleClose();
+        if (notifications.length > 0) {
+            removeNotifications(notifications[0].user._id);
+        }
+    };
 
+    useEffect(() => {
+        setLocalNotifications(notifications);  
+    }, [notifications]);
+    const unreadNotifications = localNotifications.filter(notification => !notification.read).length;
+    
     return (
         <>
             <IconButton
@@ -97,9 +101,9 @@ function NotificationBadge({ needText }) {
 
                         </Menu>
                     </Box>
-                    {notifications.length > 0 ? (
-                        notifications.map((notification, index) => (
-                            <ShowNotification key={index} notification={notification} />
+                    {localNotifications.length > 0 ? (
+                        localNotifications.map((notification, index) => (
+                            <ShowNotification key={index} notification={notification} bg={true}/>
                         ))
                     ) : (
                         <Box sx={{ height: 400, padding: 3,
