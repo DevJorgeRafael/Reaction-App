@@ -17,7 +17,6 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
     const { user } = useUser();
     const [notifications, setNotifications] = useState([]);
-    const [toastNotification, setToastNotification] = useState(null);
 
     useEffect(() => {
         let socket;
@@ -53,17 +52,19 @@ export const NotificationProvider = ({ children }) => {
         };
     }, [user]);
 
-    const readNotifications = (userId) => {
+    const readNotifications = async (userId) => {
         try {
-            readNotificationsRequest(userId)
+            const res = await readNotificationsRequest(userId)
+            console.log(res);
         } catch (error) {
             console.error(error)
         }
     }
 
-    const readNotification = (notificationId) => {
+    const readNotification = async (notificationId) => {
         try {
-            readNotificationRequest(notificationId)
+            const res = await readNotificationRequest(notificationId)
+            console.log(res)
         } catch (error) {
             console.error(error)
         }
@@ -71,20 +72,22 @@ export const NotificationProvider = ({ children }) => {
 
     const removeNotifications = async (userId) => {
         try {
-            const res = await removeNotificationsRequest(userId)
+            await removeNotificationsRequest(userId)
             setNotifications([])
         } catch (error) {
             console.error(error)
         }
     }
 
-    const removeNotification = (notificationId) => {
+    const removeNotification = async (notificationId) => {
         try {
-            removeNotificationRequest(notificationId)
+            await removeNotificationRequest(notificationId);
+            setNotifications(prevNotifications => prevNotifications.filter(notification => notification._id !== notificationId));
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
+
 
     return (
         <NotificationContext.Provider value={{

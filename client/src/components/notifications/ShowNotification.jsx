@@ -1,11 +1,16 @@
-import { Box, Avatar, Typography } from '@mui/material';
+import { Box, Avatar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { alpha } from '@mui/system';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../../context/notificationContext'; 
+import { useState } from 'react';
 
 export const ShowNotification = ({ notification, bg }) => {
     const navigate = useNavigate()
+    const { readNotification, removeNotification } = useNotification();
     let message;
+
     switch (notification.type) {
         case 'like':
             message = 'has liked your post';
@@ -17,6 +22,26 @@ export const ShowNotification = ({ notification, bg }) => {
             message = '';
     }
 
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleMarkAsRead = () => {
+        readNotification(notification._id);
+        handleMenuClose();
+    };
+
+    const handleDelete = () => {
+        removeNotification(notification._id);
+        handleMenuClose();
+    };
+
     return (
         <Box
             sx={{
@@ -25,7 +50,8 @@ export const ShowNotification = ({ notification, bg }) => {
                 width: '100%',
                 backgroundColor: bg ? (notification.read ? 'initial' : theme => alpha(theme.palette.primary.dark, 0.2)) : undefined,
                 '&:hover': {
-                    backgroundColor: "#B4D4FF"
+                    backgroundColor: "#B4D4FF",
+                    
                 }
             }}
         >
@@ -53,6 +79,31 @@ export const ShowNotification = ({ notification, bg }) => {
                     {formatDistanceToNow(new Date(notification.date), { addSuffix: true })}
                 </Typography>
             </Box>
+
+            {bg && <>
+                <IconButton
+                    aria-label="more"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={handleMenuClick}
+                >
+                    <MoreVertIcon />
+                </IconButton>
+                <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                >
+                    <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>
+                    <MenuItem onClick={handleDelete}
+                        sx= {{ color: 'error.main' }}
+                    >
+                        Delete this
+                    </MenuItem>
+                </Menu>
+            </>}
         </Box>
     );
 };
