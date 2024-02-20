@@ -23,12 +23,11 @@ export const ShowNotification = ({ notification, bg }) => {
                 p: 1,
                 display: 'flex',
                 width: '100%',
-                backgroundColor: bg ? (notification.read ? 'initial' : '#f5f5f5') : undefined,
+                backgroundColor: bg ? (notification.read ? 'initial' : theme => alpha(theme.palette.primary.dark, 0.2)) : undefined,
                 '&:hover': {
-                    backgroundColor: theme => alpha(theme.palette.primary.main, 0.1)
+                    backgroundColor: "#B4D4FF"
                 }
             }}
-
         >
             <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
                 <Avatar src={notification.fromUser.image?.url}

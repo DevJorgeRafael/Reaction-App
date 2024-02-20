@@ -34,11 +34,10 @@ export const NotificationProvider = ({ children }) => {
 
             socket.on('notifications', (notifications) => {
                 setNotifications(notifications);
-                console.log('Received new notifications:', notifications);
             });
 
             socket.on('notification', (notification) => {
-                setNotifications(prevNotifications => [...prevNotifications, notification]);
+                setNotifications(prevNotifications => [notification, ...prevNotifications]);
                 setToastNotification(notification);
             });
         }
