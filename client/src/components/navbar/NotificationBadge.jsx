@@ -10,6 +10,7 @@ function NotificationBadge({ needText }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [localNotifications, setLocalNotifications] = useState([])
+    const [unreadNotifications, setUnreadNotifications] = useState(0);
     const { notifications, readNotifications,
         removeNotifications
     } = useNotification();
@@ -45,7 +46,12 @@ function NotificationBadge({ needText }) {
     useEffect(() => {
         setLocalNotifications(notifications);
     }, [notifications]);
-    const unreadNotifications = localNotifications.filter(notification => !notification.read).length;
+
+    useEffect(() => {
+        const unreadCount = localNotifications.filter(notification => !notification.read).length;
+        setUnreadNotifications(unreadCount);
+        console.log('unreadNotifications', unreadCount);
+    }, [localNotifications, unreadNotifications]);
 
     return (
         <>
@@ -82,7 +88,7 @@ function NotificationBadge({ needText }) {
                         >Notifications</Typography>
 
 
-                        {notifications.length > 0 &&
+                        {localNotifications.length > 0 &&
                             <>
                                 <IconButton onClick={handleMenuClick} >
                                     <MoreVertIcon />
@@ -93,7 +99,7 @@ function NotificationBadge({ needText }) {
                                     open={Boolean(menuAnchorEl)}
                                     onClose={handleMenuClose}
                                 >
-                                    {unreadNotifications.length > 0 &&
+                                    {unreadNotifications > 0 &&
                                         <MenuItem onClick={handleReadAllNotifications}>
                                             Mark all as read
                                         </MenuItem>}
