@@ -67,7 +67,7 @@ export const ShowNotification = ({ notification, bg }) => {
                     <Box component="span" sx={{ fontWeight: 'bold', mr: 1, cursor: 'pointer' }}
                         onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
                     >
-                        {notification.fromUser.username}
+                        @{notification.fromUser.username}
                     </Box>
                     <Typography variant="body2" color="initial" component="span">{message}</Typography>
                     <Box component="span" sx={{ fontWeight: 'bold', mx: 1 }}>
@@ -96,7 +96,7 @@ export const ShowNotification = ({ notification, bg }) => {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>
+                    { !notification.read && <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>}
                     <MenuItem onClick={handleDelete}
                         sx= {{ color: 'error.main' }}
                     >

@@ -9,12 +9,8 @@ export const sendNotifications = async (userId, socket) => {
             .populate('fromUser', '_id username name image')
             .sort({ date: -1 });
 
-        for (let notification of notifications) {
-            if (notification.target && notification.target.postId) {
-                const post = await Post.findById(notification.target.postId);
-                notification.target.post = post;
-            }
-        }
+        notifications = await populateNotifications(notifications);
+
         socket.emit('notifications', notifications);
     } catch (error) {
         console.error(error);
@@ -33,12 +29,24 @@ export const getPopulatedNotification = async (notification) => {
     return populatedNotification;
 }
 
+export const populateNotifications = async (notifications) => {
+    for (let notification of notifications) {
+        if (notification.target && notification.target.postId) {
+            const post = await Post.findById(notification.target.postId);
+            notification.target.post = post;
+        }
+    }
+    return notifications;
+}
+
 export const readNotification = async (req, res) => {
     try {
         const notification = await Notification.findByIdAndUpdate(req.params.id, 
             { read: true }, { new: true });
+
+        const populatedNotification = await getPopulatedNotification(notification);
         
-        return res.json(notification);
+        return res.json(populatedNotification);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -46,16 +54,24 @@ export const readNotification = async (req, res) => {
 
 export const readAllNotifications = async (req, res) => {
     try {
-        const notifications = await Notification.updateMany(
+        await Notification.updateMany(
             { user: req.params.userId, read: false },
             { read: true }
         );
-        
-        return res.json(notifications);
+
+        let notifications = await Notification.find({ user: req.params.userId })
+            .populate('user', '_id username name image')
+            .populate('fromUser', '_id username name image')
+            .sort({ date: -1 });
+
+        const populatedNotifications = await populateNotifications(notifications);
+
+        return res.json(populatedNotifications);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 export const removeNotification = async (req, res) => {
     try {

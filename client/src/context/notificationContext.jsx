@@ -56,6 +56,7 @@ export const NotificationProvider = ({ children }) => {
         try {
             const res = await readNotificationsRequest(userId)
             console.log(res);
+            setNotifications(res.data)
         } catch (error) {
             console.error(error)
         }
@@ -63,12 +64,15 @@ export const NotificationProvider = ({ children }) => {
 
     const readNotification = async (notificationId) => {
         try {
-            const res = await readNotificationRequest(notificationId)
-            console.log(res)
+            const res = await readNotificationRequest(notificationId);
+            setNotifications(prevNotifications => prevNotifications.map(notification =>
+                notification._id === notificationId ? res.data : notification
+            ));
         } catch (error) {
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
+
 
     const removeNotifications = async (userId) => {
         try {
