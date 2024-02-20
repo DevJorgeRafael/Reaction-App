@@ -15,7 +15,7 @@ export const usePosts = () => {
 }
 
 export const PostProvider = ({ children }) => {
-    const { user, checkAuth } = useUser()
+    const { user } = useUser()
 
     const [posts, setPosts] = useState([])
 

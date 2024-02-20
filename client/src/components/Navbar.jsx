@@ -1,19 +1,8 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-
-import HomeIcon from '@mui/icons-material/Home';
-import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import Box from '@mui/material/Box';
 import InputIcon from '@mui/icons-material/Input';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -30,7 +19,7 @@ import DesktopNav from './navbar/DesktopNav';
 import MobileNav from './navbar/MobileNav';
 import ProfileMenu from './navbar/ProfileMenu';
 import ProfileMobileMenu from './navbar/ProfileMobileMenu';
-
+import AuthButtons from './navbar/AuthButtons';
 
 export default function NavBar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -39,10 +28,6 @@ export default function NavBar() {
     const { user, logout } = useUser();
     const navigate = useNavigate()
 
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-    // Función para manejar el logout
     const handleLogout = () => {
         handleMenuClose()
         handleMobileMenuClose()
@@ -67,83 +52,7 @@ export default function NavBar() {
     };
 
     const menuId = 'primary-search-account-menu';
-    const renderMenu = (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={() => {
-                handleMenuClose()
-                navigate(`/profile/${user.username}`)
-            }}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-            <MenuItem onClick={handleLogout}>
-                <Typography color="error">Logout</Typography>
-            </MenuItem>
-        </Menu>
-    );
-
     const mobileMenuId = 'primary-search-account-menu-mobile';
-    const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-        </Menu>
-    );
 
     let lastScrollTop = 0;
 
@@ -188,38 +97,8 @@ export default function NavBar() {
 
                     </Toolbar>) : (
                         <>
-                            <Toolbar>
-                                <IconButton
-                                    size="large"
-                                    edge="start"
-                                    color="inherit"
-                                    aria-label="open drawer"
-                                    sx={{ mr: 2 }}
-                                >
-                                    <img src="/ReactiOn-logo.png" alt="Logo" width="50" height="50" />
-                                </IconButton>
-                                <Typography
-                                    variant="h6"
-                                    noWrap
-                                    component="div"
-                                    sx={{ display: { xs: 'none', sm: 'block' } }}
-                                >
-                                    ReactiOn
-                                </Typography>
-                                <Box sx={{ flexGrow: 1 }} />
-                                <Button 
-                                    startIcon={<InputIcon />} style={{ color: 'white', padding: '10px' }}
-                                    onClick={() => navigate('/login')}
-                                >
-                                    Sign In
-                                </Button>
-                                <Button 
-                                startIcon={<PersonAddIcon />} style={{ color: 'white', padding: '10px' }}
-                                    onClick={() => navigate('/register')}
-                                >
-                                    Sign Up
-                                </Button>
-
+                            <Toolbar>            
+                                <AuthButtons />
                             </Toolbar>
                         </>
                     )}
