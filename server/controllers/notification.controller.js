@@ -21,6 +21,18 @@ export const sendNotifications = async (userId, socket) => {
     }
 };
 
+export const getPopulatedNotification = async (notification) => {
+    const populatedNotification = await Notification.findById(notification._id)
+        .populate('user', '_id username name image')
+        .populate('fromUser', '_id username name image');
+
+    if (populatedNotification.target && populatedNotification.target.postId) {
+        const post = await Post.findById(populatedNotification.target.postId);
+        populatedNotification.target.post = post;
+    }
+    return populatedNotification;
+}
+
 export const readNotification = async (req, res) => {
     try {
         const notification = await Notification.findByIdAndUpdate(req.params.id, 
@@ -57,11 +69,6 @@ export const removeNotification = async (req, res) => {
 export const removeAllNotifications = async (req, res) => {
     try {
         const notifications = await Notification.deleteMany({ user: req.params.userId });
-
-        const userSocket = userSockets[req.params.userId];
-        if (userSocket) {
-            userSocket.emit('notificationsCleared');
-        }
 
         return res.json(notifications);
     } catch (error) {

@@ -1,11 +1,10 @@
 import Post from '../models/Post.js'
 import User from '../models/User.js'
 import Notification from '../models/Notification.js'
-import Message from '../models/Message.js'
 import { uploadImage, deleteImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
 import { io, userSockets } from '../index.js'
-import { sendNotifications } from './notification.controller.js'
+import { getPopulatedNotification } from './notification.controller.js' 
 
 export const getPosts = async (req, res) => {
     try {
@@ -119,31 +118,24 @@ export const likePost = async (req, res) => {
         post.likes.push(req.body.userId);
         await post.save();
 
-        const userFound = await User.findById(req.body.userId);
-        if (!userFound) return res.status(400).json({ message: 'User not found' });
 
-        const notification = new Notification({
-            user: post.user,
-            fromUser: req.body.userId,
-            type: 'like',
-            target: { postId: post._id },
-        });
-        await notification.save();
+        if (post.user.toString() !== req.body.userId) {
+            const userFound = await User.findById(req.body.userId);
+            if (!userFound) return res.status(400).json({ message: 'User not found' });
 
-        // Buscar la notificación en la base de datos y poblar los campos necesarios
-        const populatedNotification = await Notification.findById(notification._id)
-            .populate('user', '_id username name image')
-            .populate('fromUser', '_id username name image');
+            const notification = new Notification({
+                user: post.user,
+                fromUser: req.body.userId,
+                type: 'like',
+                target: { postId: post._id },
+            });
+            await notification.save();
 
-        if (populatedNotification.target && populatedNotification.target.postId) {
-            const post = await Post.findById(populatedNotification.target.postId);
-            populatedNotification.target.post = post;
-        }
+            // Buscar la notificación en la base de datos y poblar los campos necesarios
+            const populatedNotification = await getPopulatedNotification(notification)
 
-        const userSocket = userSockets[post.user];
-        if (userSocket) {
-            userSocket.emit('notification', populatedNotification);
-            console.log('emitting notifications after a single notification')
+            const userSocket = userSockets[post.user];
+            if (userSocket) userSocket.emit('notification', populatedNotification);
         }
 
         const updatedPost = await Post.findById(req.params.id).populate('user');

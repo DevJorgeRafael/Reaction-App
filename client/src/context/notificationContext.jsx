@@ -37,9 +37,17 @@ export const NotificationProvider = ({ children }) => {
             });
 
             socket.on('notification', (notification) => {
-                setNotifications(prevNotifications => [notification, ...prevNotifications]);
+                setNotifications(prevNotifications => {
+                    // Verificar si la notificación ya está en la lista
+                    if (!prevNotifications.some(n => n._id === notification._id)) {
+                        return [notification, ...prevNotifications];
+                    } else {
+                        return prevNotifications;
+                    }
+                });
                 setToastNotification(notification);
             });
+
         }
 
         return () => {
