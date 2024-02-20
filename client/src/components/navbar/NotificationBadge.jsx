@@ -50,7 +50,6 @@ function NotificationBadge({ needText }) {
     useEffect(() => {
         const unreadCount = localNotifications.filter(notification => !notification.read).length;
         setUnreadNotifications(unreadCount);
-        console.log('unreadNotifications', unreadCount);
     }, [localNotifications, unreadNotifications]);
 
     return (

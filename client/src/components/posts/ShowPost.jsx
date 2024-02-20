@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardContent, CardMedia, CardActions, IconButton, Typography, Avatar, Box, Menu, MenuItem, Button } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -74,7 +74,6 @@ function ShowPost({ post, onClose }) {
         );
     };
 
-
     const handleLikePost = async () => {
         try {
             if (localPost.likes.includes(user._id)) {
@@ -95,6 +94,10 @@ function ShowPost({ post, onClose }) {
         }
         return color;
     };
+
+    useEffect(() => {
+        setLocalPost(post); 
+    }, [post])
 
     return (
         <Card>

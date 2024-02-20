@@ -1,6 +1,11 @@
 import { useState, createContext, useContext, useEffect } from "react"
-import { getPostRequest, createPostRequest, deletePostRequest, likePostRequest, unlikePostRequest } from '../api/posts'
+import {
+    getPostsRequest, createPostRequest, 
+    deletePostRequest, likePostRequest, 
+    unlikePostRequest, 
+} from '../api/posts'
 import { useUser } from "./userContext"
+import { io } from 'socket.io-client';
 
 const PostContext = createContext()
 
@@ -14,16 +19,57 @@ export const PostProvider = ({ children }) => {
 
     const [posts, setPosts] = useState([])
 
+    useEffect(() => {
+        let socket;
+
+        if (user) {
+            socket = io('http://localhost:4000', {
+                query: {
+                    userId: user._id
+                }
+            });
+
+            socket.on('posts', (posts) => {
+                setPosts(posts);
+            });
+
+            socket.on('postCreated', async (post) => {
+                await getPosts()
+            });
+
+            socket.on('postLiked', (updatedPost) => {
+                setPosts(prevPosts => prevPosts.map(post =>
+                    post._id === updatedPost._id ? updatedPost : post
+                ));
+            });
+
+
+            socket.on('postUnliked', (updatedPost) => {
+                setPosts(prevPosts => prevPosts.map(post =>
+                    post._id === updatedPost._id ? updatedPost : post
+                ));
+            });
+
+
+            socket.on('postDeleted', (postId) => {
+                setPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.disconnect();
+            }
+        };
+    }, [user]);
+
     const getPosts = async () => {
-        const res = await getPostRequest()
+        const res = await getPostsRequest()
         setPosts(res.data)
     }
 
     const createPost = async (post) => {
         const res = await createPostRequest(post)
-        if (res.status === 200) {
-            await getPosts()
-        }
         return res.status
     }
 
@@ -49,14 +95,6 @@ export const PostProvider = ({ children }) => {
         }
     }
 
-
-    useEffect(() => {
-        getPosts()
-    }, [])
-
-    useEffect(() => {
-        getPosts()
-    }, [user])
 
     return <PostContext.Provider value={{
         posts,

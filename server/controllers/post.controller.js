@@ -6,15 +6,27 @@ import fs from 'fs-extra'
 import { io, userSockets } from '../index.js'
 import { getPopulatedNotification } from './notification.controller.js' 
 
+export const sendPosts = async (socket) => {
+    try {
+        let posts = await Post.find()
+            .populate('user', '_id username name image')
+            .sort({ date: -1 });
+
+        socket.emit('posts', posts);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
 export const getPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ date: -1 }).populate('user', 'username name image');
+        const posts = await Post.find().sort({ date: -1 }).populate('user', '_id username name image');
         res.send(posts)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
-
 
 export const createPost = async (req, res) => {
     try {
@@ -59,6 +71,7 @@ export const createPost = async (req, res) => {
         userFound.posts.push(newPost);
         await userFound.save();
 
+        io.emit('postCreated', newPost);
         return res.json(newPost);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -89,6 +102,7 @@ export const deletePost = async (req, res) => {
         user.posts.pull(postRemoved);
         await user.save();
 
+        io.emit('postDeleted', postRemoved._id);
         return res.status(200).json({ postRemoved });
     } catch (error) {
         return res.status(500).json({ message: error.message })
@@ -131,7 +145,6 @@ export const likePost = async (req, res) => {
             });
             await notification.save();
 
-            // Buscar la notificación en la base de datos y poblar los campos necesarios
             const populatedNotification = await getPopulatedNotification(notification)
 
             const userSocket = userSockets[post.user];
@@ -139,11 +152,12 @@ export const likePost = async (req, res) => {
         }
 
         const updatedPost = await Post.findById(req.params.id).populate('user');
+        io.emit('postLiked', updatedPost);  
         return res.json(updatedPost)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
-}
+};
 
 
 export const unlikePost = async (req, res) => {
@@ -154,16 +168,15 @@ export const unlikePost = async (req, res) => {
 
         const likeIndex = post.likes.indexOf(userId);
         if (likeIndex !== -1) {
-            // Si el usuario ha dado "like" al post, eliminar su ID de los likes
             post.likes.splice(likeIndex, 1);
         }
         await post.save();
 
         const updatedPost = await Post.findById(req.params.id).populate('user');
-
+        io.emit('postUnliked', updatedPost); 
         return res.json(updatedPost)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
-}
+};
 

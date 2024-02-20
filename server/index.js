@@ -3,6 +3,7 @@ import {PORT} from './config/config.js'
 import { app, server} from './app.js'
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
+import { sendPosts } from './controllers/post.controller.js'
 
 connectDB() 
 
@@ -19,10 +20,10 @@ io.on('connection', async (socket) => {
     console.log('A client has connected')
     const userId = socket.handshake.query.userId;
     if (userId) {
-        // Añade el socket del usuario al objeto
         userSockets[userId] = socket;
 
         sendNotifications(userId, socket);
+        sendPosts(socket);
     }
 })
 
