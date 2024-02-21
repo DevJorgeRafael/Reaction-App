@@ -1,15 +1,11 @@
 import * as React from 'react';
+import { forwardRef } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import InputIcon from '@mui/icons-material/Input';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { useUser } from '../context/userContext';
 import CreatePostModal from './posts/CreatePostModal';
-import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import Logo from './navbar/Logo'
@@ -21,12 +17,13 @@ import ProfileMenu from './navbar/ProfileMenu';
 import ProfileMobileMenu from './navbar/ProfileMobileMenu';
 import AuthButtons from './navbar/AuthButtons';
 
-export default function NavBar() {
+const NavBar = forwardRef((props, ref) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [showNavbar, setShowNavbar] = React.useState(true);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const { user, logout } = useUser();
     const navigate = useNavigate()
+    
 
     const handleLogout = () => {
         handleMenuClose()
@@ -73,7 +70,7 @@ export default function NavBar() {
 
 
     return (
-        <Box sx={{
+        <Box ref={ref}  sx={{
             flexGrow: 1,
             position: 'fixed',
             width: '100%',
@@ -87,7 +84,7 @@ export default function NavBar() {
                     (<Toolbar>
                         <Logo navigate={ navigate } />
                         <HomeButton navigate={ navigate } />
-                        <SearchBar />
+                        <SearchBar navBarRef={ref} />
 
                         <Box sx={{ flexGrow: 1 }} />
                         <CreatePostModal />
@@ -117,4 +114,6 @@ export default function NavBar() {
             />
         </Box>
     );
-}
+})
+
+export default NavBar;

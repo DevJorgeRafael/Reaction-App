@@ -3,7 +3,8 @@ import {
     loginRequest, registerRequest,
     verifyTokenRequest, getUserByUsernameRequest,
     updateUserRequest, updateUserImageRequest,
-    deleteUserImageRequest ,checkUsernameRequest
+    deleteUserImageRequest ,checkUsernameRequest,
+    getUsersRequest, getUsersByUsernameRequest
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
     const navigate = useNavigate()
     const [user, setUser] = useState(null);
+    const [users, setUsers] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
@@ -153,6 +155,24 @@ export const UserProvider = ({ children }) => {
         }
     }
 
+    const getUsers = async () => {
+        try {
+            const res = await getUsersRequest()
+            setUsers(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getUsersByUsername = async (username) => {
+        try {
+            const res = await getUsersByUsernameRequest(username)
+            setUsers(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         checkAuth()
     }, [])
@@ -168,8 +188,11 @@ export const UserProvider = ({ children }) => {
             updateUser,
             updateUserImage,
             deleteUserImage,
+            getUsers,
+            getUsersByUsername,
 
             user,
+            users,
             errors,
             loading,
             isAuthenticated,

@@ -1,6 +1,4 @@
 import User from '../models/User.js';
-import Message from '../models/Message.js';
-import Notification from '../models/Notification.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { SECRET_KEY } from '../config/config.js';
@@ -178,3 +176,23 @@ export const deleteUserImage = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+export const getUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password -__v')
+        return res.json(users)
+    } catch (error) {
+        return res.status (500).json({ message: error.message });
+    }
+}
+
+export const getUsersByUsername = async (req, res) => {
+    try {
+        const { username } = req.params
+        const users = await User.find({ username: { $regex: username, 
+            $options: 'i' }}).select('-password -__v')
+        return res.json(users)
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}

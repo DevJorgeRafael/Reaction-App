@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { styled, alpha, InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -44,19 +45,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function SearchBar() {
     const [isOpen, setIsOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const searchRef = useRef();
-
-    useEffect(() => {
-        if (isOpen) {
-            searchRef.current.focus();
-        }
-    }, [isOpen]);
+    const searchBarRef = useRef();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isProfilesPage = location.pathname === '/profiles';
 
     const handleIconClick = () => {
         if (isOpen && inputValue === '') {
             setIsOpen(false);
         } else {
             setIsOpen(true);
+            navigate('/profiles');
         }
     };
 
@@ -65,15 +64,14 @@ function SearchBar() {
     };
 
     return (
-        <Search>
+        <Search ref={searchBarRef}>
             <SearchIconWrapper onClick={handleIconClick}>
                 <SearchIcon style={{ fontSize: 30 }} />
             </SearchIconWrapper>
-            {isOpen && (
+            {isProfilesPage && (
                 <StyledInputBase
                     placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
-                    ref={searchRef}
                     onChange={handleInputChange}
                 />
             )}

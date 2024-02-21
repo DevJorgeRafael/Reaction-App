@@ -1,5 +1,6 @@
 import { Toaster } from 'react-hot-toast'
 import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage } from './pages/index.js'
+import ProfilesPage from './pages/profile/ProfilesPage.jsx'
 import { Routes, Route } from 'react-router-dom'
 import { PostProvider } from './context/postContext.jsx'
 import { UserProvider } from './context/userContext.jsx'
@@ -15,7 +16,7 @@ function App() {
     <UserProvider>
       <PostProvider>
         <NotificationProvider>
-          <Navbar />
+          <Navbar/>
           <Toaster />
 
           <Box sx={{ paddingTop: '74px' }}>
@@ -28,6 +29,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path='/posts' element={<PostsPage />}></Route>
                 <Route path='/profile/:username' element={<ProfilePage />}></Route>
+                <Route path='/profiles/' element={<ProfilesPage />}></Route>
               </Route>
             </Routes>
           </Box>
@@ -37,4 +39,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

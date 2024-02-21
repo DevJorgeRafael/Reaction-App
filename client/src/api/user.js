@@ -18,3 +18,7 @@ export const updateUserImageRequest = async (user) =>
     await axios.put('/updateUserImage', user, { transformRequest: [] });
 
 export const deleteUserImageRequest = async (userId) => await axios.delete('/deleteUserImage', {data: {userId}})
+
+export const getUsersRequest = async () => await axios.get('/users')
+
+export const getUsersByUsernameRequest = async (username) => await axios.get(`/users/${username}`)
