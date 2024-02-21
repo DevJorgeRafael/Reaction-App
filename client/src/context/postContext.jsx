@@ -6,6 +6,7 @@ import {
 } from '../api/posts'
 import { useUser } from "./userContext"
 import { io } from 'socket.io-client';
+import { useSocket } from "./socketContext";
 
 const PostContext = createContext()
 
@@ -16,18 +17,12 @@ export const usePosts = () => {
 
 export const PostProvider = ({ children }) => {
     const { user } = useUser()
+    const socket = useSocket()
 
     const [posts, setPosts] = useState([])
 
     useEffect(() => {
-        let socket;
-
-        if (user) {
-            socket = io('http://localhost:4000', {
-                query: {
-                    userId: user._id
-                }
-            });
+        if (user && socket) {
 
             socket.on('posts', (posts) => {
                 setPosts(posts);
@@ -61,7 +56,7 @@ export const PostProvider = ({ children }) => {
                 socket.disconnect();
             }
         };
-    }, [user]);
+    }, [socket, user]);
 
     const getPosts = async () => {
         const res = await getPostsRequest()

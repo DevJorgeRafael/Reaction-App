@@ -147,7 +147,7 @@ export const likePost = async (req, res) => {
 
             const populatedNotification = await getPopulatedNotification(notification)
 
-            const userSocket = userSockets[post.user];
+            const userSocket = userSockets[populatedNotification.user._id];
             if (userSocket) userSocket.emit('notification', populatedNotification);
         }
 

@@ -6,6 +6,7 @@ import {
 } from '../api/notifications'
 import { useUser } from '../context/userContext';
 import { showNotificationToast } from '../components/notifications/NotificationToast'
+import { useSocket } from "./socketContext";
 
 const NotificationContext = createContext();
 
@@ -16,18 +17,11 @@ export const useNotification = () => {
 
 export const NotificationProvider = ({ children }) => {
     const { user } = useUser();
+    const socket = useSocket()
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        let socket;
-
-        if (user) {
-            socket = io('http://localhost:4000', {
-                query: {
-                    userId: user._id
-                }
-            });
-
+        if (user && socket) {
             socket.on('notifications', (notifications) => {
                 setNotifications(notifications);
             });
@@ -42,7 +36,6 @@ export const NotificationProvider = ({ children }) => {
                 });
                 showNotificationToast(notification);
             });
-
         }
 
         return () => {
@@ -50,7 +43,7 @@ export const NotificationProvider = ({ children }) => {
                 socket.disconnect();
             }
         };
-    }, [user]);
+    }, [user, socket]);
 
     const readNotifications = async (userId) => {
         try {

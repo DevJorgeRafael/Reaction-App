@@ -18,7 +18,7 @@ export const showNotificationToast = (notification) => {
         position: 'top-center',
         style: {
             backgroundColor: 'white',
-            boxShadow: '0 0 5px #E0E0E0',
+            boxShadow: '0 0 1px #000000',
             width: '150%',
         },
         icon: '🔔',

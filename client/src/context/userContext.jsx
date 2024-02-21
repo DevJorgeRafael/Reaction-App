@@ -8,6 +8,7 @@ import {
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client"; 
 
 const UserContext = createContext();
 
@@ -64,9 +65,12 @@ export const UserProvider = ({ children }) => {
     const logout = async () => {
         Cookies.remove('token')
         setIsAuthenticated(false)
+        const socket = io('http://localhost:4000')
+        socket.emit('logout', user._id)
         setUser(null)
         navigate('/login')
     }
+
 
     const checkAuth = async () => {
         const cookies = Cookies.get()
