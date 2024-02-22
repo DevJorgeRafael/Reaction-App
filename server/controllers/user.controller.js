@@ -4,6 +4,10 @@ import bcrypt from 'bcryptjs';
 import { SECRET_KEY } from '../config/config.js';
 import { uploadImage, deleteImage } from '../libs/cloudinary.js'
 import fs from 'fs-extra'
+import { io, userSockets } from '../index.js'
+import { getPopulatedNotification } from './notification.controller.js' 
+import Notification from '../models/Notification.js';
+
 
 export const register = async (req, res) => {
     try {
@@ -177,6 +181,73 @@ export const deleteUserImage = async (req, res) => {
     }
 };
 
+
+export const followUser = async (req, res) => {
+    try {
+        const { followerId, userId } = req.body;
+        const follower = await User.findById(followerId);
+        const userToFollow = await User.findById(userId);
+
+        if (!follower || !userToFollow) return res.status(404).json({ message: 'User not found' });
+
+        if (!follower.following.includes(userId)) {
+            follower.following.push(userId);
+            userToFollow.followers.push(followerId);
+
+            await follower.save();
+            await userToFollow.save();
+
+            const notification = new Notification({
+                user: userId,
+                fromUser: followerId,
+                type: 'follow',
+                target: { userId: userId },
+            });
+            await notification.save();
+
+            const populatedNotification = await getPopulatedNotification(notification)
+
+            const userSocket = userSockets[userId];
+            if (userSocket) {
+                userSocket.emit('notification', populatedNotification);
+            }
+
+            return res.json({ userToFollow: userToFollow, follower: follower });
+        } else {
+            return res.status(400).json({ message: 'User is already following' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export const unfollowUser = async (req, res) => {
+    try {
+        const { followerId, userId } = req.body;
+        const follower = await User.findById(followerId);
+        const userToUnfollow = await User.findById(userId);
+
+        if (!follower || !userToUnfollow) return res.status(404).json({ message: 'User not found' });
+
+        if (follower.following.includes(userId)) {
+            follower.following = follower.following.filter(id => id.toString() !== userId);
+            userToUnfollow.followers = userToUnfollow.followers.filter(id => id.toString() !== followerId);
+
+            await follower.save();
+            await userToUnfollow.save();
+
+            return res.json({ userToUnfollow: userToUnfollow, follower: follower });
+        } else {
+            return res.status(400).json({ message: 'User is not following' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+
 export const getUsers = async (req, res) => {
     try {
         const users = await User.find().select('-password -__v')
@@ -196,3 +267,4 @@ export const getUsersByUsername = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+

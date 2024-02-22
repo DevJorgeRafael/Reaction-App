@@ -4,7 +4,8 @@ import {
     verifyTokenRequest, getUserByUsernameRequest,
     updateUserRequest, updateUserImageRequest,
     deleteUserImageRequest ,checkUsernameRequest,
-    getUsersRequest, getUsersByUsernameRequest
+    getUsersRequest, getUsersByUsernameRequest,
+    followUserRequest, unfollowUserRequest
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
@@ -159,6 +160,29 @@ export const UserProvider = ({ children }) => {
         }
     }
 
+    const followUser = async (userId, followerId) => {
+        try {
+            const res = await followUserRequest(userId, followerId)
+            console.log(res)
+            setUser(res.data.follower)
+            setUserProfile(res.data.userToFollow)
+        } catch (error) {
+            console.log(error)
+        }
+    }  
+    
+    const unfollowUser = async (userId, followerId) => {
+        try {
+            const res = await unfollowUserRequest(userId, followerId)
+            console.log(res)
+            setUser(res.data.follower)
+            setUserProfile(res.data.userToUnfollow)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     const getUsers = async () => {
         try {
             const res = await getUsersRequest()
@@ -192,6 +216,8 @@ export const UserProvider = ({ children }) => {
             updateUser,
             updateUserImage,
             deleteUserImage,
+            followUser,
+            unfollowUser,
             getUsers,
             getUsersByUsername,
 

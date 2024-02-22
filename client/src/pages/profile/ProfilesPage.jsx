@@ -38,7 +38,7 @@ function ProfilesPage() {
                         <Typography variant="body2" color="initial">
                             {user.name}
                         </Typography>
-
+                        
                     </Box>
                 </Box>
             ))}

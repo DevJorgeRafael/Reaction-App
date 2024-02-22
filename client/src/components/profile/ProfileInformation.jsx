@@ -1,24 +1,38 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useUser } from "../../context/userContext"
-import { Avatar, Badge, Box, Button, Card, CardContent, Grid, IconButton, Typography } from "@mui/material"
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import { Avatar, Badge, Box, Button, Card, CardContent, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import UpdateUserImageModal from "./UploadUserImageModal"
 import CircularIndeterminate from '../CircularIndeterminate'
 import EditProfile from "./EditProfile"
 
 function ProfileInformation() {
-    const { user, userProfile, getUserByUsername, loading } = useUser()
+        const { user, userProfile, 
+        getUserByUsername, loading,
+        followUser, unfollowUser
+    } = useUser()
     const { username } = useParams()
+    const [isFollowing, setIsFollowing] = useState(false)
+
+    const handleFollowUser = () => {
+        followUser(userProfile._id, user._id)
+    }
+
+    const handleUnfollowUser = () => {
+        unfollowUser(userProfile._id, user._id)
+    }
 
     useEffect(() => {
         getUserByUsername(username)
     }, [])
 
     useEffect(() => {
-        // Cada vez que cambia userProfile, este efecto se ejecutará,
-        // lo que provocará que el componente se vuelva a renderizar con la información actualizada.
+        if (user && userProfile) {
+            const isFollowingUser = user.following.includes(userProfile._id);
+            setIsFollowing(isFollowingUser);
+        }
     }, [userProfile]);
+
 
     return (
         userProfile ? (
@@ -70,9 +84,26 @@ function ProfileInformation() {
                                             '&:active': {
                                                 background: '#739072',
                                             },
+                                            mr: 2
                                         }}
+                                        onClick={isFollowing ? handleUnfollowUser : handleFollowUser}
                                     >
-                                        Follow
+                                        {isFollowing ? 'Unfollow' : 'Follow'}
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            background: '#4F6F52',
+                                            '&:hover': {
+                                                background: '#739072',
+                                            },
+                                            '&:active': {
+                                                background: '#739072',
+                                            },
+                                        }}
+                                        onClick={() => {}}
+                                    >
+                                        Message
                                     </Button>
                                 </Box>
                             }

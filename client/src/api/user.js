@@ -19,6 +19,12 @@ export const updateUserImageRequest = async (user) =>
 
 export const deleteUserImageRequest = async (userId) => await axios.delete('/deleteUserImage', {data: {userId}})
 
+export const followUserRequest = async (userId, followerId) => 
+await axios.post('/followUser', { userId, followerId })
+
+export const unfollowUserRequest = async (userId, followerId) => 
+await axios.post('/unfollowUser', { userId, followerId })
+
 export const getUsersRequest = async () => await axios.get('/users')
 
 export const getUsersByUsernameRequest = async (username) => await axios.get(`/users/${username}`)

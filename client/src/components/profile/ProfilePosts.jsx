@@ -34,7 +34,7 @@ function ProfilePosts() {
     return (
         <>
             <Box>
-                <Grid container spacing={0.7} sx={{ mt: 0.5 }}>
+                <Grid container spacing={0.7} sx={{ mt: 0, p: 0.7 }}>
                     {userPosts.map(post => (
                         <Grid item xs={4} key={post._id}>
                             <Card onClick={() => handlePostClick(post)}
