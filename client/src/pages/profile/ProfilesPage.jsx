@@ -12,7 +12,8 @@ function ProfilesPage() {
     }, []);
 
     return (
-        <div className="p-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '0rem 1rem' }}>
+        <div className="p-2" style={{ display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '0rem 1rem' }}>
             {users.map((user) => (
                 <Box key={user._id} sx={{
                     display: 'flex', alignItems: 'center',

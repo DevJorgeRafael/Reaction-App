@@ -23,7 +23,8 @@ export const getPopulatedNotification = async (notification) => {
         .populate('fromUser', '_id username name image');
 
     if (populatedNotification.target && populatedNotification.target.postId) {
-        const post = await Post.findById(populatedNotification.target.postId);
+        const post = await Post.findById(populatedNotification.target.postId)
+            .populate('user', '_id username name image');
         populatedNotification.target.post = post;
     }
     return populatedNotification;
@@ -32,7 +33,8 @@ export const getPopulatedNotification = async (notification) => {
 export const populateNotifications = async (notifications) => {
     for (let notification of notifications) {
         if (notification.target && notification.target.postId) {
-            const post = await Post.findById(notification.target.postId);
+            const post = await Post.findById(notification.target.postId)
+                .populate('user', '_id username name image');
             notification.target.post = post;
         }
     }

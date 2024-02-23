@@ -1,18 +1,22 @@
-import { useEffect, useState } from 'react';
-import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box } from '@mui/material';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box, Dialog } from '@mui/material';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { ShowNotification } from '../notifications/showNotification';
 import { useNotification } from '../../context/notificationContext';
+import ShowPost from '../posts/ShowPost';
+import { useNavigate } from 'react-router-dom';
 
 function NotificationBadge({ needText }) {
+    const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [localNotifications, setLocalNotifications] = useState([])
     const [unreadNotifications, setUnreadNotifications] = useState(0);
+    const [selectedPost, setSelectedPost] = useState(null)
     const { notifications, readNotifications,
-        removeNotifications
+        removeNotifications, readNotification
     } = useNotification();
 
 
@@ -42,6 +46,20 @@ function NotificationBadge({ needText }) {
             removeNotifications(notifications[0].user._id);
         }
     };
+
+    const handleCloseModal = () => {
+        setSelectedPost(null);
+    };
+
+    const handleReadNotification = (notification) => {
+        if(notification.type === 'follow') {
+            handleMenuClose();
+            handleClose();
+            navigate(`/profile/${notification.fromUser.username}`);
+        }
+        else if (notification.type === 'like') setSelectedPost(notification.target.post)
+        readNotification(notification._id);
+    }
 
     useEffect(() => {
         setLocalNotifications(notifications);
@@ -114,7 +132,9 @@ function NotificationBadge({ needText }) {
                     </Box>
                     {localNotifications.length > 0 ? (
                         localNotifications.map((notification, index) => (
-                            <ShowNotification key={index} notification={notification} bg={true} />
+                            <Box onClick={() => handleReadNotification(notification)} key={index}>
+                                <ShowNotification notification={notification} bg={true} />
+                            </Box>
                         ))
                     ) : (
                         <Box sx={{
@@ -130,6 +150,16 @@ function NotificationBadge({ needText }) {
 
                 </Box>
             </Popover>
+
+
+            <Dialog
+                open={selectedPost !== null} onClose={handleCloseModal}
+                fullWidth
+            >
+                {selectedPost && <ShowPost post={selectedPost}
+                    onClose={handleCloseModal}
+                />}
+            </Dialog>
         </>
     );
 }

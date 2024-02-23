@@ -16,7 +16,7 @@ export const ShowNotification = ({ notification, bg }) => {
             message = 'has liked your post';
             break;
         case 'follow':
-            message = `${notification.fromUser.username} has started following you`;
+            message = `has started following you`;
             break;
         default:
             message = '';
