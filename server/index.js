@@ -4,6 +4,7 @@ import { app, server} from './app.js'
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
 import { sendPosts } from './controllers/post.controller.js'
+import { createMessage, getMessages } from './controllers/message.controller.js'
 
 connectDB() 
 
@@ -25,6 +26,15 @@ io.on('connection', async (socket) => {
 
         sendNotifications(userId, socket);
         sendPosts(socket);
+
+        socket.on('send_message', async ({ senderId, receiverId, content }) => {
+            createMessage(senderId, receiverId, content);
+        })
+
+        socket.on('get_messages', async ({ userId1, userId2 }) => {
+            const messages = await getMessages(userId1, userId2);
+            socket.emit('messages', messages);
+        });
 
         socket.on('disconnect', () => {
             console.log('A client has disconnected')

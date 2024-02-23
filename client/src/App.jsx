@@ -1,3 +1,4 @@
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { Toaster } from 'react-hot-toast'
 import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage } from './pages/index.js'
 import ProfilesPage from './pages/profile/ProfilesPage.jsx'
@@ -6,6 +7,7 @@ import { SocketProvider } from './context/socketContext.jsx'
 import { UserProvider } from './context/userContext.jsx'
 import { PostProvider } from './context/postContext.jsx'
 import { NotificationProvider } from './context/notificationContext.jsx'
+import { MessageProvider } from './context/messageContext.jsx'; 
 
 import ProtectedRoute from './ProtectedRoute.jsx'
 
@@ -18,6 +20,8 @@ function App() {
       <SocketProvider>
         <PostProvider>
           <NotificationProvider>
+            <MessageProvider>
+              
             <Navbar />
             <Toaster />
 
@@ -35,6 +39,7 @@ function App() {
                 </Route>
               </Routes>
             </Box>
+            </MessageProvider>
           </NotificationProvider>
         </PostProvider>
       </SocketProvider>

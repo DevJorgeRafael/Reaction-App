@@ -18,6 +18,9 @@ export const ShowNotification = ({ notification, bg }) => {
         case 'follow':
             message = `has started following you`;
             break;
+        case 'message': 
+            message = `has sent you a message`;
+            break;
         default:
             message = '';
     }
@@ -42,11 +45,14 @@ export const ShowNotification = ({ notification, bg }) => {
         handleMenuClose();
     };
 
+    // console.log(notification)
+
     return (
         <Box
             sx={{
                 p: 1,
                 display: 'flex',
+                justifyContent: 'space-between',
                 width: '100%',
                 backgroundColor: bg ? (notification.read ? 'initial' : theme => alpha(theme.palette.primary.dark, 0.2)) : undefined,
                 '&:hover': {
@@ -55,29 +61,32 @@ export const ShowNotification = ({ notification, bg }) => {
                 }
             }}
         >
-            <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
-                <Avatar src={notification.fromUser.image?.url}
-                    alt={notification.fromUser.username}
-                    sx={{ height: 50, width: 50, cursor: 'pointer' }}
-                    onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
-                />
-            </Box>
-            <Box sx={{ m: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <Typography variant="body2" color="initial" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                    <Box component="span" sx={{ fontWeight: 'bold', mr: 1, cursor: 'pointer' }}
+            <Box sx={{ display: 'flex', width: '100%'}}>
+                <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+                    <Avatar src={notification.fromUser.image?.url}
+                        alt={notification.fromUser.username}
+                        sx={{ height: 50, width: 50, cursor: 'pointer' }}
                         onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
-                    >
-                        @{notification.fromUser.username}
-                    </Box>
-                    <Typography variant="body2" color="initial" component="span">{message}</Typography>
-                    <Box component="span" sx={{ fontWeight: 'bold', mx: 1 }}>
-                        {notification.target.post?.title}
-                    </Box>
-                </Typography>
+                    />
+                </Box>
+                <Box sx={{ m: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Typography variant="body2" color="initial" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                        <Box component="span" sx={{ fontWeight: 'bold', mr: 1, cursor: 'pointer' }}
+                            onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
+                        >
+                            @{notification.fromUser.username}
+                        </Box>
+                        <Typography variant="body2" color="initial" component="span">{message}</Typography>
+                        <Box component="span" sx={{ fontWeight: 'bold', mx: 1 }}>
+                            {notification.target.post?.title}
+                            {notification.target.message?.content}
+                        </Box>
+                    </Typography>
 
-                <Typography variant="body2" sx={{ color: '#757575', display: 'flex', justifyContent: 'flex-end' }}>
-                    {formatDistanceToNow(new Date(notification.date), { addSuffix: true })}
-                </Typography>
+                    <Typography variant="body2" sx={{ color: '#757575', display: 'flex', justifyContent: 'flex-end' }}>
+                        {formatDistanceToNow(new Date(notification.date), { addSuffix: true })}
+                    </Typography>
+                </Box>
             </Box>
 
             {bg && <>

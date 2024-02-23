@@ -1,4 +1,5 @@
 import { userSockets } from "../index.js";
+import Message from "../models/Message.js";
 import Notification from "../models/Notification.js";
 import Post from "../models/Post.js";
 
@@ -18,16 +19,25 @@ export const sendNotifications = async (userId, socket) => {
 };
 
 export const getPopulatedNotification = async (notification) => {
-    const populatedNotification = await Notification.findById(notification._id)
-        .populate('user', '_id username name image')
-        .populate('fromUser', '_id username name image');
+    try {
+        const populatedNotification = await Notification.findById(notification._id)
+            .populate('user', '_id username name image')
+            .populate('fromUser', '_id username name image');
 
-    if (populatedNotification.target && populatedNotification.target.postId) {
-        const post = await Post.findById(populatedNotification.target.postId)
-            .populate('user', '_id username name image');
-        populatedNotification.target.post = post;
+        if (populatedNotification.target && populatedNotification.target.postId) {
+            const post = await Post.findById(populatedNotification.target.postId)
+                .populate('user', '_id username name image');
+            populatedNotification.target.post = post;
+        } else if (populatedNotification.target && populatedNotification.target.messageId) {
+            const message = await Message.findById(populatedNotification.target.messageId)
+                .populate('sender', '_id username name image');
+            populatedNotification.target.message = message;
+        }
+
+        return populatedNotification;
+    } catch (error) {
+        console.log(error.message)
     }
-    return populatedNotification;
 }
 
 export const populateNotifications = async (notifications) => {
@@ -36,6 +46,10 @@ export const populateNotifications = async (notifications) => {
             const post = await Post.findById(notification.target.postId)
                 .populate('user', '_id username name image');
             notification.target.post = post;
+        } else if (notification.target && notification.target.messageId) {
+            const message = await Message.findById(notification.target.messageId)
+                .populate('sender', '_id username name image');
+            notification.target.message = message;
         }
     }
     return notifications;
