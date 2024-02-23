@@ -132,7 +132,7 @@ function NotificationBadge({ needText }) {
                     </Box>
                     {localNotifications.length > 0 ? (
                         localNotifications.map((notification, index) => (
-                            <Box onClick={() => handleReadNotification(notification)} key={index}>
+                            <Box onClick={() => handleReadNotification(notification)} key={notification._id}>
                                 <ShowNotification notification={notification} bg={true} />
                             </Box>
                         ))

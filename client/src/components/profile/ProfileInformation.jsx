@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import UpdateUserImageModal from "./UploadUserImageModal"
 import CircularIndeterminate from '../CircularIndeterminate'
 import EditProfile from "./EditProfile"
+import MessageButton from "../messages/MessageButton"
 
 function ProfileInformation() {
         const { user, userProfile, 
@@ -90,21 +91,8 @@ function ProfileInformation() {
                                     >
                                         {isFollowing ? 'Unfollow' : 'Follow'}
                                     </Button>
-                                    <Button
-                                        variant="contained"
-                                        sx={{
-                                            background: '#4F6F52',
-                                            '&:hover': {
-                                                background: '#739072',
-                                            },
-                                            '&:active': {
-                                                background: '#739072',
-                                            },
-                                        }}
-                                        onClick={() => {}}
-                                    >
-                                        Message
-                                    </Button>
+                                    
+                                    <MessageButton userProfile={userProfile} user={user} />
                                 </Box>
                             }
 
