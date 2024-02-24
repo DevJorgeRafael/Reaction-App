@@ -1,6 +1,6 @@
 import { connectDB } from './db.js'
 import { PORT } from './config/config.js'
-import app from './app.js'
+import app  from './app.js'
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
 import { sendPosts } from './controllers/post.controller.js'
@@ -19,7 +19,7 @@ const io = new Server(server, {
     }
 })
 
-export const userSockets = {}
+const userSockets = {}
 
 io.on('connection', async (socket) => {
     const userId = socket.handshake.query.userId;
@@ -48,3 +48,5 @@ io.on('connection', async (socket) => {
         })
     }
 })
+
+export { io, userSockets }
