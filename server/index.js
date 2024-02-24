@@ -15,7 +15,7 @@ const io = new Server(server, {
     }
 })
 
-export const userSockets = {}
+const userSockets = {}
 
 io.on('connection', async (socket) => {
     const userId = socket.handshake.query.userId;
