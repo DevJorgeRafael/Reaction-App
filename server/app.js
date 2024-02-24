@@ -5,7 +5,6 @@ import postsRoutes from './routes/posts.routes.js'
 import userRoutes from './routes/users.routes.js'
 import notificationsRoutes from './routes/notifications.routes.js'
 import { createServer } from 'http';
-import { PORT } from './config/config.js'
 
 const app = express();
 
@@ -25,13 +24,10 @@ app.use((req, res, next) => {
     next();
 });
 
+
 //routes
 app.use(postsRoutes)
 app.use(userRoutes)
 app.use(notificationsRoutes)
 
-const server = app.listen(PORT, () => {
-    console.log('Server on port', PORT);
-});
-
-export default server;
+export default app;

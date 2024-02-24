@@ -1,8 +1,16 @@
-import server from './app.js' // Aquí cambiamos la importación
+import { connectDB } from './db.js'
+import { PORT } from './config/config.js'
+import app from './app.js' // Aquí cambiamos la importación
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
 import { sendPosts } from './controllers/post.controller.js'
 import { createMessage, getMessages } from './controllers/message.controller.js'
+
+connectDB()
+
+const server = app.listen(PORT, () => {
+    console.log('Server on port', PORT);
+});
 
 const io = new Server(server, {
     cors: {

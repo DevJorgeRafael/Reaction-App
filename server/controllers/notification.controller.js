@@ -10,6 +10,11 @@ export const sendNotifications = async (userId, socket) => {
             .populate('fromUser', '_id username name image')
             .sort({ date: -1 });
 
+        if(!notifications){
+            console.log('no notifications found for user', userId)
+            return;
+        }
+
         notifications = await populateNotifications(notifications);
 
         socket.emit('notifications', notifications);
