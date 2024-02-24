@@ -126,20 +126,20 @@ function MessageButton({ userProfile, user }) {
                     <MessagesBox messages={messages} />
 
                     <form onSubmit={handleSubmit(onSubmit)} >
-                        <Box sx={{display: 'flex'}}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <TextField
                                 {...register('message', { required: true })}
                                 placeholder="Message"
                                 fullWidth
                                 multiline
-                                onKeyDown = { handleKeyPress }
+                                onKeyDown={handleKeyPress}
                             />
-                            <Button type="submit" color="primary" sx={{padding: 0, margin: 0}}>
-                                <SendIcon fontSize='large'/>
+
+                            <Button type="submit" color="primary" sx={{ padding: 0, margin: 0, width: '5%' }}>
+                                <SendIcon fontSize='large' />
                             </Button>
                         </Box>
                     </form>
-
                 </Box>
             </Dialog>
         </div>

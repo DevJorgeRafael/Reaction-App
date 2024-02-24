@@ -1,10 +1,8 @@
-body {
-    background-color: #BFD8AF !important;  
+body,
+#root {
+    background: linear-gradient(to top, #BFFFC7, #739072) !important;
+    background-attachment: fixed !important;
     height: 100vh;
     margin: 0;
     padding: 0;
-}
-
-#root{
-    height: 100vh ;
 }

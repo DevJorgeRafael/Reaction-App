@@ -37,7 +37,12 @@ function ProfileInformation() {
 
     return (
         userProfile ? (
-            <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#E1F0DA' }} >
+            <Card sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundImage: 'linear-gradient(to bottom, #D4E7C5, #BFD8AF)'
+            }} >
+
                 <CardContent sx={{ p: 2 }}>
                     <Box className="image d-flex flex-column justify-content-center align-items-center">
                         <Box>

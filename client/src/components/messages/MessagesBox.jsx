@@ -5,12 +5,12 @@ import ModeCommentIcon from '@mui/icons-material/ModeComment';
 export default function MessagesBox({ messages }) {
     const { user } = useUser()
     console.log(messages)
-    console.log(user)
 
     return (
-        <Box sx ={{px: 0.5, maxHeight: '400px', height: '400px'}}>
+        <Box sx={{ px: 0.5, maxHeight: '350px', height: '350px', overflow: 'auto', mb: 1 }}>
+
             {messages.length > 0 ? messages.map((message, index) => (
-                <Box key={index}>
+                <Box key={index} sx={{mr: 0.5}}>
                     {message.sender._id === user._id ? (
                         <Box sx={{
                             display: 'flex',
@@ -20,7 +20,7 @@ export default function MessagesBox({ messages }) {
                             marginBottom: 0.5,
                         }}>
                             <Box sx={{
-                                backgroundColor: '#BFD8AF',
+                                backgroundColor: '#99BC85',
                                 p: 0.75, borderRadius: '10px 0px 10px 10px',
                                 maxWidth: '65%',
                                 wordWrap: 'break-word',
@@ -29,13 +29,13 @@ export default function MessagesBox({ messages }) {
                                     {message.content}
                                 </Typography>
                             </Box>
-                            <Box>
+                            {/* <Box>
                                 <Avatar src={message.sender.image?.url} alt={message.sender.username} sx={{
                                     width: 35,
                                     height: 35,
 
                                 }} />
-                            </Box>
+                            </Box> */}
                         </Box>
 
 

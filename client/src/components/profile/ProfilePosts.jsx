@@ -48,8 +48,8 @@ function ProfilePosts() {
                                     />
                                     :
                                     <CardContent sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
-                                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{post.title}</Typography>
-                                        <Typography variant="subtitle1">{post.description}</Typography>
+                                        <Typography className="text-center" variant="h6" sx={{ fontWeight: 'bold' }}>{post.title}</Typography>
+                                        <Typography className="text-center" variant="subtitle1">{post.description}</Typography>
                                     </CardContent>
                                 }
                             </Card>
