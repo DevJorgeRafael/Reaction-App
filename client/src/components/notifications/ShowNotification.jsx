@@ -3,7 +3,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { alpha } from '@mui/system';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../../context/notificationContext'; 
+import { useNotification } from '../../context/notificationContext';
 import { useState } from 'react';
 
 export const ShowNotification = ({ notification, bg }) => {
@@ -18,7 +18,7 @@ export const ShowNotification = ({ notification, bg }) => {
         case 'follow':
             message = `has started following you`;
             break;
-        case 'message': 
+        case 'message':
             message = `has sent you a message`;
             break;
         default:
@@ -45,8 +45,6 @@ export const ShowNotification = ({ notification, bg }) => {
         handleMenuClose();
     };
 
-    // console.log(notification)
-
     return (
         <Box
             sx={{
@@ -57,11 +55,11 @@ export const ShowNotification = ({ notification, bg }) => {
                 backgroundColor: bg ? (notification.read ? 'initial' : theme => alpha(theme.palette.primary.dark, 0.2)) : undefined,
                 '&:hover': {
                     backgroundColor: "#B4D4FF",
-                    
+
                 }
             }}
         >
-            <Box sx={{ display: 'flex', width: '100%'}}>
+            <Box sx={{ display: 'flex', width: '100%' }}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
                     <Avatar src={notification.fromUser.image?.url}
                         alt={notification.fromUser.username}
@@ -105,9 +103,9 @@ export const ShowNotification = ({ notification, bg }) => {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    { !notification.read && <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>}
+                    {!notification.read && <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>}
                     <MenuItem onClick={handleDelete}
-                        sx= {{ color: 'error.main' }}
+                        sx={{ color: 'error.main' }}
                     >
                         Delete this
                     </MenuItem>

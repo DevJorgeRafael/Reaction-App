@@ -1,6 +1,6 @@
 import { Box, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { ShowNotification } from "./showNotification"; 
+import { ShowNotification } from "./ShowNotification"; 
 import toast from "react-hot-toast";
 
 export const showNotificationToast = (notification) => {
