@@ -47,3 +47,5 @@ io.on('connection', async (socket) => {
 
 server.listen(PORT)
 console.log('Server on port', PORT)
+
+export { io, userSockets }
