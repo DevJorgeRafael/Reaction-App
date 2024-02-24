@@ -1,5 +1,4 @@
 import express from 'express';
-import path from 'path';
 import fileUpload from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 import postsRoutes from './routes/posts.routes.js'
@@ -31,22 +30,5 @@ app.use((req, res, next) => {
 app.use(postsRoutes)
 app.use(userRoutes)
 app.use(notificationsRoutes)
-
-
-// Serve static files from the React frontend app
-app.use(express.static(path.resolve(__dirname, '../client/dist')))
-
-// Anything that doesn't match the above, send back the index.html file
-app.get('*', (req, res) => {
-    const history = createMemoryHistory();
-    const location = history.location;
-    const context = {};
-    if (context.url) {
-        res.redirect(301, context.url);
-    } else {
-        res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
-    }
-});
-
 
 export { app, server }
