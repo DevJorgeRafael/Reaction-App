@@ -7,7 +7,6 @@ import notificationsRoutes from './routes/notifications.routes.js'
 import { createServer } from 'http';
 
 const app = express();
-const server = createServer(app);
 
 //middlewares
 app.use(express.json())
@@ -31,4 +30,4 @@ app.use(postsRoutes)
 app.use(userRoutes)
 app.use(notificationsRoutes)
 
-export { app, server }
+export default app;
