@@ -15,7 +15,7 @@ const io = new Server(server, {
     }
 })
 
-const userSockets = {}
+export const userSockets = {}
 
 io.on('connection', async (socket) => {
     const userId = socket.handshake.query.userId;
@@ -48,4 +48,4 @@ io.on('connection', async (socket) => {
 server.listen(PORT)
 console.log('Server on port', PORT)
 
-export { io, userSockets }
+export { io }
