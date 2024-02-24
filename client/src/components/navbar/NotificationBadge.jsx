@@ -3,7 +3,7 @@ import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box, Dialog } f
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { ShowNotification } from '../notifications/showNotification';
+import { ShowNotification } from '../notifications/ShowNotification';
 import { useNotification } from '../../context/notificationContext';
 import ShowPost from '../posts/ShowPost';
 import { useNavigate } from 'react-router-dom';
