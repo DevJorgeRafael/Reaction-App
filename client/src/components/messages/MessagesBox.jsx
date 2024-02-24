@@ -4,7 +4,6 @@ import ModeCommentIcon from '@mui/icons-material/ModeComment';
 
 export default function MessagesBox({ messages }) {
     const { user } = useUser()
-    console.log(messages)
 
     return (
         <Box sx={{ px: 0.5, maxHeight: '350px', height: '350px', overflow: 'auto', mb: 1 }}>

@@ -1,4 +1,3 @@
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { Toaster } from 'react-hot-toast'
 import { HomePage, NotFoundPage, LoginPage, RegisterPage, PostsPage, ProfilePage } from './pages/index.js'
 import ProfilesPage from './pages/profile/ProfilesPage.jsx'

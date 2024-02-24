@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { Avatar, Box, Button, Dialog, TextField, Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-import { ChatContainer, MessageList, Message, MessageInput } from '@chatscope/chat-ui-kit-react';
 import MessagesBox from './MessagesBox';
 import { useSocket } from '../../context/socketContext';
 
