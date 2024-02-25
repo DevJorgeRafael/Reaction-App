@@ -55,7 +55,7 @@ export const ShowMessage = ({message, user}) => {
                       <Typography variant="body1" color="initial">
                           {message.content}
                       </Typography>
-                      <span className="d-flex" style={{ fontSize: '0.8rem', color: '#181818', marginTop: -5 }}>
+                          <span className="d-flex" style={{ fontSize: '0.8rem', color: '#181818', justifyContent: 'flex-end', marginTop: -5 }}>
                           {new Date(message.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                   </Box>

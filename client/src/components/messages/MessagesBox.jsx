@@ -2,11 +2,11 @@ import { Avatar, Box, Typography } from "@mui/material"
 import { useUser } from "../../context/userContext"
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import { ShowMessage } from "./ShowMessage";
+import { useEffect, useRef } from "react";
 
 export default function MessagesBox({ messages }) {
     const { user } = useUser()
 
-    // Agrupar los mensajes por fecha
     const messagesByDate = messages.reduce((groups, message) => {
         const date = new Date(message.date);
         const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -19,6 +19,12 @@ export default function MessagesBox({ messages }) {
 
         return groups;
     }, {});
+
+    const messagesEndRef = useRef(null)
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [messages])
 
     return (
         <Box sx={{ px: 0.5, maxHeight: '350px', height: '350px', overflow: 'auto', mb: 1 }}>
@@ -47,6 +53,7 @@ export default function MessagesBox({ messages }) {
                     </Typography>
                 </Box>
             )}
+            <div ref={messagesEndRef} />
         </Box>
     )
 }
