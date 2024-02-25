@@ -1,13 +1,15 @@
+import { useState } from 'react';
 import { Box, Avatar, Typography, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { alpha } from '@mui/system';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/notificationContext';
-import { useState } from 'react';
+import ShowChat from '../messages/ShowChat';
 
 export const ShowNotification = ({ notification, bg }) => {
     const navigate = useNavigate()
+    const [open, setOpen] = useState(false)
     const { readNotification, removeNotification } = useNotification();
     let message;
 
@@ -45,6 +47,17 @@ export const ShowNotification = ({ notification, bg }) => {
         handleMenuClose();
     };
 
+    const handleClickOpen = () => {
+        console.log('esta pasando por aquiiiiiiii')
+        setOpen(true);
+    };
+
+    const handleClose = (event) => {
+        event.stopPropagation();
+        setOpen(false);
+    };
+
+
     return (
         <Box
             sx={{
@@ -58,20 +71,22 @@ export const ShowNotification = ({ notification, bg }) => {
 
                 }
             }}
+            onClick={notification.type === 'message' ? handleClickOpen : undefined}
         >
             <Box sx={{ display: 'flex', width: '100%' }}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
                     <Avatar src={notification.fromUser.image?.url}
                         alt={notification.fromUser.username}
                         sx={{ height: 50, width: 50, cursor: 'pointer' }}
-                        onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            navigate(`/profile/${notification.fromUser.username}`);
+                        }}
                     />
                 </Box>
                 <Box sx={{ m: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <Typography variant="body2" color="initial" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                        <Box component="span" sx={{ fontWeight: 'bold', mr: 1, cursor: 'pointer' }}
-                            onClick={() => navigate(`/profile/${notification.fromUser.username}`)}
-                        >
+                        <Box component="span" sx={{ fontWeight: 'bold', mr: 1 }}>
                             @{notification.fromUser.username}
                         </Box>
                         <Typography variant="body2" color="initial" component="span">{message}</Typography>
@@ -86,6 +101,8 @@ export const ShowNotification = ({ notification, bg }) => {
                     </Typography>
                 </Box>
             </Box>
+
+            <ShowChat handleClose={handleClose} user={notification.user} userProfile={notification.fromUser} open={open} />
 
             {bg && <>
                 <IconButton

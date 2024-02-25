@@ -6,12 +6,10 @@ import SendIcon from '@mui/icons-material/Send';
 import MessagesBox from './MessagesBox';
 import { useSocket } from '../../context/socketContext';
 
-function MessageButton({ userProfile, user }) {
+function ShowChat({ userProfile, user, open, handleClose }) {
     const { register, handleSubmit, reset } = useForm();
-    const [open, setOpen] = useState(false);
     const socket = useSocket();
     const [messages, setMessages] = useState([]);
-    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if (open) {
@@ -44,14 +42,6 @@ function MessageButton({ userProfile, user }) {
     }, []);
 
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const handleSend = (value) => {
         setMessages([...messages, { sender: user, content: value, date: new Date() }]);
         socket.emit('send_message', { senderId: user._id, receiverId: userProfile._id, content: value });
@@ -75,23 +65,6 @@ function MessageButton({ userProfile, user }) {
 
     return (
         <div>
-            <Button
-                variant="contained"
-                sx={{
-                    background: '#4F6F52',
-                    '&:hover': {
-                        background: '#739072',
-                    },
-                    '&:active': {
-                        background: '#739072',
-                    },
-                }}
-                onClick={handleClickOpen}
-            >
-                Message
-            </Button>
-
-
             <Dialog open={open} onClose={handleClose} sx = {{width: '100%', height: '100%'}}>
                 <Box sx={{width: '300px', p: 1}}>
                     <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1,
@@ -144,4 +117,4 @@ function MessageButton({ userProfile, user }) {
     );
 }
 
-export default MessageButton;
+export default ShowChat;

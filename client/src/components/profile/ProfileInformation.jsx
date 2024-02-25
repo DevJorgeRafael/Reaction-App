@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom"
 import UpdateUserImageModal from "./UploadUserImageModal"
 import CircularIndeterminate from '../CircularIndeterminate'
 import EditProfile from "./EditProfile"
-import MessageButton from "../messages/MessageButton"
+import ShowChat from "../messages/ShowChat"
 
 function ProfileInformation() {
         const { user, userProfile, 
@@ -14,6 +14,7 @@ function ProfileInformation() {
     } = useUser()
     const { username } = useParams()
     const [isFollowing, setIsFollowing] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const handleFollowUser = () => {
         followUser(userProfile._id, user._id)
@@ -22,6 +23,14 @@ function ProfileInformation() {
     const handleUnfollowUser = () => {
         unfollowUser(userProfile._id, user._id)
     }
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         getUserByUsername(username)
@@ -97,7 +106,22 @@ function ProfileInformation() {
                                         {isFollowing ? 'Unfollow' : 'Follow'}
                                     </Button>
                                     
-                                    <MessageButton userProfile={userProfile} user={user} />
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            background: '#4F6F52',
+                                            '&:hover': {
+                                                background: '#739072',
+                                            },
+                                            '&:active': {
+                                                background: '#739072',
+                                            },
+                                        }}
+                                        onClick={handleClickOpen}
+                                    >
+                                        Message
+                                    </Button>
+                                    <ShowChat userProfile={userProfile} user={user} open={open} handleClose={handleClose} />
                                 </Box>
                             }
 

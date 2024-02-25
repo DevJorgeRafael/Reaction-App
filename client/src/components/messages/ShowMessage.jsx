@@ -26,13 +26,13 @@ export const ShowMessage = ({message, user}) => {
                       </span>
 
                   </Box>
-                  <Box>
+                  {/* <Box>
                       <Avatar src={message.sender.image?.url} alt={message.sender.username} sx={{
                           width: 35,
                           height: 35,
 
                       }} />
-                  </Box>
+                  </Box> */}
               </Box>
           ) : (
               <Box sx={{
