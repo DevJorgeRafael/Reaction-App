@@ -44,7 +44,6 @@ function MessageButton({ userProfile, user }) {
     }, []);
 
 
-
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -54,7 +53,7 @@ function MessageButton({ userProfile, user }) {
     };
 
     const handleSend = (value) => {
-        setMessages([...messages, { sender: user, content: value }]);
+        setMessages([...messages, { sender: user, content: value, date: new Date() }]);
         socket.emit('send_message', { senderId: user._id, receiverId: userProfile._id, content: value });
     };
 
