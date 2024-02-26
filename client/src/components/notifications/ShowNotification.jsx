@@ -10,6 +10,7 @@ import ShowChat from '../messages/ShowChat';
 export const ShowNotification = ({ notification, bg }) => {
     const navigate = useNavigate()
     const [open, setOpen] = useState(false)
+    const [anchorEl, setAnchorEl] = useState(null);
     const { readNotification, removeNotification } = useNotification();
     let message;
 
@@ -27,7 +28,6 @@ export const ShowNotification = ({ notification, bg }) => {
             message = '';
     }
 
-    const [anchorEl, setAnchorEl] = useState(null);
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);

@@ -13,12 +13,13 @@ export const MessageProvider = ({ children }) => {
     const { user } = useUser();
     const socket = useSocket()
     const [messages, setMessages] = useState([]);
+    const [chats, setChats] = useState([]);
 
     useEffect(() => {
         if (user && socket) {
-            socket.on('messages', (messages) => {
-                console.log(messages)
-                setMessages(messages);
+            socket.on('chats', (chats) => {
+                console.log(chats)
+                setChats(chats)
             });
 
             socket.on('message', (message) => {
@@ -48,7 +49,7 @@ export const MessageProvider = ({ children }) => {
 
     return (
         <MessageContext.Provider value={{
-            messages,
+            chats,
             sendMessage,
             readMessage
         }}>

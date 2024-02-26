@@ -3,8 +3,8 @@ import { IconButton, Badge, Menu, MenuItem, Typography, Popover, Box, Dialog } f
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { ShowNotification } from '../notifications/ShowNotification';
-import ShowPost from '../posts/ShowPost';
+import ShowChat from '../messages/ShowChat';
+import { ShowLastMessage } from '../messages/ShowLastMessage';
 import { useNavigate } from 'react-router-dom';
 import { useMessage } from '../../context/messageContext';
 
@@ -12,10 +12,10 @@ function MessageBadge({ needText }) {
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-    const [localNotifications, setLocalNotifications] = useState([])
-    const [unreadNotifications, setUnreadNotifications] = useState(0);
-    const [selectedPost, setSelectedPost] = useState(null)
-    const { messages } = useMessage()
+    const [localChats, setLocalChats] = useState([])
+    const [unreadChats, setUnreadChats] = useState(0);
+    const [selectedChat, setSelectedChat] = useState(null)
+    const { chats } = useMessage()
 
 
     const handleClick = (event) => {
@@ -34,39 +34,28 @@ function MessageBadge({ needText }) {
 
     const handleReadAllNotifications = () => {
         setMenuAnchorEl(null);
-        readNotifications(notifications[0].user._id);
+        readNotifications(chats[0].user._id);
     }
-
-    const handleRemoveAllNotifications = () => {
-        handleMenuClose();
-        handleClose();
-        if (notifications.length > 0) {
-            removeNotifications(notifications[0].user._id);
-        }
-    };
 
     const handleCloseModal = () => {
-        setSelectedPost(null);
+        setSelectedChat(null);
     };
 
-    const handleReadNotification = (notification) => {
-        if(notification.type === 'follow') {
-            handleMenuClose();
-            handleClose();
-            navigate(`/profile/${notification.fromUser.username}`);
-        }
-        else if (notification.type === 'like') setSelectedPost(notification.target.post)
-        readNotification(notification._id);
-    }
+    // const handleReadNotification = (notification) => {
+    //     setSelectedChat(notification.target.post)
+    //     readN(notification._id);
+    // }
 
     useEffect(() => {
-        setLocalNotifications(notifications);
-    }, [notifications]);
+        setLocalChats(chats);
+    }, [chats]);
 
     useEffect(() => {
-        const unreadCount = localNotifications.filter(notification => !notification.read).length;
-        setUnreadNotifications(unreadCount);
-    }, [localNotifications, unreadNotifications]);
+        const unreadCount = localChats.filter(chat => !chat.read).length;
+        setUnreadChats(unreadCount);
+    }, [localChats, unreadChats]);
+
+    console.log(chats)
 
     return (
         <>
@@ -76,7 +65,7 @@ function MessageBadge({ needText }) {
                 onClick={handleClick}
                 sx={{ borderRadius: 0 }}
             >
-                <Badge badgeContent={unreadNotifications} color="error">
+                <Badge badgeContent={unreadChats} color="error">
                     <ChatBubbleIcon />
                 </Badge>
                 {needText && <Typography variant="body1" sx={{ ml: 2 }}>Messages</Typography>}
@@ -103,7 +92,7 @@ function MessageBadge({ needText }) {
                         >Messages</Typography>
 
 
-                        {localNotifications.length > 0 &&
+                        {localChats.length > 0 &&
                             <>
                                 <IconButton onClick={handleMenuClick} >
                                     <MoreVertIcon />
@@ -114,24 +103,27 @@ function MessageBadge({ needText }) {
                                     open={Boolean(menuAnchorEl)}
                                     onClose={handleMenuClose}
                                 >
-                                    {unreadNotifications > 0 &&
-                                        <MenuItem onClick={handleReadAllNotifications}>
+                                    {unreadChats > 0 &&
+                                        <MenuItem onClick={() => console.log('mark all as read')}>
                                             Mark all as read
                                         </MenuItem>}
 
-                                    <MenuItem onClick={handleRemoveAllNotifications}
+                                    <MenuItem onClick={() => console.log('delete all messages')}
                                         sx={{ color: theme => theme.palette.error.main }}
                                     >
-                                        Delete all notifications
+                                        Delete all messages
                                     </MenuItem>
 
                                 </Menu>
                             </>}
                     </Box>
-                    {localNotifications.length > 0 ? (
-                        localNotifications.map((notification, index) => (
-                            <Box onClick={() => handleReadNotification(notification)} key={notification._id}>
-                                <ShowNotification notification={notification} bg={true} />
+                    {localChats.length > 0 ? (
+                        localChats.map((chat, index) => (
+                            <Box onClick={() => console.log('read chat')} key={index}>
+                                <Box>
+                                    <ShowLastMessage lastMessage={chat.lastMessage}/>
+                                    
+                                </Box>
                             </Box>
                         ))
                     ) : (
@@ -142,7 +134,7 @@ function MessageBadge({ needText }) {
                             backgroundColor: theme => theme.palette.grey[300]
                         }}>
                             <NotificationsOffIcon color="disabled" style={{ fontSize: 100 }} />
-                            <Typography variant="h6">You don't have any notifications yet.</Typography>
+                            <Typography variant="h6">You don't have any messages yet.</Typography>
                         </Box>
                     )}
 
@@ -151,12 +143,12 @@ function MessageBadge({ needText }) {
 
 
             <Dialog
-                open={selectedPost !== null} onClose={handleCloseModal}
+                open={selectedChat !== null} onClose={handleCloseModal}
                 fullWidth
             >
-                {selectedPost && <ShowPost post={selectedPost}
+                {/* {selectedChat && 
                     onClose={handleCloseModal}
-                />}
+                />} */}
             </Dialog>
         </>
     );

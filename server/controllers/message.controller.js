@@ -43,7 +43,7 @@ export const getChatMessages = async (userId1, userId2) => {
     }
 };
 
-export const getMessages = async (userId, socket) => {
+export const getChats = async (userId, socket) => {
     try {
         const messages = await Message.find({
             $or: [
@@ -52,7 +52,8 @@ export const getMessages = async (userId, socket) => {
             ]
         })
             .populate('sender', '_id username name image')
-            .populate('receiver', '_id username name image');
+            .populate('receiver', '_id username name image')
+            .sort({ date: -1 }); 
 
         const chats = {};
         messages.forEach(message => {
@@ -66,19 +67,18 @@ export const getMessages = async (userId, socket) => {
             if (!chats[chatId]) {
                 chats[chatId] = {
                     user: message.sender._id.toString() === userId ? message.receiver : message.sender,
-                    messages: []
+                    lastMessage: message
                 };
             }
-
-            chats[chatId].messages.push(message);
         });
 
         const chatsArray = Object.values(chats);
-        socket.emit('messages', chatsArray);
+        socket.emit('chats', chatsArray);
     } catch (error) {
-        console.log('error on getMessages', error.message);
+        console.log('error on getChats', error.message);
     }
 };
+
 
 
 export const createMessage = async (senderId, receiverId, content) => {

@@ -4,7 +4,7 @@ import app from './app.js' // Aquí cambiamos la importación
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
 import { sendPosts } from './controllers/post.controller.js'
-import { createMessage, getMessages, getChatMessages } from './controllers/message.controller.js'
+import { createMessage, getChats, getChatMessages } from './controllers/message.controller.js'
 
 connectDB()
 
@@ -29,7 +29,7 @@ io.on('connection', async (socket) => {
 
         sendNotifications(userId, socket);
         sendPosts(socket);
-        getMessages(userId, socket)
+        getChats(userId, socket)
 
         socket.on('send_message', async ({ senderId, receiverId, content }) => {
             createMessage(senderId, receiverId, content);
