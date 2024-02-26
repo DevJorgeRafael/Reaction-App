@@ -1,5 +1,4 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import { io } from 'socket.io-client';
 import {
     readNotificationsRequest, readNotificationRequest,
     removeNotificationsRequest, removeNotificationRequest

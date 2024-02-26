@@ -13,21 +13,21 @@ function ShowChat({ userProfile, user, open, handleClose }) {
 
     useEffect(() => {
         if (open) {
-            socket.emit('get_messages', { userId1: user._id, userId2: userProfile._id });
+            socket.emit('get_chat_messages', { userId1: user._id, userId2: userProfile._id });
         }
     }, [open]);
 
     useEffect(() => {
         if (open) {
-            socket.emit('get_messages', { userId1: user._id, userId2: userProfile._id });
+            socket.emit('get_chat_messages', { userId1: user._id, userId2: userProfile._id });
         }
 
-        socket.on('messages', (messages) => {
+        socket.on('chat_messages', (messages) => {
             setMessages(messages);
         });
 
         return () => {
-            socket.off('messages');
+            socket.off('chat_messages');
         };
     }, [open]);
 

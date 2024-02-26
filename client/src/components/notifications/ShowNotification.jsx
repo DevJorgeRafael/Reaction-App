@@ -48,7 +48,6 @@ export const ShowNotification = ({ notification, bg }) => {
     };
 
     const handleClickOpen = () => {
-        console.log('esta pasando por aquiiiiiiii')
         setOpen(true);
     };
 

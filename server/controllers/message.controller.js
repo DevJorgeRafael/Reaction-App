@@ -26,7 +26,7 @@ export const sendMessage = async (req, res) => {
     }
 };
 
-export const getMessages = async (userId1, userId2) => {
+export const getChatMessages = async (userId1, userId2) => {
     try {
         const messages = await Message.find({
             $or: [
@@ -42,6 +42,44 @@ export const getMessages = async (userId1, userId2) => {
         console.log(error.message)
     }
 };
+
+export const getMessages = async (userId, socket) => {
+    try {
+        const messages = await Message.find({
+            $or: [
+                { sender: userId },
+                { receiver: userId }
+            ]
+        })
+            .populate('sender', '_id username name image')
+            .populate('receiver', '_id username name image');
+
+        const chats = {};
+        messages.forEach(message => {
+            let chatId;
+            if (message.sender._id.toString() === userId) {
+                chatId = message.receiver._id.toString();
+            } else {
+                chatId = message.sender._id.toString();
+            }
+
+            if (!chats[chatId]) {
+                chats[chatId] = {
+                    user: message.sender._id.toString() === userId ? message.receiver : message.sender,
+                    messages: []
+                };
+            }
+
+            chats[chatId].messages.push(message);
+        });
+
+        const chatsArray = Object.values(chats);
+        socket.emit('messages', chatsArray);
+    } catch (error) {
+        console.log('error on getMessages', error.message);
+    }
+};
+
 
 export const createMessage = async (senderId, receiverId, content) => {
     const message = new Message({ sender: senderId, receiver: receiverId, content });

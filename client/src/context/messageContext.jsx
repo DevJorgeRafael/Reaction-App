@@ -17,12 +17,18 @@ export const MessageProvider = ({ children }) => {
     useEffect(() => {
         if (user && socket) {
             socket.on('messages', (messages) => {
+                console.log(messages)
                 setMessages(messages);
             });
 
             socket.on('message', (message) => {
                 setMessages(prevMessages => [message, ...prevMessages]);
             });
+
+            socket.on('read_message', (message) => {
+                setMessages(prevMessages => prevMessages.map(m =>
+                    m._id === message._id ? message : m));
+            })
         }
 
         return () => {
@@ -36,10 +42,15 @@ export const MessageProvider = ({ children }) => {
         socket.emit('send_message', { sender: user._id, receiver: receiverId, content });
     };
 
+    const readMessage = (messageId) => {
+        socket.emit('read_message', messageId);
+    }
+
     return (
         <MessageContext.Provider value={{
             messages,
-            sendMessage
+            sendMessage,
+            readMessage
         }}>
             {children}
         </MessageContext.Provider>
