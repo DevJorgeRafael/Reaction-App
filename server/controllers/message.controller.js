@@ -1,8 +1,10 @@
 import { userSockets } from "../index.js";
 import Message from "../models/Message.js";
 import Notification from "../models/Notification.js";
+import Chat from "../models/Chat.js";
 import User from "../models/User.js";
 import { getPopulatedNotification } from "./notification.controller.js";
+import { getChats } from "./chat.controller.js";
 
 
 export const sendMessage = async (req, res) => {
@@ -46,42 +48,6 @@ export const getChatMessages = async (userId1, userId2) => {
     }
 };
 
-export const getChats = async (userId, socket) => {
-    try {
-        const messages = await Message.find({
-            $or: [
-                { sender: userId },
-                { receiver: userId }
-            ]
-        })
-            .populate('sender', '_id username name image')
-            .populate('receiver', '_id username name image')
-            .sort({ date: -1 }); 
-
-        const chats = {};
-        messages.forEach(message => {
-            let chatId;
-            if (message.sender._id.toString() === userId) {
-                chatId = message.receiver._id.toString();
-            } else {
-                chatId = message.sender._id.toString();
-            }
-
-            if (!chats[chatId]) {
-                chats[chatId] = {
-                    user: message.sender._id.toString() === userId ? message.receiver : message.sender,
-                    lastMessage: message
-                };
-            }
-        });
-
-        const chatsArray = Object.values(chats);
-        socket.emit('chats', chatsArray);
-    } catch (error) {
-        console.log('error on getChats', error.message);
-    }
-};
-
 
 export const createMessage = async (senderId, receiverId, content) => {
     try {
@@ -91,6 +57,18 @@ export const createMessage = async (senderId, receiverId, content) => {
         const populatedMessage = await Message.findById(message._id)
             .populate('sender', '_id username name image')
             .populate('receiver', '_id username name image');
+
+        // Busca el chat existente entre los dos usuarios
+        let chat = await Chat.findOne({ users: { $all: [senderId, receiverId] } });
+
+        // Si no existe, crea uno nuevo
+        if (!chat) {
+            chat = new Chat({ users: [senderId, receiverId] });
+        }
+
+        // Añade el nuevo mensaje al chat
+        chat.messages.push(message._id);
+        await chat.save();
 
         const notification = new Notification({
             user: populatedMessage.receiver._id,
@@ -109,10 +87,15 @@ export const createMessage = async (senderId, receiverId, content) => {
             await getChats(receiverId, receiverSocket);
             receiverSocket.emit('notification', populatedNotification);
         }
+        const senderSocket = userSockets[senderId];
+        if (senderSocket) {
+            await getChats(senderId, senderSocket);
+        }
     } catch (error) {
         console.log('Error on CreateMessage', error.message)
     }
 };
+
 
 export const readMessage = async (messageId) => {
     try {

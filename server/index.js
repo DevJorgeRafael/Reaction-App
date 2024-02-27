@@ -4,7 +4,8 @@ import app from './app.js' // Aquí cambiamos la importación
 import { Server } from 'socket.io'
 import { sendNotifications } from './controllers/notification.controller.js'
 import { sendPosts } from './controllers/post.controller.js'
-import { createMessage, getChats, getChatMessages, readMessage } from './controllers/message.controller.js'
+import { createMessage, getChatMessages, readMessage } from './controllers/message.controller.js'
+import { getChats } from './controllers/chat.controller.js'
 
 connectDB()
 
