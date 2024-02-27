@@ -37,7 +37,10 @@ export const getChatMessages = async (userId1, userId2) => {
             .populate('sender', '_id username name image')
             .populate('receiver', '_id username name image')
 
-        return messages
+        const userSocket = userSockets[userId1]
+        if (userSocket) {
+            userSocket.emit('chat_messages', messages);
+        }
     } catch (error) {
         console.log(error.message)
     }
@@ -80,29 +83,58 @@ export const getChats = async (userId, socket) => {
 };
 
 
-
 export const createMessage = async (senderId, receiverId, content) => {
-    const message = new Message({ sender: senderId, receiver: receiverId, content });
-    await message.save();
+    try {
+        const message = new Message({ sender: senderId, receiver: receiverId, content });
+        await message.save();
 
-    const populatedMessage = await Message.findById(message._id)
-        .populate('sender', '_id username name image')
-        .populate('receiver', '_id username name image');
+        const populatedMessage = await Message.findById(message._id)
+            .populate('sender', '_id username name image')
+            .populate('receiver', '_id username name image');
 
-    const notification = new Notification({
-        user: populatedMessage.receiver._id,
-        fromUser: populatedMessage.sender._id,
-        type: 'message',
-        target: { messageId: populatedMessage._id },
-    })
+        const notification = new Notification({
+            user: populatedMessage.receiver._id,
+            fromUser: populatedMessage.sender._id,
+            type: 'message',
+            target: { messageId: populatedMessage._id },
+        })
 
-    await notification.save();
+        await notification.save();
 
-    const populatedNotification = await getPopulatedNotification(notification);
+        const populatedNotification = await getPopulatedNotification(notification);
 
-    const receiverSocket = userSockets[receiverId];
-    if (receiverSocket) {
-        receiverSocket.emit('message', populatedMessage);
-        receiverSocket.emit('notification', populatedNotification);
+        const receiverSocket = userSockets[receiverId];
+        if (receiverSocket) {
+            receiverSocket.emit('message', populatedMessage);
+            await getChats(receiverId, receiverSocket);
+            receiverSocket.emit('notification', populatedNotification);
+        }
+    } catch (error) {
+        console.log('Error on CreateMessage', error.message)
     }
 };
+
+export const readMessage = async (messageId) => {
+    try {
+        await Message.findByIdAndUpdate(messageId, { read: true })
+        const messageUpdated = await Message.findById(messageId)
+            .populate('receiver')
+            .populate('sender')
+
+        // Emitir el evento 'read_message' al sender y al receiver
+        const senderSocket = userSockets[messageUpdated.sender._id];
+        const receiverSocket = userSockets[messageUpdated.receiver._id];
+        if (senderSocket) {
+            senderSocket.emit('read_message', messageUpdated);
+        }
+        if (receiverSocket) {
+            await getChats(messageUpdated.receiver._id, senderSocket);
+        }
+
+
+        return messageUpdated
+    } catch (error) {
+        console.log('Error on readMessage', error.message)
+    }
+};
+

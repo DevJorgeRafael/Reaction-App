@@ -3,12 +3,15 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { alpha } from '@mui/system';
 import { useUser } from "../../context/userContext"
 import ShowChat from "./ShowChat";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSocket } from "../../context/socketContext";
 
 export const ShowLastMessage = ({lastMessage, bg}) => {
     const { user } = useUser()
     const [open, setOpen] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
+    const [localLastMessage, setlocalLastMessage] = useState(lastMessage)
+    const socket  = useSocket()
 
     const handleMenuClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -19,11 +22,11 @@ export const ShowLastMessage = ({lastMessage, bg}) => {
     };
 
     const handleMarkAsRead = () => {
-        
         handleMenuClose();
     };
 
     const handleClickOpen = () => {
+        socket.emit('read_message', { messageId: lastMessage._id });
         setOpen(true);
     };
 
@@ -31,6 +34,17 @@ export const ShowLastMessage = ({lastMessage, bg}) => {
         event.stopPropagation();
         setOpen(false);
     };
+
+    useEffect(() => {
+        setlocalLastMessage(lastMessage);
+    }, [lastMessage])
+
+    useEffect(() => {
+        socket.on('read_message', (updatedMessage) => {
+            setlocalLastMessage(updatedMessage);
+        })
+    }, [open])
+
 
     return (
         <>
@@ -40,7 +54,7 @@ export const ShowLastMessage = ({lastMessage, bg}) => {
                         p: 1,
                         display: 'flex',
                         width: '100%',
-                        backgroundColor: lastMessage.read ? 'initial' : theme => alpha(theme.palette.primary.dark, 0.2),
+                        backgroundColor:  'initial',
                         '&:hover': {
                             backgroundColor: "#B4D4FF",
                         }
@@ -69,16 +83,28 @@ export const ShowLastMessage = ({lastMessage, bg}) => {
                             backgroundColor: "#B4D4FF",
                         }
                     }}
+                    onClick = {handleClickOpen}
                 >      
+                    <Avatar src={lastMessage.sender.image?.url} alt={lastMessage.sender.username} />
+                        <Box sx={{ ml: 1 }}>
+                            <Typography variant="body1" >@{lastMessage.sender.username}</Typography>
+                            <Box sx={{ display: 'flex', maxWidth: '100%', ml: 0.5 }}>
+                                <Box sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', ml: 0 }}>
+                                    <Typography variant="body2" color="gray">{lastMessage.content}</Typography>
+                                </Box>
+                            </Box>
+                        </Box>
                 </Box>
             )}
 
-            <ShowChat
-                handleClose={handleClose}
-                user={lastMessage.sender._id === user._id ? lastMessage.sender : lastMessage.receiver}
-                userProfile={lastMessage.sender._id === user._id ? lastMessage.receiver : lastMessage.sender}
-                open={open}
-            />
+            {open && 
+                <ShowChat
+                    handleClose={handleClose}
+                    user={lastMessage.sender._id === user._id ? lastMessage.sender : lastMessage.receiver}
+                    userProfile={lastMessage.sender._id === user._id ? lastMessage.receiver : lastMessage.sender}
+                    open={open}
+                />
+            }
 
 
             {bg && <>
@@ -97,7 +123,7 @@ export const ShowLastMessage = ({lastMessage, bg}) => {
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
                 >
-                    {!lastMessage.read && <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>}
+                    {!localLastMessage.read && <MenuItem onClick={handleMarkAsRead}>Mark as read</MenuItem>}
                     <MenuItem onClick={handleDelete}
                         sx={{ color: 'error.main' }}
                     >

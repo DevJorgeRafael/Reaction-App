@@ -36,8 +36,12 @@ export default function MessagesBox({ messages }) {
                     {messagesForDate.map((message, index) => (
                         <Box key={index} sx={{ mr: 0.5 }}>
                             <ShowMessage message={message} user={user} />
+                            {message.sender._id === user._id && message === messagesForDate[messagesForDate.length - 1] && message.read && (
+                                <Typography variant="body2" color="gray" sx={{display: 'flex', justifyContent: 'flex-end'}}>seen</Typography>
+                            )}
                         </Box>
                     ))}
+
                 </Box>
             )) : (
                 <Box sx={{

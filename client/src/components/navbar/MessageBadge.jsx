@@ -7,9 +7,10 @@ import ShowChat from '../messages/ShowChat';
 import { ShowLastMessage } from '../messages/ShowLastMessage';
 import { useNavigate } from 'react-router-dom';
 import { useMessage } from '../../context/messageContext';
+import { useUser } from '../../context/userContext';
 
 function MessageBadge({ needText }) {
-    const navigate = useNavigate()
+    const { user } = useUser()
     const [anchorEl, setAnchorEl] = useState(null);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
     const [localChats, setLocalChats] = useState([])
@@ -32,30 +33,23 @@ function MessageBadge({ needText }) {
         setMenuAnchorEl(null);
     };
 
-    const handleReadAllNotifications = () => {
-        setMenuAnchorEl(null);
-        readNotifications(chats[0].user._id);
-    }
-
     const handleCloseModal = () => {
         setSelectedChat(null);
     };
-
-    // const handleReadNotification = (notification) => {
-    //     setSelectedChat(notification.target.post)
-    //     readN(notification._id);
-    // }
 
     useEffect(() => {
         setLocalChats(chats);
     }, [chats]);
 
     useEffect(() => {
-        const unreadCount = localChats.filter(chat => !chat.read).length;
+        const unreadCount = localChats.filter(chat =>
+            !chat.lastMessage.read && chat.lastMessage.sender._id !== user._id
+        ).length;
         setUnreadChats(unreadCount);
     }, [localChats, unreadChats]);
 
-    console.log(chats)
+
+    // console.log(chats)
 
     return (
         <>
@@ -108,22 +102,23 @@ function MessageBadge({ needText }) {
                                             Mark all as read
                                         </MenuItem>}
 
-                                    <MenuItem onClick={() => console.log('delete all messages')}
+                                    {/* <MenuItem onClick={() => console.log('delete all messages')}
                                         sx={{ color: theme => theme.palette.error.main }}
                                     >
                                         Delete all messages
-                                    </MenuItem>
+                                    </MenuItem> */}
 
                                 </Menu>
                             </>}
                     </Box>
                     {localChats.length > 0 ? (
                         localChats.map((chat, index) => (
-                            <Box onClick={() => console.log('read chat')} key={index}>
-                                <Box>
-                                    <ShowLastMessage lastMessage={chat.lastMessage}/>
-                                    
-                                </Box>
+                            <Box key={index}
+                                sx={{
+                                    width: '400px'
+                                }}
+                            >
+                                <ShowLastMessage lastMessage={chat.lastMessage}/>
                             </Box>
                         ))
                     ) : (
@@ -140,16 +135,6 @@ function MessageBadge({ needText }) {
 
                 </Box>
             </Popover>
-
-
-            <Dialog
-                open={selectedChat !== null} onClose={handleCloseModal}
-                fullWidth
-            >
-                {/* {selectedChat && 
-                    onClose={handleCloseModal}
-                />} */}
-            </Dialog>
         </>
     );
 }

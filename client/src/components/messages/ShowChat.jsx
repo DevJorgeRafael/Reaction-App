@@ -5,21 +5,22 @@ import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import MessagesBox from './MessagesBox';
 import { useSocket } from '../../context/socketContext';
+import { useMessage } from '../../context/messageContext';
 
 function ShowChat({ userProfile, user, open, handleClose }) {
+    const { messages, setMessages, getChatMessages } = useMessage()
     const { register, handleSubmit, reset } = useForm();
     const socket = useSocket();
-    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         if (open) {
-            socket.emit('get_chat_messages', { userId1: user._id, userId2: userProfile._id });
+            getChatMessages(userProfile);
         }
     }, [open]);
-
+    
     useEffect(() => {
         if (open) {
-            socket.emit('get_chat_messages', { userId1: user._id, userId2: userProfile._id });
+            getChatMessages(userProfile);
         }
 
         socket.on('chat_messages', (messages) => {
