@@ -32,8 +32,10 @@ io.on('connection', async (socket) => {
         sendPosts(socket);
         getChats(userId, socket)
 
-        socket.on('send_message', async ({ senderId, receiverId, content }) => {
-            createMessage(senderId, receiverId, content);
+        socket.on('send_message', async ({ senderId, receiverId, content }, callback) => {
+            const newMessage = await createMessage(senderId, receiverId, content);
+            console.log(newMessage)
+            callback(newMessage);
         })
 
         socket.on('read_message', async ({ messageId}) => {

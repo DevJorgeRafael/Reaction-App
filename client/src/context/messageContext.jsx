@@ -18,18 +18,20 @@ export const MessageProvider = ({ children }) => {
     useEffect(() => {
         if (user && socket) {
             socket.on('chats', (chats) => {
-                // console.log(chats)
                 setChats(chats)
             });
 
             socket.on('read_message', (message) => {
                 setMessages(prevMessages => prevMessages.map(m =>
                     m._id === message._id ? message : m));
-            })
+
+                setChats(prevChats => prevChats.map(chat =>
+                    chat.lastMessage._id === message._id ? { ...chat, lastMessage: message } : chat));
+            });
+
 
             socket.on('chat_messages', (messages) => {
                 setMessages(messages);
-                console.log(messages)
 
                 messages.forEach(message => {
                     if (message && message.receiver && !message.read && message.receiver._id === user._id) {
@@ -51,8 +53,10 @@ export const MessageProvider = ({ children }) => {
     }, [user, socket]);
 
     const sendMessage = (receiverId, content) => {
-        setMessages([...messages, { sender: user, content, date: new Date() }]);
-        socket.emit('send_message', { senderId: user._id, receiverId, content});
+        socket.emit('send_message', { senderId: user._id, receiverId, content}, (newMessage) => {
+            console.log(newMessage)
+            setMessages([...messages, newMessage]);
+        });
     };
 
     const getChatMessages = (userProfile) => {

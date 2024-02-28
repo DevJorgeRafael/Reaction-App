@@ -58,15 +58,12 @@ export const createMessage = async (senderId, receiverId, content) => {
             .populate('sender', '_id username name image')
             .populate('receiver', '_id username name image');
 
-        // Busca el chat existente entre los dos usuarios
         let chat = await Chat.findOne({ users: { $all: [senderId, receiverId] } });
 
-        // Si no existe, crea uno nuevo
         if (!chat) {
             chat = new Chat({ users: [senderId, receiverId] });
         }
 
-        // Añade el nuevo mensaje al chat
         chat.messages.push(message._id);
         await chat.save();
 
@@ -91,6 +88,8 @@ export const createMessage = async (senderId, receiverId, content) => {
         if (senderSocket) {
             await getChats(senderId, senderSocket);
         }
+
+        return populatedMessage;
     } catch (error) {
         console.log('Error on CreateMessage', error.message)
     }
@@ -104,16 +103,15 @@ export const readMessage = async (messageId) => {
             .populate('receiver')
             .populate('sender')
 
-        // Emitir el evento 'read_message' al sender y al receiver
         const senderSocket = userSockets[messageUpdated.sender._id];
         const receiverSocket = userSockets[messageUpdated.receiver._id];
         if (senderSocket) {
             senderSocket.emit('read_message', messageUpdated);
         }
         if (receiverSocket) {
+            receiverSocket.emit('read_message', messageUpdated);
             await getChats(messageUpdated.receiver._id, senderSocket);
         }
-
 
         return messageUpdated
     } catch (error) {
