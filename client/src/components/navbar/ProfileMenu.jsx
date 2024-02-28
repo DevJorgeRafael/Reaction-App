@@ -1,4 +1,3 @@
-// Menu.jsx
 import { Menu, MenuItem, Typography } from '@mui/material';
 
 function ProfileMenu({ anchorEl, handleMenuClose, navigate, user, handleLogout }) {

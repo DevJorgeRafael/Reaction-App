@@ -86,7 +86,7 @@ export const PostProvider = ({ children }) => {
             await deletePostRequest(postId, userId)
             await getPosts()
         } catch (error) {
-            console.log(error)
+            console.log('error on deletePostRequest', error.message)
         }
     }
 

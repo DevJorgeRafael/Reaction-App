@@ -40,7 +40,6 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true);
             const res = await registerRequest(user);
-            console.log(res)
             setUser(res.data.user);
             setIsAuthenticated(true)
         } catch (error) {
@@ -109,7 +108,7 @@ export const UserProvider = ({ children }) => {
             const res = await checkUsernameRequest(username)
             return res.status
         } catch (error) {
-            console.log(error)
+            console.log('error on checkUsername', error)
             setErrors(error.response.data)
         }
     }
@@ -118,13 +117,12 @@ export const UserProvider = ({ children }) => {
         try {
             setLoading(true)
             const res = await updateUserRequest(user)
-            console.log(res)
 
             setUser(res.data.user)
             setUserProfile(res.data.user)
             return res.status
         } catch (error) {
-            console.log(error)
+            console.log('error on updateUser ', error)
         } finally {
             setLoading(false)
         }
@@ -139,7 +137,7 @@ export const UserProvider = ({ children }) => {
             
             return res.status
         } catch (error) {
-            console.log(error);
+            console.log('error on updateUserImage', error);
             setErrors(error.response.data)
         } finally {
             setLoading(false)
@@ -153,7 +151,7 @@ export const UserProvider = ({ children }) => {
             setUser(res.data.user)
             setUserProfile(res.data.user)
         } catch (error) {
-            console.log(error);
+            console.log('error on deleteUserImage', error);
             setErrors(error.response.data)
         } finally {
             setLoading(false)
@@ -163,22 +161,20 @@ export const UserProvider = ({ children }) => {
     const followUser = async (userId, followerId) => {
         try {
             const res = await followUserRequest(userId, followerId)
-            console.log(res)
             setUser(res.data.follower)
             setUserProfile(res.data.userToFollow)
         } catch (error) {
-            console.log(error)
+            console.log('error on followUser', error)
         }
     }  
     
     const unfollowUser = async (userId, followerId) => {
         try {
             const res = await unfollowUserRequest(userId, followerId)
-            console.log(res)
             setUser(res.data.follower)
             setUserProfile(res.data.userToUnfollow)
         } catch (error) {
-            console.log(error)
+            console.log('Error on unfollowUser', error)
         }
     }
 

@@ -42,15 +42,11 @@ function ShowChat({ userProfile, user, open, handleClose }) {
         };
     }, []);
 
-
     const handleSend = (value) => {
         socket.emit('send_message', { senderId: user._id, receiverId: userProfile._id, content: value }, (newMessage) => {
-            // console.log(newMessage)
             setMessages([...messages, newMessage]);
         });
     };
-
-
 
     const onSubmit = (data) => {
         if (data.message.trim() !== '') {
@@ -65,9 +61,6 @@ function ShowChat({ userProfile, user, open, handleClose }) {
             handleSubmit(onSubmit)();
         }
     };
-
-    // console.log(messages)
-
 
     return (
         <div>

@@ -54,7 +54,6 @@ export const MessageProvider = ({ children }) => {
 
     const sendMessage = (receiverId, content) => {
         socket.emit('send_message', { senderId: user._id, receiverId, content}, (newMessage) => {
-            console.log(newMessage)
             setMessages([...messages, newMessage]);
         });
     };

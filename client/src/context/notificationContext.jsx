@@ -49,7 +49,7 @@ export const NotificationProvider = ({ children }) => {
             const res = await readNotificationsRequest(userId)
             setNotifications(res.data)
         } catch (error) {
-            console.error(error)
+            console.error('error on readNotification', error.message)
         }
     }
 
@@ -70,7 +70,7 @@ export const NotificationProvider = ({ children }) => {
             await removeNotificationsRequest(userId)
             setNotifications([])
         } catch (error) {
-            console.error(error)
+            console.error('Error on removeNotifications ', error.message)
         }
     }
 
@@ -79,7 +79,7 @@ export const NotificationProvider = ({ children }) => {
             await removeNotificationRequest(notificationId);
             setNotifications(prevNotifications => prevNotifications.filter(notification => notification._id !== notificationId));
         } catch (error) {
-            console.error(error);
+            console.error('error on removeNotification', error.message);
         }
     };
 
