@@ -1,8 +1,4 @@
-import { usePosts } from '../context/postContext'
-
 function HomePage() {
-
-  const { posts } = usePosts()
 
   return (
     <>
