@@ -34,13 +34,16 @@ app.use((req, res, next) => {
 });
 
 
-// Sirve los archivos estáticos desde la carpeta 'dist' de tu aplicación Vite
-app.use(express.static(path.resolve(__dirname, '../client/dist')));
+if (process.env.NODE_ENV === 'production') {
+    // Sirve los archivos estáticos desde la carpeta 'dist' de tu aplicación Vite
+    app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-// Asegúrate de que todas las rutas no manejadas sirvan tu archivo index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
-});
+    // Asegúrate de que todas las rutas no manejadas sirvan tu archivo index.html
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
+    });
+}
+
 
 
 //routes
