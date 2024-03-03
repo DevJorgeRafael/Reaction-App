@@ -65,11 +65,12 @@ export const UserProvider = ({ children }) => {
     const logout = async () => {
         Cookies.remove('token')
         setIsAuthenticated(false)
-        const socket = io('http://localhost:4000')
+        const socket = io(process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : process.env.REACT_APP_API_URL)
         socket.emit('logout', user._id)
         setUser(null)
         navigate('/login')
     }
+
 
 
     const checkAuth = async () => {
