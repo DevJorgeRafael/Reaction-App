@@ -12,7 +12,7 @@ function HomePage() {
         <Box component="img" src="/ReactiOn.png" alt="ReactiOn logo" sx={{ height: { xs: '100px', sm: 'auto' }, width: { xs: '100px', sm: 'auto' }, objectFit: 'contain' }} />
       </Box>
 
-      <Box display="flex" flexDirection="column" justifyContent="start" alignItems="center" sx={{ flexGrow: 1 }}>
+      <Box display="flex" flexDirection="column"  alignItems="center" sx={{ flexGrow: 1 }}>
         <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" sx={{ mb: 2, mt: {xs: 0, sm: -7} }}>
           <Typography variant="h4" color="initial">
             Join ReactiOn App today! Start sharing your first post with your friends.
