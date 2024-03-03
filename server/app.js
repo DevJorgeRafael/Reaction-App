@@ -33,6 +33,10 @@ app.use((req, res, next) => {
     next();
 });
 
+//routes
+app.use('/api', postsRoutes)
+app.use('/api', userRoutes)
+app.use('/api', notificationsRoutes)
 
 if (process.env.NODE_ENV === 'production') {
     // Sirve los archivos estáticos desde la carpeta 'dist' de tu aplicación Vite
@@ -43,12 +47,5 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
     });
 }
-
-
-
-//routes
-app.use('/api', postsRoutes)
-app.use('/api', userRoutes)
-app.use('/api', notificationsRoutes)
 
 export default app;
