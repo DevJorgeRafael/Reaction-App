@@ -17,10 +17,10 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (user) {
-            const newSocket = io(process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 
-            process.env.REACT_APP_API_URL, {
+            const newSocket = io('https://reaction-app.up.railway.app/', {
                 query: { userId: user?._id },
             });
+
             setSocket(newSocket);
             
             return () => {
