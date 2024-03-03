@@ -47,8 +47,8 @@ if (process.env.NODE_ENV === 'production') {
 
 
 //routes
-app.use(postsRoutes)
-app.use(userRoutes)
-app.use(notificationsRoutes)
+app.use('/api', postsRoutes)
+app.use('/api', userRoutes)
+app.use('/api', notificationsRoutes)
 
 export default app;
