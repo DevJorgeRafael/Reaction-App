@@ -9,6 +9,7 @@ function Logo({ navigate }) {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
+                onClick={() => navigate('/')}
             >
                 <img src="/ReactiOn-logo.png" alt="Logo" width="50" height="50" />
             </IconButton>

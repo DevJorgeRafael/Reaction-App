@@ -5,23 +5,24 @@ import { getPosts,
     deletePost, 
     getPost, 
     likePost, 
-    unlikePost } from '../controllers/post.controller.js'
-import { verifyToken } from '../controllers/user.controller.js'
+    unlikePost 
+} from '../controllers/post.controller.js'
+import { authMiddleware } from '../middlewares/authMiddleware.js'
 
 const router = Router()
 
-router.get('/posts', getPosts)
+router.get('/posts', authMiddleware, getPosts)
 
-router.post('/posts', createPost)
+router.post('/posts', authMiddleware, createPost)
 
-router.put('/posts/:id', updatePost)
+router.put('/posts/:id', authMiddleware, updatePost)
 
-router.delete('/posts/:id', deletePost)
+router.delete('/posts/:id', authMiddleware, deletePost)
 
-router.get('/posts/:id', getPost)
+router.get('/posts/:id', authMiddleware, getPost)
 
-router.put('/posts/:id/like', likePost)
+router.put('/posts/:id/like', authMiddleware, likePost)
 
-router.put('/posts/:id/unlike', unlikePost)
+router.put('/posts/:id/unlike', authMiddleware, unlikePost)
 
 export default router

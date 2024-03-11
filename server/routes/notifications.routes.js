@@ -3,12 +3,13 @@ import { readAllNotifications,
     readNotification, removeNotification,
     removeAllNotifications
 } from "../controllers/notification.controller.js"
+import { authMiddleware } from "../middlewares/authMiddleware.js"
 
 const router = Router()
 
-router.put('/readNotifications/:userId', readAllNotifications)
-router.put('/readNotification/:id', readNotification)
-router.delete('/removeNotifications/:userId', removeAllNotifications)
-router.delete('/removeNotification/:id', removeNotification)
+router.put('/readNotifications/:userId', authMiddleware, readAllNotifications)
+router.put('/readNotification/:id', authMiddleware, readNotification)
+router.delete('/removeNotifications/:userId', authMiddleware, removeAllNotifications)
+router.delete('/removeNotification/:id', authMiddleware, removeNotification)
 
 export default router
