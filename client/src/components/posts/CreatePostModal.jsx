@@ -163,25 +163,27 @@ export default function CreatePostModal() {
                                     <CameraIcon sx={{ fontSize: 50, color: 'black' }} />
                                 </IconButton>
 
-                                <TextField
-                                    margin="dense"
-                                    name="image"
-                                    type="file"
-                                    fullWidth
-                                    variant="filled"
-                                    {...register('image')}
-                                    onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        const reader = new FileReader();
-                                        reader.onloadend = () => {
-                                            setImageSrc(reader.result);
-                                        };
-                                        reader.readAsDataURL(file);
-                                    }}
-                                    sx={{
-                                        borderRadius: 5
-                                    }}
-                                />
+                                    <TextField
+                                        margin="dense"
+                                        name="image"
+                                        type="file"
+                                        fullWidth
+                                        variant="filled"
+                                        {...register('image')}
+                                        accept="image/jpeg, image/png, image/gif"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setImageSrc(reader.result);
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }}
+                                        sx={{
+                                            borderRadius: 5
+                                        }}
+                                    />
+
                             </div>
                         )}
                     </DialogContent>
