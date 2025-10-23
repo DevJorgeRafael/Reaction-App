@@ -33,9 +33,23 @@ io.on('connection', async (socket) => {
         getChats(userId, socket)
 
         socket.on('send_message', async ({ senderId, receiverId, content }, callback) => {
-            const newMessage = await createMessage(senderId, receiverId, content);
-            console.log(newMessage)
-            callback(newMessage);
+            try {
+                const newMessage = await createMessage(senderId, receiverId, content);
+                // console.log(newMessage)
+
+                if (callback && typeof callback === 'function') {
+                    callback(newMessage);
+                }
+
+                if (userSockets[receiverId]) {
+                    userSockets[receiverId].emit('receive_message', newMessage);
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                if (callback && typeof callback === 'function') {
+                    callback({ error: 'Error sending message' });
+                }
+            }
         })
 
         socket.on('read_message', async ({ messageId}) => {
