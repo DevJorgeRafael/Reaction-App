@@ -5,13 +5,18 @@ import postsRoutes from './routes/posts.routes.js'
 import userRoutes from './routes/users.routes.js'
 import notificationsRoutes from './routes/notifications.routes.js'
 import path from 'path'
-import { createServer } from 'http';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Configuración de CORS
+const allowedOrigins = [
+    process.env.CLIENT_URL_DEV || 'http://localhost:5173',
+    process.env.CLIENT_URL_PROD
+];
 
 //middlewares
 app.use(express.json())
@@ -22,7 +27,6 @@ app.use(fileUpload({
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-    const allowedOrigins = ['http://localhost:5173', 'https://reaction-app.up.railway.app'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
@@ -39,10 +43,8 @@ app.use('/api', userRoutes)
 app.use('/api', notificationsRoutes)
 
 if (process.env.NODE_ENV === 'production') {
-    // Sirve los archivos estáticos desde la carpeta 'dist' de tu aplicación Vite
     app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-    // Asegúrate de que todas las rutas no manejadas sirvan tu archivo index.html
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
     });

@@ -3,11 +3,12 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import { useState } from "react";
 import ShowChat from "../messages/ShowChat";
 import { useUser } from "../../context/userContext";
+import { useNavigate } from "react-router-dom";
 
 export const ShowSimpleProfile = ({ user }) => {
     const { user: ItsMe } = useUser()
     const [open, setOpen] = useState(false)
-
+    const navigate = useNavigate();
 
     const handleClickOpen = () => {
         setOpen(true);

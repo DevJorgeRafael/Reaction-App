@@ -3,13 +3,12 @@ import {
     loginRequest, registerRequest,
     verifyTokenRequest, getUserByUsernameRequest,
     updateUserRequest, updateUserImageRequest,
-    deleteUserImageRequest ,checkUsernameRequest,
+    deleteUserImageRequest, checkUsernameRequest,
     getUsersRequest, getUsersByUsernameRequest,
     followUserRequest, unfollowUserRequest
 } from "../api/user";
 import Cookies from 'js-cookie'
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client"; 
 
 const UserContext = createContext();
 
@@ -65,10 +64,7 @@ export const UserProvider = ({ children }) => {
     const logout = async () => {
         Cookies.remove('token')
         setIsAuthenticated(false)
-        const socket = io(import.meta.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 
-            'https://reaction-app.up.railway.app')
-        socket.emit('logout', user._id)
-        setUser(null)
+        setUser(null) // Esto automáticamente desconectará el socket del SocketContext
         navigate('/login')
     }
 
@@ -134,7 +130,7 @@ export const UserProvider = ({ children }) => {
             const res = await updateUserImageRequest(user)
             setUser(res.data.user)
             setUserProfile(res.data.user)
-            
+
             return res.status
         } catch (error) {
             console.log('error on updateUserImage', error);
@@ -166,8 +162,8 @@ export const UserProvider = ({ children }) => {
         } catch (error) {
             console.log('error on followUser', error)
         }
-    }  
-    
+    }
+
     const unfollowUser = async (userId, followerId) => {
         try {
             const res = await unfollowUserRequest(userId, followerId)
@@ -177,7 +173,6 @@ export const UserProvider = ({ children }) => {
             console.log('Error on unfollowUser', error)
         }
     }
-
 
     const getUsers = async () => {
         try {

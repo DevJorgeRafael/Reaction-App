@@ -29,7 +29,6 @@ export const MessageProvider = ({ children }) => {
                     chat.lastMessage._id === message._id ? { ...chat, lastMessage: message } : chat));
             });
 
-
             socket.on('chat_messages', (messages) => {
                 setMessages(messages);
 
@@ -41,24 +40,50 @@ export const MessageProvider = ({ children }) => {
             });
 
             socket.on('message', (message) => {
+                console.log('📨 Nuevo mensaje recibido:', message);
                 setMessages((prevMessages) => [...prevMessages, message]);
             });
         }
 
         return () => {
             if (socket) {
-                socket.disconnect();
+                socket.off('chats');
+                socket.off('read_message');
+                socket.off('chat_messages');
+                socket.off('message');
             }
         };
     }, [user, socket]);
 
     const sendMessage = (receiverId, content) => {
-        socket.emit('send_message', { senderId: user._id, receiverId, content}, (newMessage) => {
-            setMessages([...messages, newMessage]);
+        console.log('📤 Enviando mensaje:', { senderId: user._id, receiverId, content });
+
+        // Crear mensaje temporal
+        const tempMessage = {
+            _id: `temp-${Date.now()}`,
+            sender: user, // Usa el objeto user completo del contexto
+            receiver: { _id: receiverId },
+            content: content,
+            read: false,
+            date: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+        };
+
+        // ✨ Agregar inmediatamente
+        setMessages(prevMessages => [...prevMessages, tempMessage]);
+
+        socket.emit('send_message', {
+            senderId: user._id,
+            receiverId,
+            content
         });
+
+        // El socket.on('message') se encargará de actualizar cuando llegue del servidor
+        // pero el usuario ya ve su mensaje
     };
 
     const getChatMessages = (userProfile) => {
+        console.log('📥 Obteniendo mensajes del chat con:', userProfile._id);
         socket.emit('get_chat_messages', { userId1: user._id, userId2: userProfile._id });
     }
 
